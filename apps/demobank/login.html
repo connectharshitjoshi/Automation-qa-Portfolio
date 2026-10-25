@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Gateway Sign-In - DemoBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      padding: 1.5rem;
+    }
+
+    .gateway-top-bar {
+      max-width: 520px;
+      margin: 1.5rem auto 1rem;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: #94a3b8;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 0.75rem;
+    }
+
+    .login-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 2.25rem 2rem;
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .login-brand-head {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .brand-logo-large {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: #10b981;
+      color: #0f172a;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+
+    .login-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+    .login-sub {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 0.25rem;
+    }
+
+    .demo-creds-hint {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.785rem;
+      color: #cbd5e1;
+      margin-bottom: 1.5rem;
+      line-height: 1.45;
+    }
+
+    .form-group-login {
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group-login label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .login-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .login-input {
+      width: 100%;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      font-family: var(--font-mono);
+      color: #ffffff;
+      outline: none;
+      transition: all 0.15s;
+    }
+    .login-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .btn-toggle-pin {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+
+    .login-options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.785rem;
+      color: #94a3b8;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-login-submit {
+      width: 100%;
+      background: #10b981;
+      color: #0f172a;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+    }
+    .btn-login-submit:hover {
+      background: #059669;
+      color: #ffffff;
+    }
+
+    .divider-text {
+      text-align: center;
+      margin: 1.5rem 0 1rem;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: #64748b;
+      position: relative;
+    }
+    .divider-text::before, .divider-text::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 32%;
+      height: 1px;
+      background: #334155;
+    }
+    .divider-text::before { left: 0; }
+    .divider-text::after { right: 0; }
+
+    .alt-auth-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-alt-auth {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 0.65rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .btn-alt-auth:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+
+    .bottom-gateway-meta {
+      max-width: 520px;
+      margin: 1.5rem auto 0;
+      width: 100%;
+      font-size: 0.7rem;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-wrapper">
+
+    <!-- Gateway Top Bar -->
+    <div class="gateway-top-bar">
+      <span>● DEMOBANK SECURE GATEWAY &bull; FRANKFURT NODE v8.9</span>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Portfolio Hub</a>
+    </div>
+
+    <!-- Login Card -->
+    <main class="login-card" aria-label="DemoBank Sign-In Gateway">
+      <!-- Security Architecture Banner -->
+      <div style="height: 120px; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; position: relative;">
+        <img src="images/bank-vault-hero.jpg" alt="DemoBank Security Architecture" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.72);">
+        <div style="position:absolute; inset:0; background:linear-gradient(180deg, transparent 0%, rgba(15,23,42,0.85) 100%); display:flex; align-items:flex-end; padding:0.75rem 1rem;">
+          <span style="font-size:0.75rem; font-weight:700; color:#10b981; display:flex; align-items:center; gap:0.4rem;">
+            <span>🔒</span> 256-Bit Hardware Security Gateway &bull; Frankfurt Vault Core
+          </span>
+        </div>
+      </div>
+
+      <div class="login-brand-head">
+        <div class="brand-logo-large">💳</div>
+        <h1 class="login-title">DemoBank</h1>
+        <p class="login-sub">Next-Gen Digital Banking & Sovereign FinTech Simulator</p>
+      </div>
+
+      <!-- Demo Credentials Hint Banner -->
+      <div class="demo-creds-hint" data-testid="demo-creds-hint">
+        <div style="font-weight:700; color:#10b981; margin-bottom:0.25rem;">✔ Demo credentials pre-loaded:</div>
+        <div>Username: <code>john_doe</code> &bull; Security PIN: <code>1234</code></div>
+        <div style="font-size:0.7rem; color:#94a3b8; margin-top:0.2rem;">(Also supports benchmark key: <code>demo</code> / <code>8842</code>)</div>
+      </div>
+
+      <form id="loginForm" onsubmit="handleBankLogin(event)">
+        <!-- Username -->
+        <div class="form-group-login">
+          <label for="loginUsername">Username / Client ID</label>
+          <div class="login-input-wrap">
+            <input type="text" id="loginUsername" class="login-input" value="john_doe" required data-testid="login-username">
+          </div>
+        </div>
+
+        <!-- PIN / Password -->
+        <div class="form-group-login">
+          <label for="loginPin">Security PIN (4 digits)</label>
+          <div class="login-input-wrap">
+            <input type="password" id="loginPin" class="login-input" value="1234" maxlength="8" required data-testid="login-password auth-pin-input">
+            <button type="button" class="btn-toggle-pin" onclick="togglePinVisibility()">Show PIN</button>
+          </div>
+          <input type="hidden" id="auth-pin-input" data-testid="auth-pin-input" value="1234">
+        </div>
+
+        <!-- Options -->
+        <div class="login-options-row">
+          <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+            <input type="checkbox" id="rememberToken" checked data-testid="remember-token" style="accent-color:#10b981;">
+            Remember hardware trust token
+          </label>
+          <a href="#" style="color:#38bdf8; text-decoration:none;" onclick="showBankToast('PIN recovery dispatched to registered SMS.')">Reset PIN</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-login-submit" id="loginSubmitBtn" data-testid="login-submit-btn auth-submit-btn">
+          Access Accounts &rarr;
+        </button>
+      </form>
+
+      <!-- Alternative Auth -->
+      <div class="divider-text">OR AUTHENTICATE WITH</div>
+      <div class="alt-auth-grid">
+        <button type="button" class="btn-alt-auth" onclick="fastAuth('Biometric Face ID')">
+          👤 Face ID / Touch
+        </button>
+        <button type="button" class="btn-alt-auth" onclick="autofillDemoCreds()">
+          ⚡ Autofill Demo
+        </button>
+        <button type="button" class="btn-alt-auth" onclick="fastAuth('Hardware Client Token')">
+          🔑 Client ID
+        </button>
+      </div>
+
+      <div style="text-align:center; font-size:0.75rem; color:#94a3b8;">
+        Trouble logging in? <a href="#" style="color:#10b981; text-decoration:none;" onclick="showBankToast('Opening new high-yield FDIC account...')">Open New DemoBank Account</a>
+      </div>
+    </main>
+
+    <!-- Bottom Meta -->
+    <footer class="bottom-gateway-meta">
+      <div>🔒 256-Bit SSL Encrypted &bull; ISO/IEC 27001 Certified &bull; FDIC Insured Cash Mesh</div>
+      <div style="margin-top:0.25rem;">All Systems Operational &bull; Audited Cold Reserve &bull; Session Key: <code>SEC-8849-NY</code></div>
+    </footer>
+
+  </div>
+
+  <script src="demobank.js"></script>
+  <script>
+    function togglePinVisibility() {
+      const pin = document.getElementById("loginPin");
+      const btn = document.querySelector(".btn-toggle-pin");
+      if (pin.type === "password") {
+        pin.type = "text";
+        btn.textContent = "Hide PIN";
+      } else {
+        pin.type = "password";
+        btn.textContent = "Show PIN";
+      }
+    }
+
+    function autofillDemoCreds() {
+      document.getElementById("loginUsername").value = "john_doe";
+      document.getElementById("loginPin").value = "1234";
+      document.getElementById("auth-pin-input").value = "1234";
+      showBankToast("Credentials auto-filled (john_doe / 1234).");
+    }
+
+    function fastAuth(method) {
+      showBankToast(`${method} challenge verified! Granting session token...`);
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 400);
+    }
+
+    function handleBankLogin(e) {
+      e.preventDefault();
+      const state = getBankState();
+      state.isLoggedIn = true;
+      saveBankState(state);
+
+      showBankToast("Cryptographic signature approved. Redirecting to Dashboard...");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 400);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,487 @@
+/* ====================================================
+   TripEase Mobility Suite - Unified Enterprise Stylesheet
+   Designed for High-Velocity Aviation & Travel E2E Testing
+==================================================== */
+
+:root {
+  --primary-navy: #0f172a;
+  --secondary-navy: #1e293b;
+  --sky-blue: #0284c7;
+  --sky-blue-hover: #0369a1;
+  --sky-blue-light: #e0f2fe;
+  --gold-primary: #d97706;
+  --gold-light: #fef3c7;
+  --gold-badge: #b45309;
+  --emerald-green: #059669;
+  --emerald-light: #ecfdf5;
+  --danger-red: #dc2626;
+  --danger-light: #fee2e2;
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --border-card: #cbd5e1;
+  --text-dark: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ====================================================
+   Top Navigation Header (Global Across All Pages)
+==================================================== */
+.tripease-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.header-top-row {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0.65rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--primary-navy);
+  color: #38bdf8;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.brand-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.brand-tag {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--sky-blue);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Navigation Links */
+.header-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.header-nav-list a {
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color 0.15s;
+  padding: 0.25rem 0;
+}
+
+.header-nav-list a:hover,
+.header-nav-list a.active {
+  color: var(--sky-blue);
+}
+
+/* Right Meta / User Profile */
+.header-right-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.currency-lang-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #f1f5f9;
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.skypriority-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+  border: 1px solid #fde68a;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.skypriority-avatar {
+  width: 28px;
+  height: 28px;
+  background: #d97706;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.skypriority-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.skypriority-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #92400e;
+  line-height: 1.1;
+}
+
+.skypriority-tier {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: #b45309;
+}
+
+/* ====================================================
+   Telemetry & GDS Sub-Header Bar
+==================================================== */
+.telemetry-strip {
+  background: #0f172a;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.4rem 1.5rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.telemetry-strip-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.telemetry-status-dot {
+  width: 7px;
+  height: 7px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.35rem;
+  box-shadow: 0 0 6px #10b981;
+}
+
+/* ====================================================
+   Booking Funnel Step Progress Bar
+==================================================== */
+.funnel-progress-wrap {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 1.5rem;
+}
+
+.funnel-progress-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.step-node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.step-node.active {
+  color: var(--primary-navy);
+  font-weight: 700;
+}
+
+.step-node.completed {
+  color: var(--emerald-green);
+}
+
+.step-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: var(--text-muted);
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.step-node.active .step-circle {
+  background: var(--primary-navy);
+  color: #ffffff;
+  border-color: var(--primary-navy);
+}
+
+.step-node.completed .step-circle {
+  background: var(--emerald-green);
+  color: #ffffff;
+  border-color: var(--emerald-green);
+}
+
+.step-connector {
+  width: 32px;
+  height: 1px;
+  background: #cbd5e1;
+}
+
+/* ====================================================
+   Global TripEase Buttons
+==================================================== */
+.btn-primary-blue {
+  background: var(--sky-blue);
+  color: #ffffff;
+  border: 1px solid var(--sky-blue);
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.15s ease-in-out;
+}
+.btn-primary-blue:hover {
+  background: var(--sky-blue-hover);
+  border-color: var(--sky-blue-hover);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.btn-primary-dark {
+  background: var(--primary-navy);
+  color: #ffffff;
+  border: 1px solid var(--primary-navy);
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-primary-dark:hover {
+  background: var(--secondary-navy);
+  border-color: var(--secondary-navy);
+}
+
+.btn-outline-navy {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-dark);
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.btn-outline-navy:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* ====================================================
+   Global Footer (Aviation Compliance & Support)
+==================================================== */
+.tripease-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  margin-top: auto;
+  border-top: 1px solid #1e293b;
+  font-size: 0.8rem;
+}
+
+.footer-top-strip {
+  border-bottom: 1px solid #1e293b;
+  padding: 1.5rem 1.5rem;
+}
+
+.footer-top-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.25fr;
+  gap: 2rem;
+}
+
+.footer-col h4 {
+  color: #f8fafc;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+}
+
+.footer-col p {
+  line-height: 1.6;
+  font-size: 0.785rem;
+}
+
+.footer-link-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.footer-link-list a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-link-list a:hover {
+  color: #38bdf8;
+}
+
+.alliance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid #334155;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  margin-top: 0.75rem;
+}
+
+.footer-regulatory-strip {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #1e293b;
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.footer-regulatory-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.footer-bottom-row {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ====================================================
+   Mobile & Tablet Responsiveness
+==================================================== */
+@media (max-width: 1024px) {
+  .footer-top-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-top-row {
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+  }
+  .header-nav-list {
+    display: none; /* Accessible via mobile toggle or tabs */
+  }
+  .footer-top-inner {
+    grid-template-columns: 1fr;
+  }
+  .funnel-progress-inner {
+    gap: 1rem;
+  }
+  .step-connector {
+    display: none;
+  }
+}

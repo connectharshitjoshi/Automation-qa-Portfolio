@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprehensive Ledger & Statement History - DemoBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .txn-page-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .txn-hero-head {
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .txn-hero-head h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+    .txn-hero-head p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* 3 Summary Stats */
+    .ledger-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+    .l-stat-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+    }
+    .l-stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .l-stat-val {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      margin-top: 0.25rem;
+    }
+
+    /* Filter Controls Card */
+    .filter-ctrl-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .filter-left-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .filter-right-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .ledger-search-input {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.85rem;
+      min-width: 280px;
+      outline: none;
+    }
+
+    .ledger-select {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.825rem;
+      outline: none;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+    }
+
+    /* Table */
+    .ledger-table-wrap {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .full-ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+    }
+
+    .full-ledger-table th {
+      background: #f8fafc;
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+
+    .full-ledger-table td {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .full-ledger-table tr:hover td {
+      background-color: #fafbfc;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .ledger-stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .filter-ctrl-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .full-ledger-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="bank-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-section">
+        <div class="brand-icon">💳</div>
+        <span class="brand-title">DemoBank</span>
+        <span class="bank-tag">SIMULATOR</span>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="bank-nav-list">
+        <li><a href="index.html" data-testid="nav-dashboard">Dashboard</a></li>
+        <li><a href="transfer.html" data-testid="nav-transfer">Transfer & Pay</a></li>
+        <li><a href="deposit.html" data-testid="nav-deposit">Quick Deposit</a></li>
+        <li><a href="cards.html" data-testid="nav-cards">Credit Cards</a></li>
+        <li><a href="transactions.html" class="active" data-testid="nav-transactions">Transactions</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </nav>
+
+      <!-- User & Security Meta -->
+      <div class="header-right-meta">
+        <span class="security-badge-pill">🔒 256-Bit SSL</span>
+        <div class="user-client-widget">
+          <img src="images/customer-sophia.jpg" alt="Sophia Martinez" class="user-avatar-circle" style="object-fit:cover; border:2px solid #10b981;">
+          <div class="user-text-info">
+            <span class="user-name-title">Sophia Martinez</span>
+            <span class="user-tier-label">Tier 1 Premier #4910-88</span>
+          </div>
+        </div>
+        <a href="login.html" class="btn-signout">Log Out</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="fednow-strip">
+    <div class="fednow-inner">
+      <div>
+        <span class="dot-green-live"></span>
+        <span>MERKLE AUDIT LEDGER SYNCED &bull; Deterministic Reversible Settlement Engine</span>
+      </div>
+      <div>
+        <span style="color:#10b981; font-weight:700;">TRANSACTION INTEGRITY: 100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="txn-page-container">
+
+    <section class="txn-hero-head">
+      <div>
+        <h1>Comprehensive Ledger & Statement History</h1>
+        <p>Continuous audit trail of all FedNow wires, intra-account sweeps, payroll credits, and debit authorizations.</p>
+      </div>
+
+      <span style="font-size:0.75rem; color:#059669; font-weight:700; background:#ecfdf5; padding:0.25rem 0.65rem; border-radius:6px; font-family:var(--font-mono);">
+        ● All 7 Accounts Audited
+      </span>
+    </section>
+
+    <!-- 3 Summary Metrics -->
+    <section class="ledger-stats-grid">
+      <div class="l-stat-box">
+        <div class="l-stat-label">TOTAL CREDITS & DEPOSITS</div>
+        <div class="l-stat-val" style="color:#059669;">+$5,950.00</div>
+        <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem;">3 Income Transits</div>
+      </div>
+
+      <div class="l-stat-box">
+        <div class="l-stat-label">TOTAL SETTLED DEBITS</div>
+        <div class="l-stat-val" style="color:#dc2626;">-$1,438.80</div>
+        <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem;">4 Dispatches</div>
+      </div>
+
+      <div class="l-stat-box">
+        <div class="l-stat-label">NET ROLLING INFLOW</div>
+        <div class="l-stat-val" style="color:#0284c7;">+$4,511.20</div>
+        <div style="font-size:0.7rem; color:#059669; font-weight:700; margin-top:0.2rem;">Surplus Retained</div>
+      </div>
+    </section>
+
+    <!-- Filter & Search Controls -->
+    <section class="filter-ctrl-card">
+      <div class="filter-left-controls">
+        <input type="text" id="ledgerSearchInput" class="ledger-search-input" placeholder="Search by transaction ID, merchant, payee..." data-testid="search-ledger-input" oninput="filterLedger()">
+
+        <select id="accountFilterSelect" class="ledger-select" data-testid="filter-account" onchange="filterLedger()">
+          <option value="all">All Accounts</option>
+          <option value="Checking">Checking (**** 4829)</option>
+          <option value="Savings">Savings (**** 9104)</option>
+        </select>
+
+        <select id="typeFilterSelect" class="ledger-select" data-testid="filter-type" onchange="filterLedger()">
+          <option value="all">All Types</option>
+          <option value="credit">Credits & Income</option>
+          <option value="debit">Debits & Transfers</option>
+        </select>
+
+        <select class="ledger-select">
+          <option>This Month (Oct 2026)</option>
+          <option>Past 30 Days</option>
+          <option>Year to Date (2026)</option>
+        </select>
+      </div>
+
+      <div class="filter-right-buttons">
+        <button class="btn-outline-bank" style="font-size:0.8rem; padding:0.45rem 0.85rem;" data-testid="btn-export-csv" onclick="exportData('CSV')">
+          📥 Export CSV
+        </button>
+        <button class="btn-outline-bank" style="font-size:0.8rem; padding:0.45rem 0.85rem;" data-testid="btn-export-pdf" onclick="exportData('PDF Statement')">
+          📄 PDF Statement
+        </button>
+      </div>
+    </section>
+
+    <!-- Ledger Table -->
+    <section class="ledger-table-wrap">
+      <table class="full-ledger-table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Date & Time</th>
+            <th>Description & Payee</th>
+            <th>Account</th>
+            <th>Status</th>
+            <th style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="bank-footer">
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 DemoBank Financial Technologies, N.A. All rights reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="demobank.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      renderLedgerTable();
+    });
+
+    function renderLedgerTable() {
+      const state = getBankState();
+      const tbody = document.getElementById("ledgerTableBody");
+      const search = (document.getElementById("ledgerSearchInput").value || "").toLowerCase().trim();
+      const acct = document.getElementById("accountFilterSelect").value;
+      const type = document.getElementById("typeFilterSelect").value;
+
+      tbody.innerHTML = "";
+
+      const filtered = state.transactions.filter(t => {
+        const matchesSearch = t.desc.toLowerCase().includes(search) || t.id.toLowerCase().includes(search);
+        const matchesAcct = acct === "all" || t.account === acct;
+        const matchesType = type === "all" || t.type === type;
+        return matchesSearch && matchesAcct && matchesType;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:#94a3b8;">No matching records found in audit ledger.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(t => {
+        const isCredit = t.type === "credit";
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><code>${t.id}</code></td>
+          <td style="font-family:var(--font-mono); color:var(--text-muted);">${t.date}</td>
+          <td><strong>${t.desc}</strong></td>
+          <td><span style="font-size:0.75rem; background:#f1f5f9; padding:0.15rem 0.5rem; border-radius:4px; font-weight:600;">${t.account}</span></td>
+          <td><span style="color:#059669; font-weight:700;">✔ ${t.status}</span></td>
+          <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:${isCredit ? '#059669' : '#0f172a'};">
+            ${isCredit ? '+' : '-'}${formatUSD(t.amount)}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterLedger() {
+      renderLedgerTable();
+    }
+
+    function exportData(format) {
+      showBankToast(`Report generated: demobank-ledger-audit.${format.toLowerCase().includes('csv') ? 'csv' : 'pdf'} dispatched.`);
+    }
+  </script>
+</body>
+</html>

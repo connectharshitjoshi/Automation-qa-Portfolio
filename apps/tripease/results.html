@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faceted Flight Results & Fare Matrix - TripEase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .results-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Query Summary Header Bar */
+    .route-query-bar {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .route-summary-left {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .route-cities {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .route-pill-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    /* 7-Day Fare Matrix Strip */
+    .fare-matrix-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .matrix-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .fare-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      min-width: 680px;
+    }
+
+    .fare-col-btn {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .fare-col-btn:hover {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .fare-col-btn.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+    .fare-col-btn.active .col-date,
+    .fare-col-btn.active .col-price {
+      color: #ffffff;
+    }
+
+    .col-date {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.2rem;
+    }
+    .col-price {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #0284c7;
+    }
+    .badge-best-fare {
+      font-size: 0.65rem;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 0.2rem;
+      font-weight: 700;
+    }
+
+    /* Main Results Layout */
+    .results-grid-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    /* Faceted Filter Sidebar */
+    .facet-sidebar {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .facet-section-header {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .facet-group {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .facet-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .facet-checkbox-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      padding: 0.35rem 0;
+      cursor: pointer;
+    }
+    .facet-checkbox-label input {
+      accent-color: #0284c7;
+      margin-right: 0.45rem;
+    }
+    .facet-count {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .price-slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .price-slider-wrap input[type="range"] {
+      width: 100%;
+      accent-color: #0284c7;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    /* Right Flight Feed */
+    .flights-feed-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .feed-controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .feed-count-badge {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .sort-pills-group {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.2rem;
+      border-radius: 8px;
+    }
+    .sort-pill-btn {
+      background: none;
+      border: none;
+      font-size: 0.785rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .sort-pill-btn.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    /* Flight Card Detail */
+    .flight-card-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      transition: all 0.15s;
+    }
+    .flight-card-box:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-carrier-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .carrier-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .aircraft-type-pill {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      background: #f1f5f9;
+      color: var(--text-muted);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .card-flight-body {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .route-timeline-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .time-point {
+      display: flex;
+      flex-direction: column;
+    }
+    .tp-time {
+      font-size: 1.45rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-dark);
+      line-height: 1.1;
+    }
+    .tp-city {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .duration-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .duration-text {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .duration-line {
+      width: 100%;
+      height: 2px;
+      background: #cbd5e1;
+      position: relative;
+    }
+    .duration-line::after {
+      content: "✈";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      padding: 0 0.35rem;
+      color: #0284c7;
+      font-size: 0.85rem;
+    }
+    .duration-stops {
+      font-size: 0.7rem;
+      color: #059669;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+
+    .card-price-action {
+      border-left: 1px solid #f1f5f9;
+      padding-left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.45rem;
+    }
+
+    .price-main-display {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #0284c7;
+      line-height: 1;
+    }
+    .price-sub-caption {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .amenities-badges-row {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .amenity-chip {
+      font-size: 0.68rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: var(--text-secondary);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    /* Destination Advisory Banner */
+    .destination-advisory-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .results-grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .card-flight-body {
+        grid-template-columns: 1fr;
+      }
+      .card-price-action {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 1rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="tripease-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-block">
+        <div class="brand-icon">✈️</div>
+        <div class="brand-title-wrap">
+          <span class="brand-title">TripEase</span>
+          <span class="brand-tag">MOBILITY SUITE</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <ul class="header-nav-list">
+        <li><a href="index.html" class="active" data-testid="nav-flights">Flights</a></li>
+        <li><a href="index.html#hotels">Hotels</a></li>
+        <li><a href="seat-selection.html" data-testid="nav-seat-selection">Seat Selection</a></li>
+        <li><a href="boarding-pass.html" data-testid="nav-my-bookings">My Bookings</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+
+      <!-- User & Region Meta -->
+      <div class="header-right-meta">
+        <div class="currency-lang-pill">
+          <span>🌐 EN</span>
+          <span>&bull;</span>
+          <span>USD ($)</span>
+        </div>
+        <div class="skypriority-badge">
+          <img src="images/traveler-alex.jpg" alt="Alex Morgan" class="skypriority-avatar" style="width:34px; height:34px; border-radius:50%; object-fit:cover; border:1.5px solid #38bdf8;">
+          <div class="skypriority-info">
+            <span class="skypriority-name">Alex Morgan</span>
+            <span class="skypriority-tier">SkyPriority Gold #TRIP-8820</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Funnel Step Progress Bar -->
+  <nav class="funnel-progress-wrap" aria-label="Booking Funnel Progress">
+    <div class="funnel-progress-inner">
+      <div class="step-node active" data-testid="step-flights">
+        <span class="step-circle">1</span>
+        <span>Flights (Active)</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node" data-testid="step-seats">
+        <span class="step-circle">2</span>
+        <span>Seats</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node" data-testid="step-passenger">
+        <span class="step-circle">3</span>
+        <span>Passenger</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node" data-testid="step-payment">
+        <span class="step-circle">4</span>
+        <span>Payment</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="results-container">
+
+    <!-- Route Query Summary Bar -->
+    <section class="route-query-bar">
+      <div class="route-summary-left">
+        <img src="images/dest-london.jpg" alt="London LHR" style="width:54px; height:40px; border-radius:6px; object-fit:cover; border:1.5px solid #cbd5e1; flex-shrink:0;">
+        <div class="route-cities">
+          <span id="labelOrigin">New York (JFK)</span>
+          <span>⇄</span>
+          <span id="labelDest">London (LHR)</span>
+        </div>
+        <span class="route-pill-meta">Oct 14 - Oct 24, 2025</span>
+        <span class="route-pill-meta">1 Traveler &bull; Economy Plus</span>
+      </div>
+
+      <a href="index.html" class="btn-outline-navy" data-testid="btn-modify-search" style="font-size:0.8rem; padding:0.4rem 0.85rem;">
+        ✏️ Modify Search
+      </a>
+    </section>
+
+    <!-- 7-Day Fare Matrix -->
+    <section class="fare-matrix-card">
+      <div class="matrix-title">
+        <span>FLEXIBLE DATE FARE MATRIX (+/- 3 DAYS)</span>
+        <span style="color:#059669;">✔ Non-stop Verified Rates</span>
+      </div>
+
+      <div class="fare-calendar-grid">
+        <div class="fare-col-btn" onclick="selectMatrixDay(this, 450)">
+          <div class="col-date">Mon, Oct 13</div>
+          <div class="col-price">$450</div>
+        </div>
+        <div class="fare-col-btn active" onclick="selectMatrixDay(this, 389)">
+          <div class="col-date">Tue, Oct 14</div>
+          <div class="col-price">$389</div>
+          <span class="badge-best-fare">BEST FARE</span>
+        </div>
+        <div class="fare-col-btn" onclick="selectMatrixDay(this, 410)">
+          <div class="col-date">Wed, Oct 15</div>
+          <div class="col-price">$410</div>
+        </div>
+        <div class="fare-col-btn" onclick="selectMatrixDay(this, 425)">
+          <div class="col-date">Thu, Oct 16</div>
+          <div class="col-price">$425</div>
+        </div>
+        <div class="fare-col-btn" onclick="selectMatrixDay(this, 495)">
+          <div class="col-date">Fri, Oct 17</div>
+          <div class="col-price">$495</div>
+        </div>
+        <div class="fare-col-btn" onclick="selectMatrixDay(this, 530)">
+          <div class="col-date">Sat, Oct 18</div>
+          <div class="col-price">$530</div>
+        </div>
+        <div class="fare-col-btn" onclick="selectMatrixDay(this, 460)">
+          <div class="col-date">Sun, Oct 19</div>
+          <div class="col-price">$460</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2-Column Results Layout -->
+    <div class="results-grid-layout">
+
+      <!-- Left Sidebar Filters -->
+      <aside class="facet-sidebar" aria-label="Flight Search Filters">
+        <div class="facet-section-header">
+          <span>Filters</span>
+          <button style="background:none; border:none; color:#0284c7; font-size:0.75rem; cursor:pointer;" onclick="resetFilters()">Reset All</button>
+        </div>
+
+        <!-- Filter 1: Stops -->
+        <div class="facet-group">
+          <label style="font-size:0.75rem; font-weight:700; color:var(--text-dark); display:block; margin-bottom:0.5rem;">STOPS</label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-nonstop" checked data-testid="filter-stops-nonstop" onchange="applyFilters()"> Non-stop</span>
+            <span class="facet-count">(4)</span>
+          </label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-1stop" data-testid="filter-stops-1stop" onchange="applyFilters()"> 1 Stop</span>
+            <span class="facet-count">(12)</span>
+          </label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-2stops" data-testid="filter-stops-2stops" onchange="applyFilters()"> 2+ Stops</span>
+            <span class="facet-count">(2)</span>
+          </label>
+        </div>
+
+        <!-- Filter 2: Airlines -->
+        <div class="facet-group">
+          <label style="font-size:0.75rem; font-weight:700; color:var(--text-dark); display:block; margin-bottom:0.5rem;">AIRLINES</label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-ba" checked data-testid="filter-airline-ba" onchange="applyFilters()"> British Airways (BA)</span>
+            <span class="facet-count">$489</span>
+          </label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-vs" checked data-testid="filter-airline-vs" onchange="applyFilters()"> Virgin Atlantic (VS)</span>
+            <span class="facet-count">$510</span>
+          </label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-aa" checked data-testid="filter-airline-aa" onchange="applyFilters()"> American Airlines (AA)</span>
+            <span class="facet-count">$525</span>
+          </label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-dl" checked data-testid="filter-airline-dl" onchange="applyFilters()"> Delta Air Lines (DL)</span>
+            <span class="facet-count">$540</span>
+          </label>
+        </div>
+
+        <!-- Filter 3: Departure Times -->
+        <div class="facet-group">
+          <label style="font-size:0.75rem; font-weight:700; color:var(--text-dark); display:block; margin-bottom:0.5rem;">DEPARTURE TIME</label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-morning" checked onchange="applyFilters()"> Morning (06:00 - 12:00)</span>
+          </label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-afternoon" checked onchange="applyFilters()"> Afternoon (12:00 - 18:00)</span>
+          </label>
+          <label class="facet-checkbox-label">
+            <span><input type="checkbox" id="chk-evening" checked onchange="applyFilters()"> Evening (18:00 - 24:00)</span>
+          </label>
+        </div>
+
+        <!-- Filter 4: Max Price Slider -->
+        <div class="facet-group">
+          <label style="font-size:0.75rem; font-weight:700; color:var(--text-dark); display:block; margin-bottom:0.5rem;">MAX PRICE</label>
+          <div class="price-slider-wrap">
+            <input type="range" id="priceSlider" min="300" max="1200" step="25" value="750" data-testid="price-range-slider" oninput="updatePriceSlider(this.value)">
+            <div class="slider-labels">
+              <span>$300</span>
+              <strong id="priceDisplay" style="color:#0284c7;">Up to $750</strong>
+              <span>$1,200</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Flight Feed -->
+      <section class="flights-feed-col" aria-label="Available Flights">
+
+        <!-- Feed Sort & Meta Bar -->
+        <div class="feed-controls-row">
+          <div class="feed-count-badge" id="resultsCountBadge" data-testid="results-count-badge">
+            Showing <strong>3 of 18</strong> Available Flights
+          </div>
+
+          <div class="sort-pills-group">
+            <button class="sort-pill-btn active" onclick="sortFlights(this, 'best')">Recommended</button>
+            <button class="sort-pill-btn" onclick="sortFlights(this, 'price')">Cheapest First</button>
+            <button class="sort-pill-btn" onclick="sortFlights(this, 'duration')">Fastest First</button>
+            <button class="sort-pill-btn" onclick="sortFlights(this, 'time')">Earliest</button>
+          </div>
+        </div>
+
+        <!-- Flight Card 1: British Airways BA-178 (Primary Match) -->
+        <article class="flight-card-box" data-testid="flight-card-ba178" data-price="489" data-carrier="BA">
+          <div class="card-carrier-header">
+            <div class="carrier-title">
+              <span>🇬🇧 British Airways Flight 178</span>
+              <span class="aircraft-type-pill">Boeing 787-9 Dreamliner</span>
+            </div>
+            <span style="font-size:0.72rem; color:#b45309; font-weight:700; background:#fef3c7; padding:0.15rem 0.5rem; border-radius:4px;">
+              ⭐ SkyPriority Gold Upgrade Eligible
+            </span>
+          </div>
+
+          <div class="card-flight-body">
+            <div class="route-timeline-strip">
+              <div class="time-point">
+                <span class="tp-time">08:30 AM</span>
+                <span class="tp-city">JFK &bull; New York</span>
+              </div>
+
+              <div class="duration-indicator">
+                <span class="duration-text">7h 55m</span>
+                <div class="duration-line"></div>
+                <span class="duration-stops">Non-stop</span>
+              </div>
+
+              <div class="time-point" style="text-align:right;">
+                <span class="tp-time">20:25 PM</span>
+                <span class="tp-city">LHR &bull; London</span>
+              </div>
+            </div>
+
+            <div class="card-price-action">
+              <div class="price-main-display">$489</div>
+              <div class="price-sub-caption">USD &bull; Taxes & Fees Included</div>
+              <button class="btn-primary-blue" data-testid="btn-select-ba178 btn-select-seat" onclick="selectFlightAndProceed('BA-178', 'British Airways', 'Boeing 787-9 Dreamliner', 489, '08:30 AM', '20:25 PM')">
+                Select Flight &rarr;
+              </button>
+            </div>
+          </div>
+
+          <div class="amenities-badges-row">
+            <span class="amenity-chip">📶 High-Speed Wi-Fi</span>
+            <span class="amenity-chip">⚡ 110V & USB-C Power</span>
+            <span class="amenity-chip">🍽️ Chef-Crafted Meal</span>
+            <span class="amenity-chip" style="color:#059669; font-weight:700;">✔ 9 Seats Left at this Rate</span>
+          </div>
+        </article>
+
+        <!-- Flight Card 2: Virgin Atlantic VS-004 -->
+        <article class="flight-card-box" data-testid="flight-card-vs004" data-price="510" data-carrier="VS">
+          <div class="card-carrier-header">
+            <div class="carrier-title">
+              <span>✈️ Virgin Atlantic Flight VS-004</span>
+              <span class="aircraft-type-pill">Airbus A350-1000</span>
+            </div>
+            <span style="font-size:0.72rem; color:var(--text-muted); font-family:var(--font-mono);">Upper Class Loft Ingress</span>
+          </div>
+
+          <div class="card-flight-body">
+            <div class="route-timeline-strip">
+              <div class="time-point">
+                <span class="tp-time">18:30 PM</span>
+                <span class="tp-city">JFK &bull; New York</span>
+              </div>
+
+              <div class="duration-indicator">
+                <span class="duration-text">7h 00m</span>
+                <div class="duration-line"></div>
+                <span class="duration-stops">Non-stop</span>
+              </div>
+
+              <div class="time-point" style="text-align:right;">
+                <span class="tp-time">06:30 AM <span style="font-size:0.7rem; color:#dc2626;">+1</span></span>
+                <span class="tp-city">LHR &bull; London</span>
+              </div>
+            </div>
+
+            <div class="card-price-action">
+              <div class="price-main-display">$510</div>
+              <div class="price-sub-caption">USD &bull; Taxes & Fees Included</div>
+              <button class="btn-primary-blue" data-testid="btn-select-vs004" onclick="selectFlightAndProceed('VS-004', 'Virgin Atlantic', 'Airbus A350-1000', 510, '18:30 PM', '06:30 AM')">
+                Select Flight &rarr;
+              </button>
+            </div>
+          </div>
+
+          <div class="amenities-badges-row">
+            <span class="amenity-chip">📶 In-Flight Wi-Fi</span>
+            <span class="amenity-chip">🍸 The Loft Social Space</span>
+            <span class="amenity-chip">🎧 Noise Cancelling Audio</span>
+          </div>
+        </article>
+
+        <!-- Flight Card 3: American Airlines AA-100 -->
+        <article class="flight-card-box" data-testid="flight-card-aa100" data-price="525" data-carrier="AA">
+          <div class="card-carrier-header">
+            <div class="carrier-title">
+              <span>🇺🇸 American Airlines Flight AA-100</span>
+              <span class="aircraft-type-pill">Boeing 777-300ER</span>
+            </div>
+            <span style="font-size:0.72rem; color:var(--text-muted); font-family:var(--font-mono);">Oneworld Alliance Partner</span>
+          </div>
+
+          <div class="card-flight-body">
+            <div class="route-timeline-strip">
+              <div class="time-point">
+                <span class="tp-time">19:15 PM</span>
+                <span class="tp-city">JFK &bull; New York</span>
+              </div>
+
+              <div class="duration-indicator">
+                <span class="duration-text">6h 55m</span>
+                <div class="duration-line"></div>
+                <span class="duration-stops">Non-stop</span>
+              </div>
+
+              <div class="time-point" style="text-align:right;">
+                <span class="tp-time">07:10 AM <span style="font-size:0.7rem; color:#dc2626;">+1</span></span>
+                <span class="tp-city">LHR &bull; London</span>
+              </div>
+            </div>
+
+            <div class="card-price-action">
+              <div class="price-main-display">$525</div>
+              <div class="price-sub-caption">USD &bull; Taxes & Fees Included</div>
+              <button class="btn-primary-blue" data-testid="btn-select-aa100" onclick="selectFlightAndProceed('AA-100', 'American Airlines', 'Boeing 777-300ER', 525, '19:15 PM', '07:10 AM')">
+                Select Flight &rarr;
+              </button>
+            </div>
+          </div>
+
+          <div class="amenities-badges-row">
+            <span class="amenity-chip">⚡ AC Power at Every Seat</span>
+            <span class="amenity-chip">🍽️ Premium Transatlantic Dining</span>
+            <span class="amenity-chip">🎬 Live TV & Movies</span>
+          </div>
+        </article>
+
+        <!-- Destination Advisory Box -->
+        <div class="destination-advisory-box">
+          <div>
+            <strong>🇬🇧 London Destination Advisory:</strong> British Summer Time is +5 hours ahead of New York. Elizabeth Line links directly to Central London (Paddington in 29m).
+          </div>
+          <div style="font-family:var(--font-mono); font-size:0.75rem; color:#1e3a8a;">
+            Local Weather: <strong>14°C Light Showers</strong>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="tripease-footer">
+    <div class="footer-top-strip">
+      <div class="footer-top-inner">
+        <div class="footer-col">
+          <h4>TripEase MOBILITY SUITE</h4>
+          <p>High-velocity travel mobility suite engineered for precision itineraries, dynamic flight orchestration, and continuous sky-tier passenger comfort.</p>
+          <div class="alliance-badge">
+            <span>✈️ ALLIANCE NETWORK:</span>
+            <strong>Worldwide Aero One Alliance</strong>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>24/7 Global Air Support</h4>
+          <p>Instant re-routing, baggage tracing, and VIP flight concierge operations.</p>
+          <p style="margin-top:0.5rem; font-weight:700; color:#38bdf8; font-family:var(--font-mono);">+1 (800) 555-EASE</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Itinerary Hub</h4>
+          <ul class="footer-link-list">
+            <li><a href="index.html">Flight Search Engine</a></li>
+            <li><a href="seat-selection.html">Aircraft Seat Configurator</a></li>
+            <li><a href="boarding-pass.html">Digital Boarding Pass</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Preferences & Region</h4>
+          <p>Display Currency: USD ($) &bull; English (US)</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 TripEase Global Mobility Inc. All Rights Reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="tripease.js"></script>
+  <script>
+    // Load search state to update header labels
+    document.addEventListener("DOMContentLoaded", () => {
+      const state = getTripState();
+      if (state && state.search) {
+        if (state.search.origin) document.getElementById("labelOrigin").textContent = state.search.origin.split(",")[0];
+        if (state.search.destination) document.getElementById("labelDest").textContent = state.search.destination.split(",")[0];
+      }
+    });
+
+    function selectMatrixDay(element, price) {
+      document.querySelectorAll(".fare-col-btn").forEach(el => el.classList.remove("active"));
+      element.classList.add("active");
+      showTripToast(`Fare Matrix calibrated: Rates re-indexed starting from $${price}.`);
+    }
+
+    function updatePriceSlider(val) {
+      document.getElementById("priceDisplay").textContent = `Up to $${val}`;
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const maxPrice = parseInt(document.getElementById("priceSlider").value, 10);
+      const allowBA = document.getElementById("chk-ba").checked;
+      const allowVS = document.getElementById("chk-vs").checked;
+      const allowAA = document.getElementById("chk-aa").checked;
+
+      const cards = document.querySelectorAll(".flight-card-box");
+      let visible = 0;
+
+      cards.forEach(card => {
+        const price = parseInt(card.getAttribute("data-price"), 10);
+        const carrier = card.getAttribute("data-carrier");
+
+        let carrierAllowed = (carrier === "BA" && allowBA) ||
+                             (carrier === "VS" && allowVS) ||
+                             (carrier === "AA" && allowAA);
+
+        if (price <= maxPrice && carrierAllowed) {
+          card.style.display = "block";
+          visible++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      document.getElementById("resultsCountBadge").innerHTML = `Showing <strong>${visible} of 18</strong> Available Flights`;
+    }
+
+    function resetFilters() {
+      document.getElementById("chk-nonstop").checked = true;
+      document.getElementById("chk-1stop").checked = false;
+      document.getElementById("chk-2stops").checked = false;
+      document.getElementById("chk-ba").checked = true;
+      document.getElementById("chk-vs").checked = true;
+      document.getElementById("chk-aa").checked = true;
+      document.getElementById("priceSlider").value = 750;
+      document.getElementById("priceDisplay").textContent = "Up to $750";
+      applyFilters();
+      showTripToast("Filters reset to default non-stop itineraries.");
+    }
+
+    function sortFlights(btn, criteria) {
+      document.querySelectorAll(".sort-pill-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      showTripToast(`Flights re-ordered by: ${btn.textContent}.`);
+    }
+
+    function selectFlightAndProceed(id, airline, aircraft, price, dep, arr) {
+      const state = getTripState();
+      state.selectedFlight.id = id;
+      state.selectedFlight.airline = airline;
+      state.selectedFlight.aircraft = aircraft;
+      state.selectedFlight.baseFare = price;
+      state.selectedFlight.depTime = dep;
+      state.selectedFlight.arrTime = arr;
+      saveTripState(state);
+
+      showTripToast(`Selected ${airline} (${id}). Opening Aircraft Seat Picker...`);
+      setTimeout(() => {
+        window.location.href = "seat-selection.html";
+      }, 350);
+    }
+  </script>
+</body>
+</html>

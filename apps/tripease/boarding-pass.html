@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Boarding Pass & Day of Travel Hub - TripEase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .pass-container {
+      max-width: 1100px;
+      margin: 1.5rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    /* PNR Status Strip */
+    .pnr-status-bar {
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 12px 12px 0 0;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .pnr-left-block {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .pnr-label-sub {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pnr-code-badge {
+      font-size: 1.45rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #38bdf8;
+      letter-spacing: 0.08em;
+    }
+
+    .status-confirmed-pill {
+      background: #065f46;
+      border: 1px solid #10b981;
+      color: #a7f3d0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      font-family: var(--font-mono);
+    }
+
+    /* Success Hero Confirmation Banner */
+    .confirmation-hero {
+      background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      padding: 1.5rem;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .confirmation-hero h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #065f46;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .confirmation-hero p {
+      font-size: 0.825rem;
+      color: #334155;
+      margin-top: 0.25rem;
+    }
+
+    /* The Boarding Pass Ticket Card */
+    .digital-ticket-card {
+      background: #ffffff;
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+      margin-bottom: 2rem;
+    }
+
+    .ticket-head-strip {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 0.85rem 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .ticket-carrier-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ticket-cabin-pill {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      background: #334155;
+      color: #38bdf8;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    /* Origin & Destination Big Display */
+    .ticket-route-block {
+      padding: 1.75rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1.5rem;
+      border-bottom: 1px dashed #e2e8f0;
+      background: #ffffff;
+    }
+
+    .station-node {
+      display: flex;
+      flex-direction: column;
+    }
+    .station-terminal {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+    }
+    .station-iata {
+      font-size: 3.25rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: var(--text-dark);
+      line-height: 1;
+    }
+    .station-city {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-top: 0.15rem;
+    }
+
+    .route-mid-visual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 1rem;
+    }
+    .mid-duration {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .mid-arrow-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #0284c7;
+      font-size: 1.25rem;
+    }
+    .mid-badge {
+      font-size: 0.7rem;
+      color: #059669;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+
+    /* Flight Metrics 4-Col Grid */
+    .ticket-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 1.5rem 1.75rem;
+      gap: 1.25rem;
+      border-bottom: 1px dashed #e2e8f0;
+      background: #fafbfc;
+    }
+
+    .t-metric-box {
+      display: flex;
+      flex-direction: column;
+    }
+    .t-metric-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .t-metric-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-dark);
+      margin: 0.2rem 0;
+    }
+    .t-metric-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Passenger & Seat 4-Col Grid */
+    .ticket-passenger-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1.2fr 1.2fr 1fr;
+      padding: 1.5rem 1.75rem;
+      gap: 1.25rem;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .seat-highlight-box {
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      text-align: center;
+    }
+    .seat-highlight-label {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      font-family: var(--font-mono);
+    }
+    .seat-highlight-num {
+      font-size: 1.75rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: #38bdf8;
+      line-height: 1;
+    }
+
+    /* Barcode & Security Scan Section */
+    .ticket-barcode-section {
+      padding: 1.5rem 1.75rem;
+      background: #ffffff;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .barcode-svg-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .barcode-lines-svg {
+      width: 100%;
+      height: 55px;
+      background: #ffffff;
+    }
+
+    .bcbp-string {
+      font-size: 0.65rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      word-break: break-all;
+    }
+
+    .tsa-precheck-box {
+      border: 1.5px solid #059669;
+      background: #ecfdf5;
+      padding: 0.75rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #065f46;
+      font-weight: 700;
+    }
+
+    /* Action Buttons Strip */
+    .actions-grid-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .action-square-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.15s;
+    }
+    .action-square-btn:hover {
+      border-color: #0f172a;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+    .action-square-btn span:first-child {
+      font-size: 1.35rem;
+    }
+
+    /* Day of Travel Milestones Timeline */
+    .milestones-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .milestones-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .timeline-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .timeline-step-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .step-tag-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      width: fit-content;
+      margin-bottom: 0.5rem;
+    }
+    .step-tag-completed { background: #ecfdf5; color: #047857; }
+    .step-tag-next { background: #fef3c7; color: #b45309; }
+    .step-tag-gate { background: #e0f2fe; color: #0369a1; }
+
+    .step-heading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .step-desc {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-timing-stamp {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-dark);
+      border-top: 1px solid #e2e8f0;
+      padding-top: 0.5rem;
+    }
+
+    /* Connected Destination Services */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .service-tile-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .service-info h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .service-info p {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .ticket-route-block {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .station-node {
+        align-items: center;
+      }
+      .ticket-metrics-grid, .ticket-passenger-grid, .actions-grid-strip, .timeline-steps-grid, .services-grid {
+        grid-template-columns: 1fr;
+      }
+      .ticket-barcode-section {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="tripease-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-block">
+        <div class="brand-icon">✈️</div>
+        <div class="brand-title-wrap">
+          <span class="brand-title">TripEase</span>
+          <span class="brand-tag">MOBILITY SUITE</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <ul class="header-nav-list">
+        <li><a href="index.html">Flights</a></li>
+        <li><a href="results.html">Results</a></li>
+        <li><a href="seat-selection.html">Seat Selection</a></li>
+        <li><a href="boarding-pass.html" class="active" data-testid="nav-my-bookings">My Bookings</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+
+      <!-- User & Region Meta -->
+      <div class="header-right-meta">
+        <div class="currency-lang-pill">
+          <span>🌐 EN</span>
+          <span>&bull;</span>
+          <span>USD ($)</span>
+        </div>
+        <div class="skypriority-badge">
+          <img src="images/traveler-alex.jpg" alt="Alex Morgan" class="skypriority-avatar" style="width:34px; height:34px; border-radius:50%; object-fit:cover; border:1.5px solid #38bdf8;">
+          <div class="skypriority-info">
+            <span class="skypriority-name">Alex Morgan</span>
+            <span class="skypriority-tier">SkyPriority Gold #TRIP-8820</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="telemetry-strip">
+    <div class="telemetry-strip-inner">
+      <div>
+        <span class="telemetry-status-dot"></span>
+        <span>METAR FEED &bull; JFK 62°F Clear &bull; Wind 7kt W &bull; LHR 54°F Light Rain &bull; Ceiling 3000ft</span>
+      </div>
+      <div>
+        <span style="color:#10b981; font-weight:700;">FLIGHT 178 ON SCHEDULE</span> &bull; <span>Airborne 3,451 mi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="pass-container">
+
+    <!-- Top PNR Status Strip -->
+    <div class="pnr-status-bar">
+      <div class="pnr-left-block">
+        <div>
+          <div class="pnr-label-sub">RECORD LOCATOR (PNR)</div>
+          <div class="pnr-code-badge" id="pnrDisplay" data-testid="pnr-display booking-pnr-code">7X8K2M</div>
+        </div>
+        <span class="status-confirmed-pill">● CONFIRMED &bull; ON SCHEDULE</span>
+      </div>
+
+      <div style="text-align:right; font-size:0.75rem; color:#94a3b8; font-family:var(--font-mono);">
+        Ticket Issued &bull; IATA Standard Electronic Record<br>
+        Issued: 14 Oct 2025 &bull; Trip ID #TRP-88421
+      </div>
+    </div>
+
+    <!-- Success Confirmation Hero -->
+    <div class="confirmation-hero">
+      <h2>🎉 Booking Confirmed! You're ready to fly.</h2>
+      <p>Tax invoice, baggage tags, and e-ticket receipt dispatched to <strong id="heroEmail">alex.morgan@example.com</strong>.</p>
+    </div>
+
+    <!-- The Digital Boarding Pass Ticket Card -->
+    <section class="digital-ticket-card" aria-label="Digital Boarding Pass">
+
+      <div class="ticket-head-strip">
+        <div class="ticket-carrier-title">
+          <span>🇬🇧 British Airways Flight 178</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">&bull; Operated by Boeing 787-9 Dreamliner</span>
+        </div>
+        <span class="ticket-cabin-pill">ECONOMY PLUS (WORLD TRAVELLER PLUS)</span>
+      </div>
+
+      <!-- Route Big Display -->
+      <div class="ticket-route-block">
+        <!-- Origin -->
+        <div class="station-node">
+          <span class="station-terminal">ORIGIN &bull; TERMINAL 8</span>
+          <div class="station-iata">JFK</div>
+          <div class="station-city">New York (John F. Kennedy Intl)</div>
+        </div>
+
+        <!-- Midline arrow -->
+        <div class="route-mid-visual">
+          <div class="mid-duration">7h 55m &bull; Non-stop</div>
+          <div class="mid-arrow-line">
+            <span>&bull;&bull;&bull;&bull;</span>
+            <span>✈</span>
+            <span>&bull;&bull;&bull;&bull;</span>
+          </div>
+          <div class="mid-badge">AIRBORNE 3,451 MI</div>
+        </div>
+
+        <!-- Destination -->
+        <div class="station-node" style="text-align:right;">
+          <span class="station-terminal">DESTINATION &bull; TERMINAL 5</span>
+          <div class="station-iata">LHR</div>
+          <div class="station-city">London (London Heathrow)</div>
+        </div>
+      </div>
+
+      <!-- Flight Day Metrics -->
+      <div class="ticket-metrics-grid">
+        <div class="t-metric-box">
+          <span class="t-metric-label">BOARDING TIME</span>
+          <div class="t-metric-val" style="color:#0284c7;">07:45 AM</div>
+          <span class="t-metric-sub">Prompt Gate Close 08:15 AM</span>
+        </div>
+
+        <div class="t-metric-box">
+          <span class="t-metric-label">TAKEOFF DEPARTURE</span>
+          <div class="t-metric-val">08:30 AM</div>
+          <span class="t-metric-sub">Thu, Oct 16 (EDT)</span>
+        </div>
+
+        <div class="t-metric-box">
+          <span class="t-metric-label">TERMINAL / GATE</span>
+          <div class="t-metric-val">T8 &bull; 14B</div>
+          <span class="t-metric-sub">Concourse B (Gate Scan Ready)</span>
+        </div>
+
+        <div class="t-metric-box">
+          <span class="t-metric-label">BOARDING GROUP</span>
+          <div class="t-metric-val" style="color:#b45309;">GROUP 3</div>
+          <span class="t-metric-sub">SkyPriority Fast Lane</span>
+        </div>
+      </div>
+
+      <!-- Passenger & Seat Detail -->
+      <div class="ticket-passenger-grid">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <img src="images/traveler-alex.jpg" alt="Alex Morgan" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #38bdf8; flex-shrink:0;">
+          <div>
+            <span class="t-metric-label">PASSENGER NAME</span>
+            <div style="font-size:1.15rem; font-weight:800; color:var(--text-dark); margin-top:0.2rem;" id="passNameDisplay" data-testid="passenger-name-display">
+              ALEX MORGAN
+            </div>
+            <span style="font-size:0.72rem; color:var(--text-muted);">Adult &bull; 1 Checked Bag Included</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="t-metric-label">E-TICKET NUMBER</span>
+          <div style="font-size:0.875rem; font-family:var(--font-mono); font-weight:700; margin-top:0.2rem;" data-testid="eticket-display">
+            125-9948201844
+          </div>
+          <span style="font-size:0.72rem; color:var(--text-muted);">Issued by British Airways</span>
+        </div>
+
+        <div>
+          <span class="t-metric-label">FREQUENT FLYER</span>
+          <div style="font-size:0.875rem; font-family:var(--font-mono); font-weight:700; margin-top:0.2rem;">
+            BA #9948201
+          </div>
+          <span style="font-size:0.72rem; color:#b45309; font-weight:600;">Executive Club Silver</span>
+        </div>
+
+        <div class="seat-highlight-box">
+          <div class="seat-highlight-label">ASSIGNED SEAT</div>
+          <div class="seat-highlight-num" id="passSeatDisplay" data-testid="boarding-seat-display">14A</div>
+          <div style="font-size:0.65rem; color:#94a3b8;">WINDOW BULKHEAD</div>
+        </div>
+      </div>
+
+      <!-- Barcode / QR FastPass & Security -->
+      <div class="ticket-barcode-section">
+        <div class="barcode-svg-wrap">
+          <!-- Simulated IATA Standard 1D/2D Barcode lines SVG -->
+          <svg class="barcode-lines-svg" viewBox="0 0 450 50">
+            <g fill="#0f172a">
+              <!-- Barcode lines pattern -->
+              <rect x="0" y="0" width="3" height="50" />
+              <rect x="6" y="0" width="2" height="50" />
+              <rect x="11" y="0" width="5" height="50" />
+              <rect x="20" y="0" width="2" height="50" />
+              <rect x="25" y="0" width="7" height="50" />
+              <rect x="36" y="0" width="2" height="50" />
+              <rect x="42" y="0" width="4" height="50" />
+              <rect x="50" y="0" width="3" height="50" />
+              <rect x="56" y="0" width="6" height="50" />
+              <rect x="65" y="0" width="2" height="50" />
+              <rect x="70" y="0" width="5" height="50" />
+              <rect x="79" y="0" width="3" height="50" />
+              <rect x="85" y="0" width="8" height="50" />
+              <rect x="96" y="0" width="2" height="50" />
+              <rect x="102" y="0" width="4" height="50" />
+              <rect x="110" y="0" width="5" height="50" />
+              <rect x="118" y="0" width="3" height="50" />
+              <rect x="125" y="0" width="7" height="50" />
+              <rect x="135" y="0" width="2" height="50" />
+              <rect x="141" y="0" width="4" height="50" />
+              <rect x="149" y="0" width="6" height="50" />
+              <rect x="159" y="0" width="3" height="50" />
+              <rect x="165" y="0" width="5" height="50" />
+              <rect x="174" y="0" width="2" height="50" />
+              <rect x="180" y="0" width="7" height="50" />
+              <rect x="191" y="0" width="3" height="50" />
+              <rect x="198" y="0" width="5" height="50" />
+              <rect x="206" y="0" width="2" height="50" />
+              <rect x="212" y="0" width="6" height="50" />
+              <rect x="222" y="0" width="4" height="50" />
+              <rect x="230" y="0" width="2" height="50" />
+              <rect x="236" y="0" width="7" height="50" />
+              <rect x="246" y="0" width="3" height="50" />
+              <rect x="253" y="0" width="5" height="50" />
+              <rect x="262" y="0" width="2" height="50" />
+              <rect x="268" y="0" width="6" height="50" />
+              <rect x="278" y="0" width="3" height="50" />
+              <rect x="285" y="0" width="7" height="50" />
+              <rect x="296" y="0" width="2" height="50" />
+              <rect x="302" y="0" width="5" height="50" />
+              <rect x="311" y="0" width="3" height="50" />
+              <rect x="318" y="0" width="8" height="50" />
+              <rect x="330" y="0" width="2" height="50" />
+              <rect x="336" y="0" width="4" height="50" />
+              <rect x="344" y="0" width="6" height="50" />
+              <rect x="354" y="0" width="3" height="50" />
+              <rect x="361" y="0" width="5" height="50" />
+              <rect x="370" y="0" width="2" height="50" />
+              <rect x="376" y="0" width="7" height="50" />
+              <rect x="387" y="0" width="3" height="50" />
+              <rect x="394" y="0" width="5" height="50" />
+              <rect x="402" y="0" width="2" height="50" />
+              <rect x="408" y="0" width="6" height="50" />
+              <rect x="418" y="0" width="4" height="50" />
+              <rect x="426" y="0" width="2" height="50" />
+              <rect x="432" y="0" width="8" height="50" />
+              <rect x="444" y="0" width="3" height="50" />
+            </g>
+          </svg>
+          <div class="bcbp-string">BCBP-PDF417: M1MORGAN/ALEX E7X8K2M JFKLHRBA 0178 289Y014A0032 100</div>
+        </div>
+
+        <div class="tsa-precheck-box">
+          <div style="font-size:0.95rem; font-weight:800; margin-bottom:0.15rem;">✔ TSA PreCheck®</div>
+          <div style="font-size:0.7rem;">Eligible &bull; Mobile Gate Scan Ready</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Action Buttons Strip -->
+    <section class="actions-grid-strip" aria-label="Boarding Actions">
+      <button class="action-square-btn" data-testid="btn-download-pdf" onclick="triggerAction('PDF Boarding Pass downloaded (IATA-eTicket-7X8K2M.pdf).')">
+        <span>📄</span>
+        <span>Download PDF Pass</span>
+      </button>
+
+      <button class="action-square-btn" data-testid="btn-apple-wallet" onclick="triggerAction('Pass dispatched to Apple Wallet (AirDrop synced).')">
+        <span>🍏</span>
+        <span>Add to Apple Wallet</span>
+      </button>
+
+      <button class="action-square-btn" data-testid="btn-calendar" onclick="triggerAction('Flight calendar event exported (.ics format).')">
+        <span>📅</span>
+        <span>Add to Calendar (.ics)</span>
+      </button>
+
+      <button class="action-square-btn" data-testid="btn-sms-pass" onclick="triggerAction('Boarding Pass URL SMS sent to +1 (555) 234-5678.')">
+        <span>📲</span>
+        <span>Send to Phone (SMS)</span>
+      </button>
+    </section>
+
+    <!-- Day of Travel Milestones Timeline -->
+    <section class="milestones-card" aria-label="Travel Milestones">
+      <div class="milestones-title">
+        <span>Day of Travel Milestones</span>
+        <span style="font-size:0.72rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:normal;">TIMES IN EASTERN TIME (EDT)</span>
+      </div>
+
+      <div class="timeline-steps-grid">
+        <!-- Step 1 -->
+        <div class="timeline-step-box">
+          <div>
+            <span class="step-tag-pill step-tag-completed">STEP 1 &bull; COMPLETED</span>
+            <div class="step-heading">Online Check-in</div>
+            <div class="step-desc">Check-in confirmed 24h prior. Boarding passes generated and seats assigned.</div>
+          </div>
+          <div class="step-timing-stamp" style="color:#059669;">COMPLETED OCT 15, 08:30 AM</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="timeline-step-box">
+          <div>
+            <span class="step-tag-pill step-tag-next">STEP 2 &bull; NEXT UP</span>
+            <div class="step-heading">Baggage Drop Cutoff</div>
+            <div class="step-desc">Drop tagged luggage at Terminal 8, Counters 12-16 no later than 07:30 AM.</div>
+          </div>
+          <div class="step-timing-stamp" style="color:#d97706;">DUE 07:30 AM (60M TO DEPARTURE)</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="timeline-step-box">
+          <div>
+            <span class="step-tag-pill step-tag-gate">STEP 3 &bull; GATE</span>
+            <div class="step-heading">Boarding Commences</div>
+            <div class="step-desc">Gate 14B begins Group 1-3. Doors close strictly 15 minutes before takeoff.</div>
+          </div>
+          <div class="step-timing-stamp" style="color:#0284c7;">STARTS 07:45 AM (GATE 14B)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Connected Destination Services -->
+    <section class="services-grid" aria-label="Arrival Services">
+      <div class="service-tile-card">
+        <div class="service-info">
+          <h4>🚗 Heathrow Car Rentals</h4>
+          <p>Seamlessly pick up an electric or hybrid vehicle directly at Terminal 5. Fully flexible cancellation with no deposit fees.</p>
+        </div>
+        <button class="btn-outline-navy" style="font-size:0.75rem; white-space:nowrap;" onclick="triggerAction('Vehicle reserved: Tesla Model 3 at LHR Terminal 5 (£42/day).')">
+          Reserve &pound;42/day
+        </button>
+      </div>
+
+      <div class="service-tile-card">
+        <div class="service-info">
+          <h4>🏨 Connected Hotel: Sofitel London T5</h4>
+          <p>Direct covered walkway to Terminal 5. Complimentary executive lounge access with British Airways club tickets.</p>
+        </div>
+        <button class="btn-outline-navy" style="font-size:0.75rem; white-space:nowrap;" onclick="triggerAction('Sofitel London T5 executive room query dispatched.')">
+          View Hotel &rarr;
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="tripease-footer">
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 TripEase Global Mobility Inc. All Rights Reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="tripease.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const state = getTripState();
+      if (state) {
+        if (state.booking && state.booking.pnr) {
+          document.getElementById("pnrDisplay").textContent = state.booking.pnr;
+        }
+        if (state.traveler) {
+          const fullName = `${state.traveler.firstName || 'ALEX'} ${state.traveler.lastName || 'MORGAN'}`.toUpperCase();
+          document.getElementById("passNameDisplay").textContent = fullName;
+          if (state.traveler.email) {
+            document.getElementById("heroEmail").textContent = state.traveler.email;
+          }
+        }
+        if (state.selectedSeat && state.selectedSeat.seatNumber) {
+          document.getElementById("passSeatDisplay").textContent = state.selectedSeat.seatNumber;
+        }
+      }
+    });
+
+    function triggerAction(msg) {
+      showTripToast(msg);
+    }
+  </script>
+</body>
+</html>

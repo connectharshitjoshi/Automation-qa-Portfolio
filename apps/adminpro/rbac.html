@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Role-Based Access Control (RBAC) Matrix - AdminPro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .rbac-main {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .rbac-hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge-access-guard {
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-right: 0.5rem;
+    }
+
+    .tenant-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #059669;
+      font-weight: 700;
+    }
+
+    .rbac-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0.4rem 0 0.25rem;
+    }
+
+    .rbac-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 800px;
+    }
+
+    /* Role Tabs */
+    .role-tabs-strip {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+
+    .btn-role-tab {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .btn-role-tab:hover { background: #f8fafc; }
+    .btn-role-tab.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    .user-count-pill {
+      background: rgba(255, 255, 255, 0.2);
+      font-size: 0.68rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 9999px;
+    }
+    .btn-role-tab:not(.active) .user-count-pill {
+      background: #f1f5f9;
+      color: var(--text-muted);
+    }
+
+    /* 2-Column RBAC Layout */
+    .rbac-body-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    /* Filter & Bulk Bar */
+    .matrix-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .filter-capability-input {
+      border: none;
+      outline: none;
+      font-size: 0.825rem;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .bulk-ops-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .btn-bulk-op {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-bulk-op:hover { background: #e2e8f0; }
+
+    /* Matrix Table Card */
+    .matrix-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+    }
+
+    .matrix-table th {
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .matrix-table th:first-child {
+      text-align: left;
+    }
+
+    .category-separator-tr {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-dark);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .category-separator-tr td {
+      padding: 0.65rem 1rem;
+    }
+
+    .matrix-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .matrix-table td:first-child {
+      text-align: left;
+    }
+
+    .cap-title {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .cap-protocol-code {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .scope-select-sm {
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .matrix-footer-strip {
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      padding: 0.65rem 1rem;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* Right Sidebar Cards */
+    .summary-card-rbac {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .scope-counts-trio {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    .scope-count-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem;
+    }
+    .scope-count-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .scope-count-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .meter-operational-surface {
+      background: #ecfeff;
+      border: 1px solid #cffafe;
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .surface-radial-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #06b6d4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.825rem;
+      font-weight: 800;
+      color: #0891b2;
+      flex-shrink: 0;
+    }
+
+    /* Assigned Members List */
+    .assigned-members-group {
+      margin-top: 1rem;
+    }
+    .assign-input-row {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.85rem;
+    }
+    .assign-input {
+      flex: 1;
+      padding: 0.4rem 0.65rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.785rem;
+      outline: none;
+    }
+    .btn-assign {
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 0 0.75rem;
+      border-radius: 6px;
+      font-size: 0.785rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .assigned-member-pill {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.4rem 0.65rem;
+      margin-bottom: 0.45rem;
+      font-size: 0.785rem;
+    }
+    .btn-remove-member {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+    }
+    .btn-remove-member:hover { color: #dc2626; }
+
+    /* SDET Assertion Simulator */
+    .simulator-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .sim-select-group {
+      margin-bottom: 1rem;
+    }
+    .sim-select-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .sim-select {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .btn-execute-assertion {
+      width: 100%;
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+    .btn-execute-assertion:hover { background: #1e293b; }
+
+    .sim-output-box {
+      background: #ecfeff;
+      border: 1px solid #a5f3fc;
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: #0e7490;
+    }
+    .sim-output-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .rbac-body-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="top-header">
+    <div class="header-top-row">
+      <div class="brand-section">
+        <a href="index.html" class="brand-section">
+          <div class="brand-logo-icon">📊</div>
+          <span class="brand-name">AdminPro</span>
+        </a>
+        <span class="env-pill">● PROD-US-EAST</span>
+        <span class="status-live-pill"><span class="dot-green"></span> All Systems Operational</span>
+      </div>
+
+      <div class="header-search-bar">
+        <span>🔍</span>
+        <input type="text" class="header-search-input" placeholder="Global resource, tenant or telemetry search... Ctrl + K" data-testid="global-search-input">
+        <span class="kbd-shortcut">Ctrl + K</span>
+      </div>
+
+      <div class="header-right-meta">
+        <button class="bell-btn">
+          <span>🔔</span>
+          <span class="bell-badge"></span>
+        </button>
+        <div class="user-profile-widget">
+          <img src="images/avatar-alex.jpg" alt="Alex Rivera" class="user-avatar-img" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid #10b981;">
+          <div class="user-info-text">
+            <span class="user-info-name">Alex Rivera</span>
+            <span class="user-info-role">Super Admin</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Strip -->
+    <nav class="header-nav-tabs">
+      <ul class="nav-tabs-inner">
+        <li><a href="index.html" data-testid="nav-tab-overview">Overview & Metrics</a></li>
+        <li><a href="users.html" data-testid="nav-tab-users">User Management</a></li>
+        <li><a href="rbac.html" class="active" data-testid="nav-tab-rbac">RBAC & Permissions</a></li>
+        <li><a href="audit.html" data-testid="nav-tab-audit">Audit Trail & Logs</a></li>
+        <li><a href="settings.html" data-testid="nav-tab-settings">System & API Settings</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Telemetry Bar -->
+  <div class="telemetry-bar">
+    <div class="telemetry-inner">
+      <div>
+        <span>iam / policies / <code>rbac-matrix-engine</code> <span class="env-pill" style="font-size:0.68rem;">v2.4-deterministic</span></span>
+      </div>
+      <div>
+        <span style="color:#059669; font-weight:bold;">● E2E Assertion Mode: Active</span> &bull; <span>Active Schema: <code>urn:adminpro:rbac:policy:v3</code></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main RBAC Content -->
+  <main class="rbac-main">
+    <div class="rbac-hero-header">
+      <div>
+        <div>
+          <span class="badge-access-guard">ACCESS GUARD</span>
+          <span class="tenant-badge">TENANT: PROD-GLOBAL-99</span>
+        </div>
+        <h1 class="rbac-title" data-testid="rbac-title">Role-Based Access Control (RBAC) Matrix</h1>
+        <p class="rbac-sub">Configure granular permission scopes across platform resources and API endpoints. Assert deterministic policy behavior for multi-tenant microservices and operators.</p>
+      </div>
+
+      <div style="display:flex; gap:0.65rem;">
+        <button class="btn-outline-white" onclick="showAdminToast('Reverted permission policy to active replica.');">
+          <span>🔄</span> Revert Changes
+        </button>
+        <button class="btn-primary-dark" onclick="showAdminToast('Permission policy saved & propagated to 32 nodes!');" data-testid="btn-save-policy">
+          <span>💾</span> Save Permission Policy
+        </button>
+      </div>
+    </div>
+
+    <!-- Role Tabs -->
+    <div class="role-tabs-strip">
+      <button class="btn-role-tab" onclick="switchRoleTab(this)"><span>🔒</span> Super Admin <span class="user-count-pill">SYSTEM</span></button>
+      <button class="btn-role-tab active" onclick="switchRoleTab(this)"><span>🛡️</span> Engineering Lead <span class="user-count-pill">14 USERS</span></button>
+      <button class="btn-role-tab" onclick="switchRoleTab(this)"><span>🛡️</span> Security Auditor</button>
+      <button class="btn-role-tab" onclick="switchRoleTab(this)"><span>💳</span> Billing Specialist</button>
+      <button class="btn-role-tab" onclick="switchRoleTab(this)"><span>🎧</span> Support Agent</button>
+      <button class="btn-outline-white" style="border-style:dashed;" onclick="showAdminToast('Opening Custom Role Builder modal...');">+ Create Custom Role</button>
+    </div>
+
+    <!-- 2-Column Layout -->
+    <div class="rbac-body-layout">
+      <!-- Left Column: Matrix Table -->
+      <div>
+        <div class="matrix-toolbar">
+          <input type="text" class="filter-capability-input" placeholder="Filter by capability tag, e.g. 'refund', 'mfa', 'api'..." oninput="filterCapabilities(this.value)">
+          <div class="bulk-ops-group">
+            <span>Bulk Operations:</span>
+            <button class="btn-bulk-op" onclick="bulkCheck(true)">Grant All Read</button>
+            <button class="btn-bulk-op" onclick="bulkCheck(false)">Clear All</button>
+          </div>
+        </div>
+
+        <div class="matrix-card">
+          <div style="overflow-x: auto;">
+            <table class="matrix-table" data-testid="rbac-matrix-table">
+              <thead>
+                <tr>
+                  <th style="width: 40%;">RESOURCE CAPABILITY & PROTOCOL</th>
+                  <th style="width: 10%;">READ</th>
+                  <th style="width: 10%;">WRITE</th>
+                  <th style="width: 10%;">DELETE</th>
+                  <th style="width: 10%;">ADMIN</th>
+                  <th style="width: 20%;">SCOPE CONTEXT</th>
+                </tr>
+              </thead>
+              <tbody id="matrix-tbody">
+                <!-- Section 1 -->
+                <tr class="category-separator-tr">
+                  <td colspan="6">
+                    <span style="color:#0284c7;">👤</span> User & Identity Management
+                    <span style="font-family:'JetBrains Mono'; font-weight:normal; font-size:0.7rem; color:var(--text-muted); margin-left:0.5rem;">scope:iam.identity.*</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">View Users & Profiles</div>
+                    <div class="cap-protocol-code">users.profile.read</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Global</option><option>Tenant Only</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Provision New Identity</div>
+                    <div class="cap-protocol-code">users.provision.write</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Tenant Only</option><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Suspend & Deprovision User</div>
+                    <div class="cap-protocol-code">users.deprovision.delete</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Tenant Only</option><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Reset Multi-Factor Tokens</div>
+                    <div class="cap-protocol-code">users.mfa.token.revoke</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><select class="scope-select-sm"><option>Global</option><option>Tenant Only</option></select></td>
+                </tr>
+
+                <!-- Section 2 -->
+                <tr class="category-separator-tr">
+                  <td colspan="6">
+                    <span style="color:#059669;">💳</span> Billing & Financial Operations
+                    <span style="font-family:'JetBrains Mono'; font-weight:normal; font-size:0.7rem; color:var(--text-muted); margin-left:0.5rem;">scope:billing.core.*</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">View Ledger Invoices</div>
+                    <div class="cap-protocol-code">billing.invoices.read</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Modify Plan Subscriptions</div>
+                    <div class="cap-protocol-code">billing.tier.update</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox"></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Tenant Only</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Update Payment Methods</div>
+                    <div class="cap-protocol-code">billing.card.mutate</div>
+                  </td>
+                  <td><input type="checkbox"></td>
+                  <td><input type="checkbox"></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>None</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Issue Gateway Refunds</div>
+                    <div class="cap-protocol-code">billing.refund.execute</div>
+                  </td>
+                  <td><input type="checkbox"></td>
+                  <td><input type="checkbox"></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><input type="checkbox"></td>
+                  <td><select class="scope-select-sm"><option>None</option></select></td>
+                </tr>
+
+                <!-- Section 3 -->
+                <tr class="category-separator-tr">
+                  <td colspan="6">
+                    <span style="color:#7c3aed;">☸</span> Infrastructure & API Gateways
+                    <span style="font-family:'JetBrains Mono'; font-weight:normal; font-size:0.7rem; color:var(--text-muted); margin-left:0.5rem;">scope:infra.k8s.gateway.*</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Deploy Canary & Production Releases</div>
+                    <div class="cap-protocol-code">infra.release.trigger</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><select class="scope-select-sm"><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Rotate Platform API Keys</div>
+                    <div class="cap-protocol-code">infra.gateway.keys.rotate</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Purge Edge CDN Caches</div>
+                    <div class="cap-protocol-code">infra.cache.purge</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Rolling Restart Workload Pods</div>
+                    <div class="cap-protocol-code">infra.k8s.pod.bounce</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><select class="scope-select-sm"><option>Global</option></select></td>
+                </tr>
+
+                <!-- Section 4 -->
+                <tr class="category-separator-tr">
+                  <td colspan="6">
+                    <span style="color:#dc2626;">🛡️</span> Security & Compliance Logs
+                    <span style="font-family:'JetBrains Mono'; font-weight:normal; font-size:0.7rem; color:var(--text-muted); margin-left:0.5rem;">scope:audit.soc2.iso27001.*</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Inspect Immutable Audit Trails</div>
+                    <div class="cap-protocol-code">security.log.stream</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Export GPG-Signed Logs Archive</div>
+                    <div class="cap-protocol-code">security.archive.export</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox" checked></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><select class="scope-select-sm"><option>Global</option></select></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cap-title">Configure Enterprise SSO / SAML</div>
+                    <div class="cap-protocol-code">security.identity.federate</div>
+                  </td>
+                  <td><input type="checkbox" checked class="perm-read"></td>
+                  <td><input type="checkbox"></td>
+                  <td><span style="color:#94a3b8;">&minus;</span></td>
+                  <td><input type="checkbox"></td>
+                  <td><select class="scope-select-sm"><option>Tenant Only</option></select></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="matrix-footer-strip">
+            <span>Deterministic Matrix Lock: SHA-256::e921f7a01d67b</span>
+            <span>Policy Evaluation: ABAC + RBAC Overlay</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Summary & Simulator -->
+      <div>
+        <!-- Scope Summary -->
+        <div class="summary-card-rbac">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="font-size:1.05rem; font-weight:700;">📊 Role Scope Summary</h3>
+            <span class="status-live-pill">In Sync</span>
+          </div>
+
+          <div class="scope-counts-trio">
+            <div class="scope-count-box">
+              <div class="scope-count-num" style="color:#059669;">29</div>
+              <div class="scope-count-label">Granted</div>
+            </div>
+            <div class="scope-count-box">
+              <div class="scope-count-num" style="color:#dc2626;">8</div>
+              <div class="scope-count-label">Restricted</div>
+            </div>
+            <div class="scope-count-box">
+              <div class="scope-count-num">14</div>
+              <div class="scope-count-label">Members</div>
+            </div>
+          </div>
+
+          <div class="meter-operational-surface">
+            <div class="surface-radial-box">77%</div>
+            <div>
+              <div style="font-weight:700; font-size:0.85rem; color:#0e7490;">Operational Surface</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.35;">High-privilege scope granted for release engineering and pod administration.</div>
+            </div>
+          </div>
+
+          <!-- Assigned Members -->
+          <div class="assigned-members-group">
+            <div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem;">
+              ASSIGNED MEMBERS
+            </div>
+
+            <div class="assign-input-row">
+              <input type="text" id="member-assign-input" placeholder="operator@adminpro.cloud" class="assign-input">
+              <button class="btn-assign" onclick="assignNewMember()">Assign</button>
+            </div>
+
+            <div id="members-list-box">
+              <div class="assigned-member-pill">
+                <div style="display:flex; align-items:center; gap:0.45rem;">
+                  <span style="background:#0f172a; color:#fff; font-size:0.68rem; font-weight:bold; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;">AR</span>
+                  <div>
+                    <strong>Alex Rivera</strong>
+                    <div style="font-size:0.7rem; color:var(--text-muted);">alex.r@adminpro.cloud</div>
+                  </div>
+                </div>
+                <button class="btn-remove-member" onclick="removeMember(this)">&times;</button>
+              </div>
+
+              <div class="assigned-member-pill">
+                <div style="display:flex; align-items:center; gap:0.45rem;">
+                  <span style="background:#059669; color:#fff; font-size:0.68rem; font-weight:bold; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;">SK</span>
+                  <div>
+                    <strong>Siddharth Kumar</strong>
+                    <div style="font-size:0.7rem; color:var(--text-muted);">s.kumar@adminpro.cloud</div>
+                  </div>
+                </div>
+                <button class="btn-remove-member" onclick="removeMember(this)">&times;</button>
+              </div>
+
+              <div class="assigned-member-pill">
+                <div style="display:flex; align-items:center; gap:0.45rem;">
+                  <span style="background:#2563eb; color:#fff; font-size:0.68rem; font-weight:bold; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;">ER</span>
+                  <div>
+                    <strong>Elena Rostova</strong>
+                    <div style="font-size:0.7rem; color:var(--text-muted);">elena.r@adminpro.cloud</div>
+                  </div>
+                </div>
+                <button class="btn-remove-member" onclick="removeMember(this)">&times;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SDET Assertion Simulator -->
+        <div class="simulator-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+            <h3 style="font-size:1.05rem; font-weight:700;">📡 SDET Assertion Simulator</h3>
+            <span class="status-live-pill" style="font-size:0.68rem;">E2E-READY</span>
+          </div>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">Run instantaneous mock assertions against the synthesized permission vector for automated CI/CD validation.</p>
+
+          <div class="sim-select-group">
+            <label>Subject Member</label>
+            <select class="sim-select" id="sim-subject-select">
+              <option>Alex Rivera (Engineering Lead)</option>
+              <option>Siddharth Kumar (Engineering Lead)</option>
+              <option>Elena Rostova (Engineering Lead)</option>
+            </select>
+          </div>
+
+          <div class="sim-select-group">
+            <label>Resource Action Endpoint</label>
+            <select class="sim-select" id="sim-endpoint-select">
+              <option>POST /api/v3/infra/release/trigger</option>
+              <option>GET /api/v3/billing/invoices/export</option>
+              <option>DELETE /api/v3/iam/users/deprovision</option>
+            </select>
+          </div>
+
+          <button class="btn-execute-assertion" onclick="runSimulatorAssertion()" data-testid="btn-execute-assertion">
+            <span>▶</span> Execute Assertion Simulation
+          </button>
+
+          <div class="sim-output-box" id="sim-output-box">
+            <div class="sim-output-header">
+              <span>SIMULATION OUTPUT</span>
+              <span style="background:#d1fae5; color:#065f46; padding:0.1rem 0.4rem; border-radius:4px;">Access Granted (200 OK)</span>
+            </div>
+            <pre style="margin:0; font-family:inherit;">{
+  "status": 200,
+  "verdict": "ALLOW",
+  "evaluated_rules": 4,
+  "scope_match": "urn:adminpro:global:*",
+  "latency_ms": 1.42
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Enterprise Footer -->
+  <footer class="admin-footer">
+    <div class="footer-inner-row">
+      <div class="footer-left-info">
+        <strong>v3.12-enterprise</strong> &bull;
+        <code>spec::deterministic-loc-v4</code> &bull;
+        <span>&copy; 2025 AdminPro Cloud Services LLC</span>
+      </div>
+      <div class="footer-nav-links">
+        <a href="#">API Documentation</a>
+        <a href="#">Compliance & SLA</a>
+        <a href="#">Enterprise Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="admin.js"></script>
+  <script>
+    function switchRoleTab(el) {
+      document.querySelectorAll(".btn-role-tab").forEach(t => t.classList.remove("active"));
+      el.classList.add("active");
+      showAdminToast(`Loaded RBAC matrix for: ${el.textContent.trim()}`);
+    }
+
+    function bulkCheck(checked) {
+      document.querySelectorAll(".perm-read").forEach(c => c.checked = checked);
+      showAdminToast(checked ? "Granted READ across all 15 resource capabilities." : "Cleared all READ permissions.");
+    }
+
+    function filterCapabilities(query) {
+      const q = query.toLowerCase().trim();
+      const rows = document.querySelectorAll("#matrix-tbody tr:not(.category-separator-tr)");
+      rows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        r.style.display = text.includes(q) ? "" : "none";
+      });
+    }
+
+    function assignNewMember() {
+      const input = document.getElementById("member-assign-input");
+      const email = input.value.trim();
+      if (!email) return;
+
+      const name = email.split("@")[0].replace(".", " ");
+      const initials = name.split(" ").map(n => n[0].toUpperCase()).join("").slice(0, 2);
+
+      const box = document.getElementById("members-list-box");
+      const item = document.createElement("div");
+      item.className = "assigned-member-pill";
+      item.innerHTML = `
+        <div style="display:flex; align-items:center; gap:0.45rem;">
+          <span style="background:#0f172a; color:#fff; font-size:0.68rem; font-weight:bold; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;">${initials}</span>
+          <div>
+            <strong>${name}</strong>
+            <div style="font-size:0.7rem; color:var(--text-muted);">${email}</div>
+          </div>
+        </div>
+        <button class="btn-remove-member" onclick="removeMember(this)">&times;</button>
+      `;
+      box.prepend(item);
+      input.value = "";
+      showAdminToast(`Assigned ${email} to Engineering Lead role.`);
+    }
+
+    function removeMember(btn) {
+      btn.closest(".assigned-member-pill").remove();
+      showAdminToast("Member removed from Engineering Lead role.");
+    }
+
+    function runSimulatorAssertion() {
+      const subject = document.getElementById("sim-subject-select").value;
+      const endpoint = document.getElementById("sim-endpoint-select").value;
+
+      const out = document.getElementById("sim-output-box");
+      out.innerHTML = `
+        <div class="sim-output-header">
+          <span>SIMULATION OUTPUT</span>
+          <span style="background:#d1fae5; color:#065f46; padding:0.1rem 0.4rem; border-radius:4px;">Access Granted (200 OK)</span>
+        </div>
+        <pre style="margin:0; font-family:inherit;">{
+  "status": 200,
+  "verdict": "ALLOW",
+  "subject": "${subject.split(' ')[0]}",
+  "endpoint": "${endpoint}",
+  "evaluated_rules": 4,
+  "scope_match": "urn:adminpro:global:*",
+  "latency_ms": 1.42
+}</pre>
+      `;
+      showAdminToast("Assertion passed: 200 ALLOW verified.");
+    }
+  </script>
+</body>
+</html>

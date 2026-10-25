@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveler Data & Payment Gateway - TripEase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .booking-page-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    .booking-layout-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* Left Form Column */
+    .form-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .booking-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .booking-card-head {
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .booking-card-head h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .notice-identity {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .form-fields-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-fields-3col {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .field-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .field-wrap label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .field-wrap input, .field-wrap select {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.875rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: all 0.15s;
+    }
+    .field-wrap input:focus, .field-wrap select:focus {
+      border-color: #0284c7;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+    }
+
+    /* Auxiliaries & Protection */
+    .auxiliary-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 1rem;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .auxiliary-item:hover {
+      border-color: #cbd5e1;
+      background: #ffffff;
+    }
+    .auxiliary-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #0284c7;
+      margin-top: 0.15rem;
+    }
+
+    .aux-text h4 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: space-between;
+    }
+    .aux-text p {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      line-height: 1.4;
+    }
+
+    /* Payment Tabs */
+    .payment-tabs-strip {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 8px;
+    }
+    .pay-tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .pay-tab-btn.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    /* Right Sticky Summary Column */
+    .summary-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .order-summary-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03);
+    }
+
+    .flight-recap-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .recap-carrier {
+      font-size: 0.785rem;
+      font-weight: 700;
+      color: var(--sky-blue);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+    .recap-cities {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0.25rem 0;
+    }
+    .recap-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .ledger-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      font-size: 0.825rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .ledger-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+    }
+
+    .ledger-total-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.5rem;
+    }
+    .total-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .total-amount {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #0284c7;
+    }
+
+    .btn-authorize-pay {
+      width: 100%;
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 0.95rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+      transition: background 0.15s;
+    }
+    .btn-authorize-pay:hover {
+      background: #047857;
+    }
+
+    .security-stamp {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .booking-layout-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-fields-2col, .form-fields-3col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="tripease-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-block">
+        <div class="brand-icon">✈️</div>
+        <div class="brand-title-wrap">
+          <span class="brand-title">TripEase</span>
+          <span class="brand-tag">MOBILITY SUITE</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <ul class="header-nav-list">
+        <li><a href="index.html">Flights</a></li>
+        <li><a href="results.html">Results</a></li>
+        <li><a href="seat-selection.html">Seat Selection</a></li>
+        <li><a href="boarding-pass.html" data-testid="nav-my-bookings">My Bookings</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+
+      <!-- User & Region Meta -->
+      <div class="header-right-meta">
+        <div class="currency-lang-pill">
+          <span>🌐 EN</span>
+          <span>&bull;</span>
+          <span>USD ($)</span>
+        </div>
+        <div class="skypriority-badge">
+          <div class="skypriority-avatar">AM</div>
+          <div class="skypriority-info">
+            <span class="skypriority-name">Alex Morgan</span>
+            <span class="skypriority-tier">SkyPriority Gold #TRIP-8820</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Funnel Step Progress Bar -->
+  <nav class="funnel-progress-wrap" aria-label="Booking Funnel Progress">
+    <div class="funnel-progress-inner">
+      <div class="step-node completed">
+        <span class="step-circle">✔</span>
+        <span>Flights</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node completed">
+        <span class="step-circle">✔</span>
+        <span>Seats (14A)</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node active" data-testid="step-passenger">
+        <span class="step-circle">3</span>
+        <span>Passenger & Payment (Active)</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node" data-testid="step-payment">
+        <span class="step-circle">4</span>
+        <span>Boarding Pass</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="booking-page-container">
+
+    <div class="booking-layout-grid">
+
+      <!-- Left Column: Traveler & Payment Forms -->
+      <div class="form-column">
+
+        <!-- Card 1: Primary Traveler Info -->
+        <section class="booking-card" data-testid="card-primary-traveler">
+          <div class="booking-card-head">
+            <h3>👤 Primary Traveler (Adult 1)</h3>
+            <span style="font-size:0.75rem; color:#b45309; font-weight:700; background:#fef3c7; padding:0.15rem 0.5rem; border-radius:4px;">
+              SkyPriority Gold Auto-Filled
+            </span>
+          </div>
+
+          <div class="notice-identity">
+            <span>ℹ️</span>
+            <span>Name must strictly match official governmental photo identification or passport.</span>
+          </div>
+
+          <div class="form-fields-2col">
+            <div class="field-wrap">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" value="Alex" required data-testid="input-first-name input-passenger-name">
+            </div>
+            <div class="field-wrap">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" value="Morgan" required data-testid="input-last-name">
+            </div>
+          </div>
+
+          <div class="form-fields-3col">
+            <div class="field-wrap">
+              <label for="dob">Date of Birth</label>
+              <input type="date" id="dob" value="1988-06-14" required data-testid="input-dob">
+            </div>
+            <div class="field-wrap">
+              <label for="gender">Gender</label>
+              <select id="gender" data-testid="select-gender">
+                <option value="Male" selected>Male</option>
+                <option value="Female">Female</option>
+                <option value="Undisclosed">Undisclosed / Other</option>
+              </select>
+            </div>
+            <div class="field-wrap">
+              <label for="freqFlyer">Frequent Flyer Number</label>
+              <input type="text" id="freqFlyer" value="BA #9948201" data-testid="input-frequent-flyer">
+            </div>
+          </div>
+
+          <div class="form-fields-2col">
+            <div class="field-wrap">
+              <label for="email">Contact Email (for e-ticket & boarding pass)</label>
+              <input type="email" id="email" value="alex.morgan@example.com" required data-testid="input-email">
+            </div>
+            <div class="field-wrap">
+              <label for="phone">Mobile Phone (for gate alerts SMS)</label>
+              <input type="tel" id="phone" value="+1 (555) 234-5678" required data-testid="input-phone">
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 2: International Travel Document (Passport & TSA) -->
+        <section class="booking-card" data-testid="card-passport-info">
+          <div class="booking-card-head">
+            <h3>🛂 International Travel Document (Passport)</h3>
+            <span style="font-size:0.75rem; color:#059669; font-weight:700;">Verified Active</span>
+          </div>
+
+          <div class="form-fields-3col">
+            <div class="field-wrap">
+              <label for="passportNumber">Passport Number</label>
+              <input type="text" id="passportNumber" value="T89124018" required data-testid="input-passport">
+            </div>
+            <div class="field-wrap">
+              <label for="issuingCountry">Issuing Country</label>
+              <select id="issuingCountry" data-testid="select-country">
+                <option value="United States" selected>United States (USA)</option>
+                <option value="United Kingdom">United Kingdom (GBR)</option>
+                <option value="Canada">Canada (CAN)</option>
+                <option value="Australia">Australia (AUS)</option>
+              </select>
+            </div>
+            <div class="field-wrap">
+              <label for="passportExpiry">Expiration Date</label>
+              <input type="date" id="passportExpiry" value="2030-10-18" required data-testid="input-passport-expiry">
+            </div>
+          </div>
+
+          <div class="field-wrap" style="max-width:320px;">
+            <label for="ktn">Known Traveler Number (KTN / TSA PreCheck)</label>
+            <input type="text" id="ktn" value="992810344" data-testid="input-ktn">
+          </div>
+        </section>
+
+        <!-- Card 3: Travel Protection & Auxiliaries -->
+        <section class="booking-card" data-testid="card-auxiliaries">
+          <div class="booking-card-head">
+            <h3>🛡️ Travel Protection & Auxiliaries</h3>
+          </div>
+
+          <!-- SkyShield Checkbox -->
+          <label class="auxiliary-item">
+            <input type="checkbox" id="checkProtection" checked data-testid="check-protection" onchange="recalculateTotal()">
+            <div class="aux-text" style="width:100%;">
+              <h4>
+                <span>TripEase SkyShield Comprehensive Protection</span>
+                <span style="color:#0284c7;">+$38.00</span>
+              </h4>
+              <p>Covers emergency medical evacuation ($100k), trip cancellation/delay, and lost luggage reimbursement up to $5,000.</p>
+            </div>
+          </label>
+
+          <!-- Baggage info -->
+          <div class="auxiliary-item" style="cursor:default; background:#f0fdf4; border-color:#bbf7d0;">
+            <span style="font-size:1.2rem;">🧳</span>
+            <div class="aux-text">
+              <h4 style="color:#065f46;">
+                <span>Checked Baggage Allowance (1 Bag up to 23kg / 50lbs)</span>
+                <span style="color:#059669;">INCLUDED</span>
+              </h4>
+              <p style="color:#166534;">Complimentary baggage allowance included with your British Airways Club Executive fare tier.</p>
+            </div>
+          </div>
+
+          <!-- Carbon Offset Checkbox -->
+          <label class="auxiliary-item">
+            <input type="checkbox" id="checkCarbon" data-testid="check-carbon" onchange="recalculateTotal()">
+            <div class="aux-text" style="width:100%;">
+              <h4>
+                <span>SkyGreen Aviation Carbon Neutralization</span>
+                <span style="color:#0284c7;">+$4.50</span>
+              </h4>
+              <p>Offset 0.72 metric tons of transatlantic CO₂ emissions through verified reforestation and SAF fuel initiatives.</p>
+            </div>
+          </label>
+        </section>
+
+        <!-- Card 4: Payment Architecture -->
+        <section class="booking-card" data-testid="card-payment">
+          <div class="booking-card-head">
+            <h3>💳 Payment Architecture</h3>
+            <span style="font-size:0.72rem; color:var(--text-muted); font-family:var(--font-mono);">PCI-DSS LEVEL 1</span>
+          </div>
+
+          <div class="payment-tabs-strip">
+            <button type="button" class="pay-tab-btn active" data-testid="pay-tab-card" onclick="selectPayMethod(this, 'Card')">
+              💳 Credit / Debit Card
+            </button>
+            <button type="button" class="pay-tab-btn" data-testid="pay-tab-apple" onclick="selectPayMethod(this, 'Apple Pay')">
+              🍎 Apple Pay
+            </button>
+            <button type="button" class="pay-tab-btn" data-testid="pay-tab-points" onclick="selectPayMethod(this, 'SkyPoints')">
+              ⭐ SkyPoints (57,200 pts)
+            </button>
+          </div>
+
+          <div class="field-wrap" style="margin-bottom:1rem;">
+            <label for="cardName">Cardholder Full Name</label>
+            <input type="text" id="cardName" value="ALEX R MORGAN" required data-testid="input-card-name">
+          </div>
+
+          <div class="field-wrap" style="margin-bottom:1rem;">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" value="4242 •••• •••• 4242" required data-testid="input-card-number">
+          </div>
+
+          <div class="form-fields-2col">
+            <div class="field-wrap">
+              <label for="cardExpiry">Expiration MM/YY</label>
+              <input type="text" id="cardExpiry" value="08/28" placeholder="MM/YY" required data-testid="input-card-expiry">
+            </div>
+            <div class="field-wrap">
+              <label for="cardCvv">Security CVV / CVC</label>
+              <input type="password" id="cardCvv" value="882" maxlength="4" required data-testid="input-card-cvv">
+            </div>
+          </div>
+
+          <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:var(--text-secondary); margin-top:0.5rem; cursor:pointer;">
+            <input type="checkbox" id="checkBilling" checked data-testid="check-same-billing">
+            Billing address is the same as traveler's contact address
+          </label>
+        </section>
+
+      </div>
+
+      <!-- Right Column: Order Summary & Ledger -->
+      <aside class="summary-column" aria-label="Flight Summary Ledger">
+
+        <div class="order-summary-card">
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1rem; color:var(--text-dark);">
+            Flight Summary & Ledger
+          </h3>
+
+          <div class="flight-recap-box">
+            <div class="recap-carrier">British Airways &bull; Flight 178</div>
+            <div class="recap-cities">JFK &rarr; LHR</div>
+            <div class="recap-meta">Boeing 787-9 Dreamliner &bull; Non-stop</div>
+            <div style="font-size:0.75rem; color:#059669; font-weight:700; margin-top:0.35rem;">
+              Assigned Seat: <strong id="summarySeat">14A (Window)</strong>
+            </div>
+          </div>
+
+          <!-- Cost Ledger Breakdown -->
+          <div class="ledger-list">
+            <div class="ledger-row">
+              <span>Main Economy Airfare:</span>
+              <strong id="ledgerAirfare">$489.00</strong>
+            </div>
+            <div class="ledger-row">
+              <span>Seat 14A Surcharge:</span>
+              <strong id="ledgerSeatSurcharge">+$45.00</strong>
+            </div>
+            <div class="ledger-row" id="rowProtection">
+              <span>SkyShield Protection:</span>
+              <strong id="ledgerProtection">+$38.00</strong>
+            </div>
+            <div class="ledger-row" id="rowCarbon" style="display:none;">
+              <span>Carbon Offset:</span>
+              <strong>+$4.50</strong>
+            </div>
+            <div class="ledger-row">
+              <span>Government Security & Taxes:</span>
+              <span style="color:#059669; font-weight:600;">Included</span>
+            </div>
+          </div>
+
+          <!-- Total Due -->
+          <div class="ledger-total-box">
+            <span class="total-title">Total Due:</span>
+            <span class="total-amount" id="totalDueDisplay" data-testid="total-due-display">USD $572.00</span>
+          </div>
+
+          <button type="button" class="btn-authorize-pay" id="btnCompleteBooking" data-testid="btn-complete-booking" onclick="executeBookingAuthorization()">
+            🔒 Complete & Authorize &rarr;
+          </button>
+
+          <div class="security-stamp">
+            <span>🛡️</span>
+            <span>256-Bit SSL Encryption &bull; PCI-DSS Level 1 &bull; Instant PNR</span>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="tripease-footer">
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 TripEase Global Mobility Inc. All Rights Reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="tripease.js"></script>
+  <script>
+    let baseAirfare = 489.00;
+    let seatCharge = 45.00;
+    let protectionCharge = 38.00;
+    let carbonCharge = 0.00;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const state = getTripState();
+      if (state.selectedFlight) {
+        baseAirfare = state.selectedFlight.baseFare || 489.00;
+        document.getElementById("ledgerAirfare").textContent = `$${baseAirfare.toFixed(2)}`;
+      }
+      if (state.selectedSeat) {
+        seatCharge = state.selectedSeat.surcharge || 45.00;
+        document.getElementById("summarySeat").textContent = `${state.selectedSeat.seatNumber} (${state.selectedSeat.type.split("-")[0].trim()})`;
+        document.getElementById("ledgerSeatSurcharge").textContent = `+$${seatCharge.toFixed(2)}`;
+      }
+      recalculateTotal();
+    });
+
+    function recalculateTotal() {
+      const hasProt = document.getElementById("checkProtection").checked;
+      const hasCarb = document.getElementById("checkCarbon").checked;
+
+      protectionCharge = hasProt ? 38.00 : 0.00;
+      carbonCharge = hasCarb ? 4.50 : 0.00;
+
+      document.getElementById("rowProtection").style.display = hasProt ? "flex" : "none";
+      document.getElementById("rowCarbon").style.display = hasCarb ? "flex" : "none";
+
+      const total = baseAirfare + seatCharge + protectionCharge + carbonCharge;
+      document.getElementById("totalDueDisplay").textContent = `USD $${total.toFixed(2)}`;
+      document.getElementById("btnCompleteBooking").innerHTML = `🔒 Complete & Authorize ($${total.toFixed(2)}) &rarr;`;
+    }
+
+    function selectPayMethod(btn, method) {
+      document.querySelectorAll(".pay-tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      showTripToast(`Payment instrument routed via: ${method}.`);
+    }
+
+    function executeBookingAuthorization() {
+      const state = getTripState();
+      state.traveler.firstName = document.getElementById("firstName").value;
+      state.traveler.lastName = document.getElementById("lastName").value;
+      state.traveler.email = document.getElementById("email").value;
+      state.traveler.phone = document.getElementById("phone").value;
+      state.traveler.passportNumber = document.getElementById("passportNumber").value;
+      
+      const total = baseAirfare + seatCharge + protectionCharge + carbonCharge;
+      state.booking.totalFare = total;
+      state.booking.pnr = "7X8K2M";
+      state.booking.status = "CONFIRMED";
+      saveTripState(state);
+
+      showTripToast("Authorization approved by IATA clearinghouse! Generating Boarding Pass...");
+      setTimeout(() => {
+        window.location.href = "boarding-pass.html";
+      }, 500);
+    }
+  </script>
+</body>
+</html>

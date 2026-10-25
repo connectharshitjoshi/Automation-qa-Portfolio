@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Aircraft Seat Configurator - TripEase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .seat-page-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Seat Top Flight Header */
+    .flight-seat-header {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .flight-seat-title h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .flight-seat-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* 2-Column Fuselage Layout */
+    .seat-config-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    /* Aircraft Fuselage Tube Container */
+    .fuselage-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .fuselage-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Legend */
+    .seat-legend-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .legend-seat-sample {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .legend-avail-std { background: #ffffff; border: 1.5px solid #cbd5e1; }
+    .legend-avail-legroom { background: #e0f2fe; border: 1.5px solid #0284c7; }
+    .legend-occupied { background: #e2e8f0; border: 1px solid #cbd5e1; position: relative; }
+    .legend-occupied::after {
+      content: "✕";
+      font-size: 10px;
+      color: #94a3b8;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .legend-selected { background: #0f172a; border: 1.5px solid #0f172a; color: #fff; }
+
+    /* Plane Silhouette & Cabin Sections */
+    .fuselage-outline {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 120px 120px 40px 40px;
+      padding: 2rem 1.5rem;
+      margin: 0 auto;
+      max-width: 580px;
+      position: relative;
+    }
+
+    .cockpit-nose {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px dashed #cbd5e1;
+    }
+    .cockpit-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .galley-section {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 0.5rem;
+      margin: 1rem 0;
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .exit-doors-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.75rem -2.25rem;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #dc2626;
+    }
+
+    .exit-pill {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    /* Cabin Seat Grid */
+    .cabin-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--sky-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1rem 0 0.5rem;
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+
+    .seat-column-letters {
+      display: grid;
+      grid-template-columns: 28px repeat(3, 40px) 24px repeat(3, 40px);
+      gap: 0.4rem;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .seat-row {
+      display: grid;
+      grid-template-columns: 28px repeat(3, 40px) 24px repeat(3, 40px);
+      gap: 0.4rem;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .row-num {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .aisle-space {
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Seat Buttons */
+    .seat-box {
+      width: 40px;
+      height: 38px;
+      border-radius: 6px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s ease-in-out;
+      user-select: none;
+    }
+    .seat-box:hover:not(.occupied) {
+      transform: scale(1.08);
+      border-color: #0284c7;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2);
+    }
+    .seat-box.extra-legroom {
+      background: #e0f2fe;
+      border-color: #7dd3fc;
+      color: #0369a1;
+    }
+    .seat-box.occupied {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .seat-box.selected {
+      background: #0f172a;
+      border-color: #0f172a;
+      color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.25);
+      transform: scale(1.08);
+    }
+
+    /* Right Sidebar Cards */
+    .seat-sidebar-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .seat-detail-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .seat-detail-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .assigned-seat-num {
+      font-size: 2.25rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #0284c7;
+      line-height: 1;
+    }
+    .assigned-seat-type {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-top: 0.25rem;
+    }
+
+    .seat-specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .spec-tile {
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.75rem;
+    }
+    .spec-label {
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
+    .spec-val {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .fare-summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .fare-line {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+    }
+    .fare-total-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      font-family: var(--font-mono);
+    }
+
+    .btn-confirm-full {
+      width: 100%;
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.15s;
+    }
+    .btn-confirm-full:hover {
+      background: #1e293b;
+    }
+
+    .cabin-perk-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      margin-bottom: 0.85rem;
+    }
+    .perk-icon {
+      font-size: 1.1rem;
+    }
+    .perk-title {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .perk-sub {
+      color: var(--text-muted);
+      font-size: 0.735rem;
+      line-height: 1.35;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .seat-config-grid {
+        grid-template-columns: 1fr;
+      }
+      .fuselage-outline {
+        padding: 1.5rem 0.75rem;
+      }
+      .seat-row, .seat-column-letters {
+        gap: 0.25rem;
+      }
+      .seat-box {
+        width: 32px;
+        height: 32px;
+        font-size: 0.65rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="tripease-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-block">
+        <div class="brand-icon">✈️</div>
+        <div class="brand-title-wrap">
+          <span class="brand-title">TripEase</span>
+          <span class="brand-tag">MOBILITY SUITE</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <ul class="header-nav-list">
+        <li><a href="index.html">Flights</a></li>
+        <li><a href="results.html">Results</a></li>
+        <li><a href="seat-selection.html" class="active" data-testid="nav-seat-selection">Seat Selection</a></li>
+        <li><a href="boarding-pass.html" data-testid="nav-my-bookings">My Bookings</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+
+      <!-- User & Region Meta -->
+      <div class="header-right-meta">
+        <div class="currency-lang-pill">
+          <span>🌐 EN</span>
+          <span>&bull;</span>
+          <span>USD ($)</span>
+        </div>
+        <div class="skypriority-badge">
+          <div class="skypriority-avatar">AM</div>
+          <div class="skypriority-info">
+            <span class="skypriority-name">Alex Morgan</span>
+            <span class="skypriority-tier">SkyPriority Gold #TRIP-8820</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Funnel Step Progress Bar -->
+  <nav class="funnel-progress-wrap" aria-label="Booking Funnel Progress">
+    <div class="funnel-progress-inner">
+      <div class="step-node completed" data-testid="step-flights">
+        <span class="step-circle">✔</span>
+        <span>Flights</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node active" data-testid="step-seats">
+        <span class="step-circle">2</span>
+        <span>Seats (Active)</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node" data-testid="step-passenger">
+        <span class="step-circle">3</span>
+        <span>Passenger</span>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-node" data-testid="step-payment">
+        <span class="step-circle">4</span>
+        <span>Payment</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="seat-page-container">
+
+    <!-- Flight Header Bar -->
+    <section class="flight-seat-header">
+      <div class="flight-seat-title">
+        <h2>
+          <span>Boeing 787-9 Dreamliner</span>
+          <span style="font-size:0.75rem; background:#eff6ff; color:#1d4ed8; padding:0.2rem 0.55rem; border-radius:4px; font-family:var(--font-mono);">
+            FLIGHT BA-178
+          </span>
+        </h2>
+        <div class="flight-seat-sub">
+          New York (JFK) &rarr; London Heathrow (LHR) &bull; Passenger: <strong>Alex Morgan (Gold Member)</strong> &bull; Departs: 08:30 AM
+        </div>
+      </div>
+
+      <div style="font-size:0.8rem; font-family:var(--font-mono); color:#059669; font-weight:700;">
+        ● 28 AVAILABLE SEATS LEFT
+      </div>
+    </section>
+
+    <!-- 2-Column Grid -->
+    <div class="seat-config-grid">
+
+      <!-- Aircraft Fuselage Map -->
+      <section class="fuselage-card" aria-label="Interactive Seat Map">
+        <div class="fuselage-top-meta">
+          <span>FUSELAGE SECTION C-E &bull; STA 940 - 1320 CP</span>
+          <span>PANASONIC EX3 4K</span>
+        </div>
+
+        <!-- Legend Bar -->
+        <div class="seat-legend-bar">
+          <div class="legend-item">
+            <span class="legend-seat-sample legend-avail-std"></span>
+            <span>Standard (+$0)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-seat-sample legend-avail-legroom"></span>
+            <span>Extra Legroom (+$45 - $75)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-seat-sample legend-occupied"></span>
+            <span>Occupied</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-seat-sample legend-selected"></span>
+            <span>Selected (14A)</span>
+          </div>
+        </div>
+
+        <!-- Fuselage Outline -->
+        <div class="fuselage-outline">
+          <!-- Cockpit / Nose -->
+          <div class="cockpit-nose">
+            <div class="cockpit-title">FORWARD CABIN &bull; COCKPIT</div>
+          </div>
+
+          <!-- Forward Galley & Lavs -->
+          <div class="galley-section">
+            <span>[ LAV-L1 ]</span>
+            <span>FORWARD GALLEY</span>
+            <span>[ LAV-R1 ]</span>
+          </div>
+
+          <!-- Exit Doors 1L/1R -->
+          <div class="exit-doors-row">
+            <span class="exit-pill">&larr; EXIT 1L</span>
+            <span class="exit-pill">EXIT 1R &rarr;</span>
+          </div>
+
+          <!-- Premium Economy Title -->
+          <div class="cabin-section-title">PREMIUM ECONOMY (ROWS 10 - 14)</div>
+
+          <!-- Column Header Letters -->
+          <div class="seat-column-letters">
+            <span></span>
+            <span>A</span>
+            <span>B</span>
+            <span>C</span>
+            <span class="aisle-space"></span>
+            <span>D</span>
+            <span>E</span>
+            <span>F</span>
+          </div>
+
+          <!-- Row 10 -->
+          <div class="seat-row">
+            <span class="row-num">10</span>
+            <button class="seat-box occupied" disabled>10A</button>
+            <button class="seat-box occupied" disabled>10B</button>
+            <button class="seat-box occupied" disabled>10C</button>
+            <span class="aisle-space"></span>
+            <button class="seat-box extra-legroom" data-testid="seat-10D" onclick="selectSeat('10D', 'Extra Legroom (Aisle)', 45.00)">10D</button>
+            <button class="seat-box extra-legroom" data-testid="seat-10E" onclick="selectSeat('10E', 'Extra Legroom (Middle)', 45.00)">10E</button>
+            <button class="seat-box occupied" disabled>10F</button>
+          </div>
+
+          <!-- Row 11 -->
+          <div class="seat-row">
+            <span class="row-num">11</span>
+            <button class="seat-box" data-testid="seat-11A" onclick="selectSeat('11A', 'Standard (Window)', 0.00)">11A</button>
+            <button class="seat-box" data-testid="seat-11B" onclick="selectSeat('11B', 'Standard (Middle)', 0.00)">11B</button>
+            <button class="seat-box occupied" disabled>11C</button>
+            <span class="aisle-space"></span>
+            <button class="seat-box" data-testid="seat-11D" onclick="selectSeat('11D', 'Standard (Aisle)', 0.00)">11D</button>
+            <button class="seat-box occupied" disabled>11E</button>
+            <button class="seat-box" data-testid="seat-11F" onclick="selectSeat('11F', 'Standard (Window)', 0.00)">11F</button>
+          </div>
+
+          <!-- Row 12 -->
+          <div class="seat-row">
+            <span class="row-num">12</span>
+            <button class="seat-box occupied" disabled>12A</button>
+            <button class="seat-box" data-testid="seat-12B" onclick="selectSeat('12B', 'Standard (Middle)', 0.00)">12B</button>
+            <button class="seat-box" data-testid="seat-12C" onclick="selectSeat('12C', 'Standard (Aisle)', 0.00)">12C</button>
+            <span class="aisle-space"></span>
+            <button class="seat-box" data-testid="seat-12D" onclick="selectSeat('12D', 'Standard (Aisle)', 0.00)">12D</button>
+            <button class="seat-box" data-testid="seat-12E" onclick="selectSeat('12E', 'Standard (Middle)', 0.00)">12E</button>
+            <button class="seat-box occupied" disabled>12F</button>
+          </div>
+
+          <!-- Row 14 (Selected Default: 14A Bulkhead Extra Legroom) -->
+          <div class="seat-row">
+            <span class="row-num">14</span>
+            <button class="seat-box extra-legroom selected" id="seat-14A" data-testid="seat-14A" onclick="selectSeat('14A', 'Window - Extra Legroom (Bulkhead)', 45.00)">14A</button>
+            <button class="seat-box extra-legroom" data-testid="seat-14B" onclick="selectSeat('14B', 'Middle - Extra Legroom', 45.00)">14B</button>
+            <button class="seat-box extra-legroom" data-testid="seat-14C" onclick="selectSeat('14C', 'Aisle - Extra Legroom', 45.00)">14C</button>
+            <span class="aisle-space"></span>
+            <button class="seat-box occupied" disabled>14D</button>
+            <button class="seat-box extra-legroom" data-testid="seat-14E" onclick="selectSeat('14E', 'Middle - Extra Legroom', 45.00)">14E</button>
+            <button class="seat-box extra-legroom" data-testid="seat-14F" onclick="selectSeat('14F', 'Window - Extra Legroom', 45.00)">14F</button>
+          </div>
+
+          <!-- Overwing Emergency Exit Row 18 -->
+          <div class="exit-doors-row" style="margin-top:1.5rem;">
+            <span class="exit-pill">&larr; OVERWING EXIT</span>
+            <span style="font-size:0.65rem; color:#b45309; font-weight:700;">EXTRA LEGROOM &bull; AGILITY REQUIREMENT</span>
+            <span class="exit-pill">OVERWING EXIT &rarr;</span>
+          </div>
+
+          <!-- Main Cabin Title -->
+          <div class="cabin-section-title">STANDARD ECONOMY (ROWS 18 - 28)</div>
+
+          <!-- Row 18 -->
+          <div class="seat-row">
+            <span class="row-num">18</span>
+            <button class="seat-box extra-legroom" data-testid="seat-18A" onclick="selectSeat('18A', 'Exit Row - Window (38\" Pitch)', 75.00)">18A</button>
+            <button class="seat-box extra-legroom" data-testid="seat-18B" onclick="selectSeat('18B', 'Exit Row - Middle', 75.00)">18B</button>
+            <button class="seat-box extra-legroom" data-testid="seat-18C" onclick="selectSeat('18C', 'Exit Row - Aisle', 75.00)">18C</button>
+            <span class="aisle-space"></span>
+            <button class="seat-box extra-legroom" data-testid="seat-18D" onclick="selectSeat('18D', 'Exit Row - Aisle', 75.00)">18D</button>
+            <button class="seat-box occupied" disabled>18E</button>
+            <button class="seat-box extra-legroom" data-testid="seat-18F" onclick="selectSeat('18F', 'Exit Row - Window', 75.00)">18F</button>
+          </div>
+
+          <!-- Row 19 -->
+          <div class="seat-row">
+            <span class="row-num">19</span>
+            <button class="seat-box" data-testid="seat-19A" onclick="selectSeat('19A', 'Standard (Window)', 0.00)">19A</button>
+            <button class="seat-box occupied" disabled>19B</button>
+            <button class="seat-box" data-testid="seat-19C" onclick="selectSeat('19C', 'Standard (Aisle)', 0.00)">19C</button>
+            <span class="aisle-space"></span>
+            <button class="seat-box" data-testid="seat-19D" onclick="selectSeat('19D', 'Standard (Aisle)', 0.00)">19D</button>
+            <button class="seat-box" data-testid="seat-19E" onclick="selectSeat('19E', 'Standard (Middle)', 0.00)">19E</button>
+            <button class="seat-box" data-testid="seat-19F" onclick="selectSeat('19F', 'Standard (Window)', 0.00)">19F</button>
+          </div>
+
+          <!-- Aft Galley & Exit 2L/2R -->
+          <div class="galley-section" style="margin-top:1.5rem;">
+            <span>[ LAV-L3 ]</span>
+            <span>AFT GALLEY</span>
+            <span>[ LAV-R3 ]</span>
+          </div>
+          <div class="exit-doors-row">
+            <span class="exit-pill">&larr; EXIT 2L</span>
+            <span class="exit-pill">EXIT 2R &rarr;</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Sidebar Breakdown & Boeing Inclusions -->
+      <aside class="seat-sidebar-col" aria-label="Seat Selection Breakdown">
+
+        <!-- Card 1: Assigned Seat Summary -->
+        <div class="seat-detail-card" data-testid="card-assigned-seat">
+          <div class="seat-detail-top">
+            <div>
+              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">ASSIGNED SEAT</span>
+              <div class="assigned-seat-num" id="displaySeatNum" data-testid="assigned-seat-num">14A</div>
+              <div class="assigned-seat-type" id="displaySeatType">Window Seat (Extra Legroom)</div>
+            </div>
+            <span style="font-size:0.72rem; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; padding:0.2rem 0.5rem; border-radius:4px; font-weight:700;">
+              RESERVED
+            </span>
+          </div>
+
+          <div class="seat-specs-grid">
+            <div class="spec-tile">
+              <div class="spec-label">SEAT PITCH</div>
+              <div class="spec-val" id="displaySeatPitch">34" Extra Legroom</div>
+            </div>
+            <div class="spec-tile">
+              <div class="spec-label">HORIZON VIEW</div>
+              <div class="spec-val">Clear Horizon View</div>
+            </div>
+            <div class="spec-tile">
+              <div class="spec-label">IN-FLIGHT ENTERTAINMENT</div>
+              <div class="spec-val">Panasonic eX3 4K</div>
+            </div>
+            <div class="spec-tile">
+              <div class="spec-label">AT-SEAT POWER</div>
+              <div class="spec-val">110V + USB-C PD</div>
+            </div>
+          </div>
+
+          <!-- Fare Breakdown Lines -->
+          <div class="fare-summary-list">
+            <div class="fare-line">
+              <span>Main Economy Base Fare:</span>
+              <strong id="fareBaseDisplay">$489.00</strong>
+            </div>
+            <div class="fare-line">
+              <span>Selected Seat Surcharge (<span id="fareSeatLabel">14A</span>):</span>
+              <strong id="fareSeatSurcharge" style="color:#0284c7;">+$45.00</strong>
+            </div>
+            <div class="fare-line">
+              <span>Government Security Fees & Tax:</span>
+              <span style="color:#059669; font-weight:600;">Included</span>
+            </div>
+            <div class="fare-total-line" style="margin-top:0.5rem; padding-top:0.5rem; border-top:1px dashed #cbd5e1;">
+              <span>Total Trip Fare:</span>
+              <span id="fareTotalDisplay" data-testid="fare-total-display">USD $534.00</span>
+            </div>
+          </div>
+
+          <button class="btn-confirm-full" data-testid="btn-confirm-seat" onclick="confirmSeatAndContinue()">
+            Confirm Seat & Continue &rarr;
+          </button>
+          <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-top:0.6rem;">
+            Seats can be re-assigned free of charge up to 2 hours prior to scheduled departure.
+          </div>
+        </div>
+
+        <!-- Card 2: Boeing 787 Cabin Inclusions -->
+        <div class="seat-detail-card">
+          <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:1rem; color:var(--text-dark);">
+            Boeing 787 Cabin Inclusions
+          </h4>
+
+          <div class="cabin-perk-item">
+            <span class="perk-icon">📺</span>
+            <div>
+              <div class="perk-title">13.3" 4K Panasonic Touchscreen</div>
+              <div class="perk-sub">300+ films, live satellite sports broadcast, and real-time flight telemetry.</div>
+            </div>
+          </div>
+
+          <div class="cabin-perk-item">
+            <span class="perk-icon">📶</span>
+            <div>
+              <div class="perk-title">High-Speed Satellite Wi-Fi</div>
+              <div class="perk-sub">Complimentary messaging for SkyPriority Gold members across the Atlantic.</div>
+            </div>
+          </div>
+
+          <div class="cabin-perk-item">
+            <span class="perk-icon">🍷</span>
+            <div>
+              <div class="perk-title">Transatlantic Dining Service</div>
+              <div class="perk-sub">Chef-crafted hot entrees, fine wines, and artisanal spirits included with your fare.</div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="tripease-footer">
+    <div class="footer-top-strip">
+      <div class="footer-top-inner">
+        <div class="footer-col">
+          <h4>TripEase MOBILITY SUITE</h4>
+          <p>High-velocity travel mobility suite engineered for precision itineraries, dynamic flight orchestration, and continuous sky-tier passenger comfort.</p>
+        </div>
+        <div class="footer-col">
+          <h4>24/7 Global Air Support</h4>
+          <p style="font-weight:700; color:#38bdf8;">+1 (800) 555-EASE</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-link-list">
+            <li><a href="index.html">Search Flights</a></li>
+            <li><a href="results.html">Results & Fare Matrix</a></li>
+            <li><a href="boarding-pass.html">Boarding Pass</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Preferences</h4>
+          <p>USD ($) &bull; English (US)</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 TripEase Global Mobility Inc. All Rights Reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="tripease.js"></script>
+  <script>
+    let currentSeatNumber = "14A";
+    let currentSeatPrice = 45.00;
+    let baseFare = 489.00;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const state = getTripState();
+      if (state && state.selectedFlight) {
+        baseFare = state.selectedFlight.baseFare || 489.00;
+      }
+      if (state && state.selectedSeat) {
+        currentSeatNumber = state.selectedSeat.seatNumber || "14A";
+        currentSeatPrice = state.selectedSeat.surcharge || 45.00;
+      }
+      updatePriceDisplay();
+    });
+
+    function selectSeat(seatId, seatDesc, surcharge) {
+      document.querySelectorAll(".seat-box").forEach(b => b.classList.remove("selected"));
+      
+      const btn = document.querySelector(`[data-testid="seat-${seatId}"]`);
+      if (btn) btn.classList.add("selected");
+
+      currentSeatNumber = seatId;
+      currentSeatPrice = surcharge;
+
+      document.getElementById("displaySeatNum").textContent = seatId;
+      document.getElementById("displaySeatType").textContent = seatDesc;
+      document.getElementById("fareSeatLabel").textContent = seatId;
+
+      if (seatId.includes("18")) {
+        document.getElementById("displaySeatPitch").textContent = "38\" Max Legroom";
+      } else if (surcharge > 0) {
+        document.getElementById("displaySeatPitch").textContent = "34\" Extra Legroom";
+      } else {
+        document.getElementById("displaySeatPitch").textContent = "31\" Standard Pitch";
+      }
+
+      updatePriceDisplay();
+      showTripToast(`Seat ${seatId} selected (+USD $${surcharge.toFixed(2)}).`);
+    }
+
+    function updatePriceDisplay() {
+      document.getElementById("fareBaseDisplay").textContent = `$${baseFare.toFixed(2)}`;
+      document.getElementById("fareSeatSurcharge").textContent = `+$${currentSeatPrice.toFixed(2)}`;
+      const total = baseFare + currentSeatPrice;
+      document.getElementById("fareTotalDisplay").textContent = `USD $${total.toFixed(2)}`;
+    }
+
+    function confirmSeatAndContinue() {
+      const state = getTripState();
+      state.selectedSeat.seatNumber = currentSeatNumber;
+      state.selectedSeat.surcharge = currentSeatPrice;
+      state.booking.totalFare = baseFare + currentSeatPrice;
+      saveTripState(state);
+
+      showTripToast(`Seat ${currentSeatNumber} locked. Proceeding to Traveler details...`);
+      setTimeout(() => {
+        window.location.href = "booking.html";
+      }, 350);
+    }
+  </script>
+</body>
+</html>

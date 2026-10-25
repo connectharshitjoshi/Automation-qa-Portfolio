@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Express Checkout - ShopTest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Checkout Specific Styles */
+    .checkout-main {
+      max-width: 1380px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .checkout-hero-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .checkout-title {
+      font-size: 2.15rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.25rem;
+    }
+
+    .checkout-submeta {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Steps Progress Bar */
+    .checkout-steps-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+    }
+    .step-card.completed {
+      border-color: #10b981;
+    }
+    .step-card.active {
+      border-color: #0f172a;
+      background: #f8fafc;
+    }
+
+    .step-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .step-card.completed .step-circle {
+      background: #10b981;
+      color: #fff;
+    }
+    .step-card.active .step-circle {
+      background: #0f172a;
+      color: #fff;
+    }
+
+    .step-info-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .step-info-title {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    /* 2-Column Layout */
+    .checkout-grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 2.5rem;
+      align-items: flex-start;
+      margin-bottom: 3rem;
+    }
+
+    /* Form Panels */
+    .form-section-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .form-section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .form-section-subtag {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #059669;
+    }
+
+    .form-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-row-3col {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .form-group-item label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .form-group-item input, .form-group-item select {
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      outline: none;
+      background: #ffffff;
+    }
+    .form-group-item input:focus, .form-group-item select:focus {
+      border-color: #0f172a;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    .checkbox-row input {
+      accent-color: #059669;
+      cursor: pointer;
+    }
+
+    /* Delivery Options List */
+    .delivery-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .delivery-radio-option {
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      background: #ffffff;
+    }
+    .delivery-radio-option.selected {
+      border-color: #059669;
+      background: #f0fdf4;
+    }
+    .delivery-radio-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .delivery-price-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* Payment Tabs */
+    .payment-tab-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .pay-tab-btn {
+      flex: 1;
+      padding: 0.6rem;
+      border: 1px solid var(--border-color);
+      background: #f8fafc;
+      border-radius: 6px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .pay-tab-btn.active {
+      background: #ffffff;
+      border-color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .card-input-wrap {
+      position: relative;
+    }
+    .card-type-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #2563eb;
+      background: #eff6ff;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Error Alert Banner */
+    .checkout-error-banner {
+      background: #fef2f2;
+      border: 1.5px solid #f87171;
+      color: #991b1b;
+      padding: 0.85rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    /* Place Order Button */
+    .btn-place-order {
+      width: 100%;
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.15s;
+    }
+    .btn-place-order:hover {
+      background: #047857;
+    }
+
+    .order-guarantees-sub {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    /* Right Summary Sidebar */
+    .checkout-summary-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .summary-items-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 1.25rem;
+    }
+
+    .preview-item-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .preview-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      object-fit: cover;
+    }
+    .preview-item-info {
+      flex: 1;
+    }
+    .preview-item-title {
+      font-size: 0.825rem;
+      font-weight: 700;
+    }
+    .preview-item-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .preview-item-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .promo-highlight-strip {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.785rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .due-today-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.25rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .due-today-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .due-today-amount {
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dark);
+    }
+
+    /* Sandbox Guarantee Box */
+    .sandbox-guarantee-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-size: 0.75rem;
+      color: #166534;
+      margin-bottom: 1.25rem;
+      line-height: 1.45;
+    }
+
+    /* E2E Locators Matrix Widget */
+    .locators-matrix-widget {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+    }
+    .locators-header {
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+    }
+    .locator-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.25rem 0;
+      border-bottom: 1px dashed #f1f5f9;
+    }
+    .locator-line:last-child { border-bottom: none; }
+    .loc-status.ready { color: #059669; font-weight: 700; }
+    .loc-status.bound { color: #2563eb; font-weight: 700; }
+    .loc-status.standby { color: #f59e0b; font-weight: 700; }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .checkout-grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .checkout-steps-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .form-row-2col, .form-row-3col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav Bar -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand-wrap">
+        <a href="index.html" class="nav-brand-wrap">
+          <div class="brand-logo-icon">🛍️</div>
+          <span class="brand-text">ShopTest</span>
+        </a>
+        <span class="nav-spec-badge">
+          <span>✓</span> QA BENCHMARK SPEC V2.4 &bull; 100% DATA-TESTID
+        </span>
+      </div>
+
+      <div class="nav-search-bar">
+        <select class="nav-category-select" data-testid="nav-category-select">
+          <option value="all">All Categories</option>
+        </select>
+        <button class="nav-search-btn">🔍</button>
+      </div>
+
+      <ul class="nav-tabs-menu">
+        <li><a href="index.html" data-testid="nav-tab-catalog">Catalog</a></li>
+        <li><a href="product-detail.html" data-testid="nav-tab-pdp">Product Detail</a></li>
+        <li><a href="cart.html" data-testid="nav-tab-cart">Shopping Cart</a></li>
+        <li><a href="checkout.html" class="active" data-testid="nav-tab-checkout">Checkout Flow</a></li>
+        <li><a href="order-tracking.html" data-testid="nav-tab-tracking">Order Tracking</a></li>
+        <li><a href="../../index.html" data-testid="nav-tab-hub">Portfolio Hub</a></li>
+      </ul>
+
+      <div class="nav-right-actions">
+        <a href="cart.html" class="btn-nav-cart" data-testid="btn-nav-cart">
+          <span>🛍️</span>
+          <span class="cart-qty-pill" data-testid="nav-cart-badge">3</span>
+          <span data-testid="nav-cart-total">$248.00</span>
+        </a>
+        <div class="user-nav-avatar">👤</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fixture Status Banner -->
+  <div class="fixture-banner">
+    <div class="fixture-inner">
+      <div class="fixture-left">
+        <span class="fixture-dot"></span>
+        <span>DETERMINISTIC E2E TRANSACTION FUNNEL &bull; Session Verified &bull; Idempotency Key: <code class="fixture-id-code">idemp_live_test_7c29</code></span>
+      </div>
+      <div class="fixture-right">
+        <button class="btn-reset-fixture" onclick="prefillValidData()" data-testid="btn-prefill-valid">QA Pre-fill Valid</button>
+        <button class="btn-reset-fixture" style="color:#ef4444;" onclick="triggerCardFailure()" data-testid="btn-trigger-failure">Trigger Card Failure</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Checkout Content -->
+  <main class="checkout-main">
+    <div class="checkout-hero-header">
+      <h1 class="checkout-title" data-testid="checkout-page-title">Express Checkout</h1>
+      <div class="checkout-submeta">Session Verified &bull; Idempotency Key: idemp_live_test_7c29</div>
+    </div>
+
+    <!-- 3 Steps Bar -->
+    <div class="checkout-steps-bar">
+      <div class="step-card completed">
+        <div class="step-circle">✓</div>
+        <div>
+          <div class="step-info-label">STEP 1</div>
+          <div class="step-info-title">Shipping & Contact</div>
+        </div>
+      </div>
+      <div class="step-card active">
+        <div class="step-circle">2</div>
+        <div>
+          <div class="step-info-label">STEP 2</div>
+          <div class="step-info-title">Delivery Method</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-circle">3</div>
+        <div>
+          <div class="step-info-label">STEP 3</div>
+          <div class="step-info-title">Payment & Billing</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 Column Checkout Grid -->
+    <div class="checkout-grid-layout">
+      <!-- Left Forms -->
+      <form id="checkout-main-form" onsubmit="handleCheckoutSubmit(event)">
+        <!-- 1. Customer Contact -->
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3 class="form-section-title"><span>📧</span> 1. Customer Contact</h3>
+            <span class="form-section-subtag">Mandatory verification</span>
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group-item">
+              <label for="contact-email">Email Address *</label>
+              <input type="email" id="contact-email" value="alex.taylor@example.com" required data-testid="input-contact-email">
+            </div>
+            <div class="form-group-item">
+              <label for="contact-phone">Phone Number *</label>
+              <input type="tel" id="contact-phone" value="+1 (555) 234-5678" required data-testid="input-contact-phone">
+            </div>
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" checked data-testid="checkbox-notifications">
+            <span>Send me exclusive release notifications and test matrix dispatch alerts.</span>
+          </label>
+        </div>
+
+        <!-- 2. Shipping Destination -->
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3 class="form-section-title"><span>📍</span> 2. Shipping Destination</h3>
+            <span class="form-section-subtag">Standard Postal Verified</span>
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group-item">
+              <label for="ship-fname">First Name *</label>
+              <input type="text" id="ship-fname" value="Alex" required data-testid="input-first-name">
+            </div>
+            <div class="form-group-item">
+              <label for="ship-lname">Last Name *</label>
+              <input type="text" id="ship-lname" value="Taylor" required data-testid="input-last-name">
+            </div>
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group-item" style="flex:2;">
+              <label for="ship-address">Street Address *</label>
+              <input type="text" id="ship-address" value="742 Evergreen Terrace" required data-testid="input-street-address">
+            </div>
+            <div class="form-group-item" style="flex:1;">
+              <label for="ship-apt">Apt / Suite (Optional)</label>
+              <input type="text" id="ship-apt" value="Apt 4B" data-testid="input-apt-suite">
+            </div>
+          </div>
+
+          <div class="form-row-3col">
+            <div class="form-group-item">
+              <label for="ship-city">City *</label>
+              <input type="text" id="ship-city" value="Springfield" required data-testid="input-city">
+            </div>
+            <div class="form-group-item">
+              <label for="ship-state">State *</label>
+              <select id="ship-state" data-testid="select-state">
+                <option value="OR">OR - Oregon</option>
+                <option value="CA">CA - California</option>
+                <option value="NY">NY - New York</option>
+                <option value="TX">TX - Texas</option>
+              </select>
+            </div>
+            <div class="form-group-item">
+              <label for="ship-zip">Postal Code *</label>
+              <input type="text" id="ship-zip" value="97477" required data-testid="input-postal-code">
+            </div>
+          </div>
+
+          <div class="form-group-item" style="margin-bottom:0.75rem;">
+            <label for="ship-country">Country *</label>
+            <select id="ship-country" data-testid="select-country">
+              <option value="US">United States</option>
+              <option value="CA">Canada</option>
+              <option value="UK">United Kingdom</option>
+            </select>
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" checked data-testid="checkbox-save-vault">
+            <span>Save this shipping profile to my testbench vault</span>
+          </label>
+        </div>
+
+        <!-- 3. Delivery Method -->
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3 class="form-section-title"><span>🚚</span> 3. Delivery Method</h3>
+            <span class="form-section-subtag">Estimated Wed, Oct 24</span>
+          </div>
+
+          <div class="delivery-options-list">
+            <label class="delivery-radio-option selected" onclick="chooseDelivery(0.00, this)" data-testid="option-ground">
+              <div class="delivery-radio-left">
+                <input type="radio" name="checkout-delivery" checked>
+                <div>
+                  <strong>Standard Ground</strong>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">3-5 business days &bull; Tracked with signature waiver</div>
+                </div>
+              </div>
+              <span class="delivery-price-text" style="color:#059669;">FREE</span>
+            </label>
+
+            <label class="delivery-radio-option" onclick="chooseDelivery(12.00, this)" data-testid="option-fedex">
+              <div class="delivery-radio-left">
+                <input type="radio" name="checkout-delivery">
+                <div>
+                  <strong>FedEx Express 2-Day</strong>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">2 business days &bull; Priority transit guarantee</div>
+                </div>
+              </div>
+              <span class="delivery-price-text">$12.00</span>
+            </label>
+
+            <label class="delivery-radio-option" onclick="chooseDelivery(24.00, this)" data-testid="option-overnight">
+              <div class="delivery-radio-left">
+                <input type="radio" name="checkout-delivery">
+                <div>
+                  <strong>Overnight Priority</strong>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Next business day morning arrival</div>
+                </div>
+              </div>
+              <span class="delivery-price-text">$24.00</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 4. Payment Instrument -->
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3 class="form-section-title"><span>💳</span> 4. Payment Instrument</h3>
+            <span class="form-section-subtag">🔒 TLS 256-Bit</span>
+          </div>
+
+          <div class="payment-tab-row">
+            <button type="button" class="pay-tab-btn active" data-testid="tab-credit-card">Credit Card</button>
+            <button type="button" class="pay-tab-btn" data-testid="tab-paypal">PayPal</button>
+            <button type="button" class="pay-tab-btn" data-testid="tab-klarna">Klarna 4x</button>
+          </div>
+
+          <div class="form-group-item" style="margin-bottom:1rem;">
+            <label for="cardholder-name">Cardholder Name *</label>
+            <input type="text" id="cardholder-name" value="Alex Taylor" required data-testid="input-cardholder-name">
+          </div>
+
+          <div class="form-group-item card-input-wrap" style="margin-bottom:1rem;">
+            <label for="card-number">Card Number *</label>
+            <input type="text" id="card-number" value="4111 2222 3333 4444" required data-testid="input-card-number">
+            <span class="card-type-icon">● VISA</span>
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group-item">
+              <label for="card-exp">Expiration *</label>
+              <input type="text" id="card-exp" value="08/28" placeholder="MM/YY" required data-testid="input-card-exp">
+            </div>
+            <div class="form-group-item">
+              <label for="card-cvv">Security CVV *</label>
+              <input type="password" id="card-cvv" value="789" placeholder="CVV" required maxlength="4" data-testid="input-card-cvv">
+            </div>
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" checked data-testid="checkbox-billing-match">
+            <span>Billing address is identical to shipping destination</span>
+          </label>
+        </div>
+
+        <!-- Error Alert (For automated test assertions) -->
+        <div id="checkout-error-alert" class="checkout-error-banner" style="display: none;" data-testid="checkout-error-alert">
+          <span>⚠️</span>
+          <span id="error-alert-msg">Payment Authorization Failed: Test card declined by synthetic banking gateway.</span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="btn-place-order" class="btn-place-order" data-testid="btn-place-order">
+          Place Order (<span id="btn-total-display">$214.77</span>) &rarr;
+        </button>
+
+        <div class="order-guarantees-sub">
+          🔒 30-Day Money-Back Guarantee &bull; Zero Hidden Fees &bull; Encrypted Vaulting
+        </div>
+      </form>
+
+      <!-- Right Order Summary -->
+      <aside class="checkout-summary-card">
+        <div class="summary-header">
+          <h3>Order Summary</h3>
+          <span class="currency-pill" id="checkout-item-count">3 Items</span>
+        </div>
+
+        <!-- Items Preview List -->
+        <div class="summary-items-preview" id="summary-items-preview">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Applied Promo -->
+        <div class="promo-highlight-strip" id="promo-strip">
+          <span>SAVE20 PROMO (20%)</span>
+          <strong id="promo-discount-display">-$49.60</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong id="chk-subtotal">$248.00</strong>
+        </div>
+
+        <div class="summary-row" style="color:#059669;">
+          <span>Promotional Discount</span>
+          <strong id="chk-discount">-$49.60</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Shipping & Handling</span>
+          <strong id="chk-shipping" style="color:#059669;">FREE ($0.00)</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Estimated Sales Tax (8.25%)</span>
+          <strong id="chk-tax">$16.37</strong>
+        </div>
+
+        <div class="due-today-box">
+          <div>
+            <div class="due-today-label">TOTAL DUE TODAY</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Includes taxes & fees</div>
+          </div>
+          <div class="due-today-amount" id="chk-total" data-testid="checkout-total-due">$214.77</div>
+        </div>
+
+        <!-- Sandbox Guarantee -->
+        <div class="sandbox-guarantee-box">
+          <strong>✓ QA Sandbox Guarantee</strong><br>
+          All mock transactions are routed through internal deterministic virtual sinks. No charges will be incurred on personal instruments.
+        </div>
+
+        <!-- Locators Matrix Widget -->
+        <div class="locators-matrix-widget">
+          <div class="locators-header">AUTOMATED E2E LOCATORS MATRIX</div>
+          <div class="locator-line">
+            <span>data-testid="btn-place-order"</span>
+            <span class="loc-status ready">READY</span>
+          </div>
+          <div class="locator-line">
+            <span>data-testid="input-card-number"</span>
+            <span class="loc-status bound">BOUND</span>
+          </div>
+          <div class="locator-line">
+            <span>data-testid="checkout-error-alert"</span>
+            <span class="loc-status standby" id="loc-matrix-error-status">STANDBY</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="shop-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand-title">
+            <span style="background:#0f172a; color:#10b981; padding:0.2rem 0.5rem; border-radius:6px;">🛍️</span>
+            <span>ShopTest</span>
+          </div>
+          <p class="footer-brand-desc">
+            The definitive reference e-commerce testing sandbox. Purpose-built for resilient UI automation, Playwright, Cypress, and Selenium end-to-end benchmarks.
+          </p>
+          <div class="btn-dom-fixture">
+            <span>⊞</span> Deterministic DOM Fixture
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>ARCHITECTURE & DOCS</h5>
+          <ul class="footer-links-list">
+            <li><a href="index.html">Product Discovery Matrix</a></li>
+            <li><a href="cart.html">Cart State Machine</a></li>
+            <li><a href="checkout.html">Multi-step Checkout Validation</a></li>
+            <li><a href="order-tracking.html">Fulfillment Mock Engine</a></li>
+            <li><a href="../../index.html">Portfolio Hub Index</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>QA SUPPORT & TESTING</h5>
+          <ul class="footer-links-list" style="font-family: 'JetBrains Mono', monospace; font-size: 0.775rem;">
+            <li><strong>Spec Version:</strong> v2.4-STABLE</li>
+            <li><strong>Locator Policy:</strong> Strict data-testid</li>
+            <li><strong>Latency Injection:</strong> Configurable 0-800ms</li>
+            <li>✉ qa-support@shoptest.dev</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>RELEASE BULLETIN</h5>
+          <p style="font-size: 0.8rem; color:#64748b; line-height:1.45;">
+            Subscribe for test suite releases, schema updates, and synthetic payload announcements.
+          </p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed to synthetic test alerts!');">
+            <input type="email" placeholder="tester@organization.com" class="newsletter-input" required>
+            <button type="submit" class="newsletter-btn">➔</button>
+          </form>
+          <span class="newsletter-sub">Zero marketing spam. Only deterministic updates.</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <div>
+          &copy; 2025 ShopTest Testbed Inc. Engineered for deterministic visual regression & test automation benchmarks.
+        </div>
+        <div class="payment-badges">
+          <span>PAYMENT MOCKS:</span>
+          <span class="payment-pill">VISA</span>
+          <span class="payment-pill">MC</span>
+          <span class="payment-pill">AMEX</span>
+          <span class="stripe-sandbox-pill">STRIPE SANDBOX</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shop.js"></script>
+  <script>
+    let deliveryExtra = 0.00;
+
+    function renderCheckoutSummary() {
+      const cart = getStoredCart();
+      const promo = getStoredPromo();
+      const totals = calculateTotals(cart, promo, "ground");
+
+      // Render thumbnails
+      const previewContainer = document.getElementById("summary-items-preview");
+      previewContainer.innerHTML = "";
+
+      cart.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "preview-item-row";
+        row.innerHTML = `
+          <img src="${item.img}" alt="${item.title}" class="preview-thumb">
+          <div class="preview-item-info">
+            <div class="preview-item-title">${item.title}</div>
+            <div class="preview-item-sub">${item.color} &bull; Qty: ${item.quantity}</div>
+          </div>
+          <div class="preview-item-price">$${(item.unitPrice * item.quantity).toFixed(2)}</div>
+        `;
+        previewContainer.appendChild(row);
+      });
+
+      document.getElementById("checkout-item-count").textContent = `${cart.reduce((s,i) => s + i.quantity, 0)} Items`;
+
+      // Calculations with delivery extra
+      const subtotal = totals.subtotal;
+      const discount = totals.discount;
+      const taxable = Math.max(0, subtotal - discount);
+      const tax = taxable * 0.0825;
+      const finalDue = taxable + deliveryExtra + tax;
+
+      document.getElementById("chk-subtotal").textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById("chk-discount").textContent = `-$${discount.toFixed(2)}`;
+      document.getElementById("promo-discount-display").textContent = `-$${discount.toFixed(2)}`;
+      document.getElementById("chk-shipping").textContent = deliveryExtra === 0 ? "FREE ($0.00)" : `$${deliveryExtra.toFixed(2)}`;
+      document.getElementById("chk-tax").textContent = `$${tax.toFixed(2)}`;
+      document.getElementById("chk-total").textContent = `$${finalDue.toFixed(2)}`;
+      document.getElementById("btn-total-display").textContent = `$${finalDue.toFixed(2)}`;
+    }
+
+    function chooseDelivery(cost, el) {
+      deliveryExtra = cost;
+      document.querySelectorAll(".delivery-radio-option").forEach(o => o.classList.remove("selected"));
+      el.classList.add("selected");
+      el.querySelector("input").checked = true;
+      renderCheckoutSummary();
+    }
+
+    function prefillValidData() {
+      document.getElementById("contact-email").value = "alex.taylor@example.com";
+      document.getElementById("contact-phone").value = "+1 (555) 234-5678";
+      document.getElementById("ship-fname").value = "Alex";
+      document.getElementById("ship-lname").value = "Taylor";
+      document.getElementById("ship-address").value = "742 Evergreen Terrace";
+      document.getElementById("ship-apt").value = "Apt 4B";
+      document.getElementById("ship-city").value = "Springfield";
+      document.getElementById("ship-state").value = "OR";
+      document.getElementById("ship-zip").value = "97477";
+      document.getElementById("cardholder-name").value = "Alex Taylor";
+      document.getElementById("card-number").value = "4111 2222 3333 4444";
+      document.getElementById("card-exp").value = "08/28";
+      document.getElementById("card-cvv").value = "789";
+
+      const err = document.getElementById("checkout-error-alert");
+      err.style.display = "none";
+      document.getElementById("loc-matrix-error-status").textContent = "STANDBY";
+      document.getElementById("loc-matrix-error-status").className = "loc-status standby";
+    }
+
+    function triggerCardFailure() {
+      document.getElementById("card-number").value = "4000 0000 0000 0002";
+      const err = document.getElementById("checkout-error-alert");
+      document.getElementById("error-alert-msg").textContent = "Card Declined: Simulated 402 Payment Required for card 4000...0002";
+      err.style.display = "flex";
+      document.getElementById("loc-matrix-error-status").textContent = "TRIGGERED";
+      document.getElementById("loc-matrix-error-status").className = "loc-status ready";
+    }
+
+    function handleCheckoutSubmit(e) {
+      e.preventDefault();
+
+      const card = document.getElementById("card-number").value.replace(/\s+/g, '');
+      const err = document.getElementById("checkout-error-alert");
+
+      if (card.endsWith("0002")) {
+        triggerCardFailure();
+        return;
+      }
+
+      // Save order snapshot
+      const cart = getStoredCart();
+      const promo = getStoredPromo();
+      const totals = calculateTotals(cart, promo, "ground");
+
+      const orderData = {
+        orderId: "#ST-98402-ORD",
+        date: "Nov 17, 2026, 04:12 AM",
+        deliveryEta: "Thursday, Nov 20, 2026 by 7:00 PM",
+        trackingNo: "9400 1118 9922 4102",
+        status: "In Transit",
+        customer: {
+          name: `${document.getElementById("ship-fname").value} ${document.getElementById("ship-lname").value}`,
+          email: document.getElementById("contact-email").value,
+          address: `${document.getElementById("ship-address").value}, ${document.getElementById("ship-city").value}, ${document.getElementById("ship-state").value} ${document.getElementById("ship-zip").value}`
+        },
+        items: cart,
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        shipping: deliveryExtra,
+        tax: totals.tax,
+        totalPaid: totals.tax + Math.max(0, totals.subtotal - totals.discount) + deliveryExtra,
+        cardLast4: card.slice(-4) || "4444"
+      };
+
+      localStorage.setItem("shoptest_latest_order", JSON.stringify(orderData));
+
+      // Clear cart
+      localStorage.setItem("shoptest_cart", JSON.stringify([]));
+
+      // Navigate to order tracking
+      window.location.href = "order-tracking.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCheckoutSummary();
+    });
+  </script>
+</body>
+</html>

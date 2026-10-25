@@ -1,0 +1,516 @@
+:root {
+  --primary-green: #059669;
+  --primary-green-hover: #047857;
+  --primary-green-light: #10b981;
+  --badge-green-bg: #d1fae5;
+  --badge-green-text: #065f46;
+  --dark-slate: #0f172a;
+  --dark-slate-hover: #1e293b;
+  --text-dark: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --border-color: #e2e8f0;
+  --border-card: #e5e7eb;
+  --bg-page: #f8fafc;
+  --bg-white: #ffffff;
+  --danger-red: #ef4444;
+  --warning-amber: #f59e0b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ====================================================
+   Top Nav Bar (Consistent Across All ShopTest Pages)
+==================================================== */
+.top-nav {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0.65rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.nav-brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+}
+
+.brand-logo-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.02em;
+}
+
+.nav-spec-badge {
+  background: var(--badge-green-bg);
+  color: var(--badge-green-text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Nav Search */
+.nav-search-bar {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.2rem 0.35rem;
+  flex: 1;
+  max-width: 320px;
+}
+
+.nav-category-select {
+  border: none;
+  background: none;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 0.35rem 0.5rem;
+  outline: none;
+  border-right: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.nav-search-btn {
+  background: none;
+  border: none;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Nav Tabs */
+.nav-tabs-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+}
+
+.nav-tabs-menu a {
+  text-decoration: none;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.nav-tabs-menu a:hover {
+  color: var(--text-dark);
+}
+
+.nav-tabs-menu a.active {
+  background: #f1f5f9;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+/* Nav Right Actions */
+.nav-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-nav-cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-nav-cart:hover {
+  background: #f8fafc;
+}
+
+.cart-qty-pill {
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.user-nav-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  object-fit: cover;
+  background: #e2e8f0;
+}
+
+/* ====================================================
+   Test Fixture Banner (Sub-header)
+==================================================== */
+.fixture-banner {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.4rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.fixture-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fixture-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fixture-dot {
+  width: 7px;
+  height: 7px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.fixture-id-code {
+  background: #f1f5f9;
+  border: 1px solid var(--border-color);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: #0f172a;
+}
+
+.fixture-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-reset-fixture {
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: var(--text-dark);
+}
+.btn-reset-fixture:hover { background: #f1f5f9; }
+
+/* ====================================================
+   Breadcrumbs
+==================================================== */
+.breadcrumbs-bar {
+  max-width: 1380px;
+  margin: 1rem auto 0;
+  padding: 0 1.5rem;
+  font-size: 0.785rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.breadcrumbs-bar a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.breadcrumbs-bar a:hover {
+  color: var(--text-dark);
+}
+.breadcrumbs-bar .current {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+/* ====================================================
+   SDET Test Contract Footer Strip
+==================================================== */
+.sdet-contract-bar {
+  background: #eef2f6;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.6rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: #475569;
+}
+
+.sdet-contract-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sdet-tag {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+
+/* ====================================================
+   Global ShopTest Footer
+==================================================== */
+.shop-footer {
+  background: #f8fafc;
+  border-top: 1px solid var(--border-color);
+  padding: 3.5rem 1.5rem 2rem;
+  margin-top: 4rem;
+}
+
+.footer-container {
+  max-width: 1380px;
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1.1fr 1.3fr;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.footer-col h5 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.footer-links-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.footer-links-list a {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-links-list a:hover {
+  color: var(--text-dark);
+}
+
+.footer-brand-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.85rem;
+}
+
+.footer-brand-desc {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+
+.btn-dom-fixture {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.newsletter-form {
+  display: flex;
+  margin: 0.75rem 0;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px 0 0 6px;
+  font-size: 0.8rem;
+  outline: none;
+}
+.newsletter-input:focus {
+  border-color: #0f172a;
+}
+
+.newsletter-btn {
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 0 0.95rem;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+}
+
+.newsletter-sub {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+.footer-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.payment-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+}
+
+.payment-pill {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.stripe-sandbox-pill {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* ====================================================
+   Mobile Responsiveness for ShopTest Frame
+==================================================== */
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .nav-container {
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+  }
+  .nav-search-bar {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+  }
+  .nav-tabs-menu {
+    order: 4;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-tabs-menu::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  .fixture-inner, .sdet-contract-inner, .footer-bottom-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

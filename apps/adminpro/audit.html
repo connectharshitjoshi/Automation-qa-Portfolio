@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Trail & Security Event Logs - AdminPro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .audit-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Page Header */
+    .audit-hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+    }
+
+    .hero-title-group h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .compliance-pill {
+      font-size: 0.72rem;
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+      color: #047857;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    .hero-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .live-stream-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      font-size: 0.785rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    /* 3 Threat & Audit KPI Cards */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .audit-kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .audit-kpi-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .audit-kpi-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .audit-kpi-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .badge-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .badge-info { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+
+    .audit-kpi-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dark);
+      line-height: 1.1;
+      margin-bottom: 0.45rem;
+    }
+
+    .audit-kpi-sub {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+
+    /* SDET Synthetic Fixture Banner */
+    .sdet-fixture-banner {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.12);
+    }
+
+    .fixture-info-left h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+      color: #f8fafc;
+    }
+
+    .fixture-info-left p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      max-width: 820px;
+    }
+
+    .btn-synthetic-trigger {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.15s ease-in-out;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+      white-space: nowrap;
+    }
+    .btn-synthetic-trigger:hover {
+      background: #d97706;
+      transform: translateY(-1px);
+    }
+
+    /* Filter Controls Card */
+    .filter-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-search-wrap {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      flex: 1;
+      min-width: 280px;
+      max-width: 500px;
+      gap: 0.5rem;
+    }
+
+    .filter-search-wrap input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 0.85rem;
+      color: var(--text-dark);
+    }
+
+    .filter-dropdowns {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .audit-select {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.825rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      cursor: pointer;
+      outline: none;
+    }
+
+    .filter-count-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      background: #f1f5f9;
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Table Container */
+    .table-container {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.825rem;
+    }
+
+    .audit-table th {
+      background: #f8fafc;
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .audit-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .audit-table tr:hover td {
+      background-color: #fafbfc;
+    }
+
+    .ts-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.785rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+    .ts-rel {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 0.15rem;
+    }
+
+    .actor-cell {
+      display: flex;
+      flex-direction: column;
+    }
+    .actor-name {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .actor-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Action & Status Badges */
+    .action-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 600;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      color: #1e293b;
+    }
+
+    .resource-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #3b82f6;
+      background: #eff6ff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .sev-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-block;
+    }
+    .sev-critical { background: #fee2e2; color: #b91c1c; }
+    .sev-warning { background: #fef3c7; color: #b45309; }
+    .sev-info { background: #e0f2fe; color: #0284c7; }
+    .sev-success { background: #dcfce7; color: #15803d; }
+
+    .status-pill {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .status-ok { color: #059669; }
+    .status-err { color: #dc2626; }
+    .status-warn { color: #d97706; }
+
+    .btn-forensics-json {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s;
+    }
+    .btn-forensics-json:hover {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    /* Table Footer */
+    .table-footer {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.785rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .merkle-proof {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-pag {
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+    .btn-pag:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Forensic Modal */
+    .forensic-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .forensic-modal {
+      background: #0f172a;
+      color: #f8fafc;
+      width: 90%;
+      max-width: 680px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.15rem 1.5rem;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .modal-head h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-close-modal {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    .btn-close-modal:hover { color: #ffffff; }
+
+    .modal-body {
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .json-code-box {
+      background: #020617;
+      border: 1px solid #1e293b;
+      padding: 1rem;
+      border-radius: 8px;
+      color: #38bdf8;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .modal-foot {
+      padding: 0.85rem 1.5rem;
+      background: #1e293b;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .kpi-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .filter-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-search-wrap {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .audit-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .sdet-fixture-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="top-header">
+    <div class="header-top-row">
+      <div class="brand-section">
+        <a href="index.html" class="brand-section">
+          <div class="brand-logo-icon">📊</div>
+          <span class="brand-name">AdminPro</span>
+        </a>
+        <span class="env-pill">● PROD-US-EAST</span>
+        <span class="status-live-pill"><span class="dot-green"></span> All Systems Operational</span>
+      </div>
+
+      <div class="header-search-bar">
+        <span>🔍</span>
+        <input type="text" class="header-search-input" placeholder="Global resource, tenant or telemetry search... Ctrl + K" data-testid="global-search-input">
+        <span class="kbd-shortcut">Ctrl + K</span>
+      </div>
+
+      <div class="header-right-meta">
+        <button class="bell-btn" title="System Notifications">
+          <span>🔔</span>
+          <span class="bell-badge"></span>
+        </button>
+        <div class="user-profile-widget" title="Super Admin Profile">
+          <img src="images/avatar-alex.jpg" alt="Alex Rivera" class="user-avatar-img" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid #10b981;">
+          <div class="user-info-text">
+            <span class="user-info-name">Alex Rivera</span>
+            <span class="user-info-role">Super Admin</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Strip -->
+    <nav class="header-nav-tabs">
+      <ul class="nav-tabs-inner">
+        <li><a href="index.html" data-testid="nav-tab-overview">Overview & Metrics</a></li>
+        <li><a href="users.html" data-testid="nav-tab-users">User Management</a></li>
+        <li><a href="rbac.html" data-testid="nav-tab-rbac">RBAC & Permissions</a></li>
+        <li><a href="audit.html" class="active" data-testid="nav-tab-audit">Audit Trail & Logs</a></li>
+        <li><a href="settings.html" data-testid="nav-tab-settings">System & API Settings</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="telemetry-bar">
+    <div class="telemetry-inner">
+      <div>
+        <span style="color:#059669; font-weight:bold;">● Audit Event Ingestion:</span> 50ms Real-Time Poll &bull; Cryptographic Merkle Tree: <code>SYNCED</code> &bull; Spec: <code>RFC-6962 CT Log</code>
+      </div>
+      <div>
+        <span style="color:#0284c7; font-weight:bold;">✔ SOX & SOC-2 TYPE II COMPLIANCE HARNESS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="audit-container">
+
+    <!-- Page Hero Header -->
+    <section class="audit-hero-header">
+      <div class="hero-title-group">
+        <h1>
+          Audit Trail & Security Event Logs
+          <span class="compliance-pill">SOX/SOC2 COMPLIANT</span>
+        </h1>
+        <p class="hero-sub">Deterministic immutable event stream with cryptographic nonces and live payload forensics.</p>
+      </div>
+
+      <div class="hero-controls">
+        <div class="live-stream-badge">
+          <span class="pulse-dot"></span>
+          Streaming Live 50ms
+        </div>
+        <button class="btn-outline-white" id="btn-export-logs" data-testid="export-logs-btn" onclick="exportAuditLogs()">
+          📥 Export CSV / JSON
+        </button>
+        <button class="btn-outline-white" id="btn-clear-filters" data-testid="clear-filters-btn" onclick="clearAuditFilters()">
+          ✖ Clear View Filters
+        </button>
+      </div>
+    </section>
+
+    <!-- 3 Stat Tiles -->
+    <section class="kpi-cards-grid">
+      <!-- Card 1 -->
+      <div class="audit-kpi-card" data-testid="kpi-failed-logins">
+        <div class="audit-kpi-top">
+          <span class="audit-kpi-title">Failed Login Attempts</span>
+          <span class="audit-kpi-badge badge-danger">+4 in last hour (Threat Flag)</span>
+        </div>
+        <div class="audit-kpi-value" id="val-failed-logins">14</div>
+        <div class="audit-kpi-sub">Ingress IP blacklisting threshold: 25 attempts</div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="audit-kpi-card" data-testid="kpi-privilege-escalations">
+        <div class="audit-kpi-top">
+          <span class="audit-kpi-title">Admin Privilege Escalations</span>
+          <span class="audit-kpi-badge badge-success">Verified by Root MFA</span>
+        </div>
+        <div class="audit-kpi-value">2</div>
+        <div class="audit-kpi-sub">Last escalation: Alex Rivera (iam.roles.superadmin)</div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="audit-kpi-card" data-testid="kpi-export-events">
+        <div class="audit-kpi-top">
+          <span class="audit-kpi-title">Data Export Events</span>
+          <span class="audit-kpi-badge badge-info">Customer CSV dump (Authorized)</span>
+        </div>
+        <div class="audit-kpi-value">1</div>
+        <div class="audit-kpi-sub">Target: GDPR Compliance Request #9924</div>
+      </div>
+    </section>
+
+    <!-- SDET Mock Log Injector & CI/CD Telemetry Fixture -->
+    <section class="sdet-fixture-banner">
+      <div class="fixture-info-left">
+        <h3>⚡ SDET Mock Log Injector & CI/CD Telemetry Fixture</h3>
+        <p>Simulate zero-day anomaly injection, credential brute-forcing, or privilege escalation payloads for automated regression assertions.</p>
+      </div>
+      <button class="btn-synthetic-trigger" data-testid="trigger-synthetic-incident-btn" onclick="triggerSyntheticIncident()">
+        ⚡ Trigger Synthetic Security Incident
+      </button>
+    </section>
+
+    <!-- Search & Faceted Filter Controls -->
+    <section class="filter-card">
+      <div class="filter-search-wrap">
+        <span>🔍</span>
+        <input type="text" id="audit-search-input" placeholder="Filter by actor, IP, SHA nonce or target resource..." data-testid="audit-search-input" oninput="filterLogs()">
+      </div>
+
+      <div class="filter-dropdowns">
+        <select class="audit-select" id="audit-severity-filter" data-testid="audit-severity-filter" onchange="filterLogs()">
+          <option value="ALL">Severity: All</option>
+          <option value="CRITICAL">CRITICAL</option>
+          <option value="WARNING">WARNING</option>
+          <option value="INFO">INFO</option>
+          <option value="SUCCESS">SUCCESS</option>
+        </select>
+
+        <select class="audit-select" id="audit-resource-filter" data-testid="audit-resource-filter" onchange="filterLogs()">
+          <option value="ALL">Resource: All</option>
+          <option value="iam.roles">iam.roles</option>
+          <option value="vault.tokens">vault.tokens</option>
+          <option value="auth.mfa">auth.mfa</option>
+          <option value="db.customers">db.customers</option>
+          <option value="postgres.schema">postgres.schema</option>
+          <option value="kms.key">kms.key</option>
+          <option value="security.firewall">security.firewall</option>
+        </select>
+
+        <select class="audit-select" id="audit-window-filter" data-testid="audit-window-filter" onchange="filterLogs()">
+          <option value="24h">Window: Last 24 Hours</option>
+          <option value="1h">Window: Last 1 Hour</option>
+          <option value="7d">Window: Last 7 Days</option>
+        </select>
+
+        <span class="filter-count-badge" id="audit-count-badge" data-testid="audit-count">8 matches</span>
+      </div>
+    </section>
+
+    <!-- Audit Event Log Table -->
+    <section class="table-container">
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th>Timestamp (UTC)</th>
+            <th>Actor & Geolocation</th>
+            <th>Event Action</th>
+            <th>Target Resource</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Forensics</th>
+          </tr>
+        </thead>
+        <tbody id="audit-table-body">
+          <!-- Row 1 -->
+          <tr data-testid="audit-row" data-severity="CRITICAL" data-resource="iam.roles">
+            <td>
+              <span class="ts-mono">2026-10-25 08:34:12 UTC</span>
+              <span class="ts-rel">2m ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">Alex Rivera</span>
+                <span class="actor-meta">root@adminpro.io &bull; 192.0.2.14 (US-VA)</span>
+              </div>
+            </td>
+            <td><span class="action-badge">USER_ROLE_ELEVATION</span></td>
+            <td><code class="resource-code">iam.roles.superadmin</code></td>
+            <td><span class="sev-pill sev-critical">CRITICAL</span></td>
+            <td><span class="status-pill status-ok">✔ ACCEPTED / 200</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9021', 'USER_ROLE_ELEVATION', 'Alex Rivera', 'iam.roles.superadmin', '200 OK')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 2 -->
+          <tr data-testid="audit-row" data-severity="INFO" data-resource="vault.tokens">
+            <td>
+              <span class="ts-mono">2026-10-25 08:21:05 UTC</span>
+              <span class="ts-rel">15m ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">automated-worker</span>
+                <span class="actor-meta">bot@vault.prod &bull; 10.244.3.11 (Internal K8s)</span>
+              </div>
+            </td>
+            <td><span class="action-badge">TOKEN_ROTATION</span></td>
+            <td><code class="resource-code">vault.tokens.prod-db</code></td>
+            <td><span class="sev-pill sev-info">INFO</span></td>
+            <td><span class="status-pill status-ok">✔ COMMITTED / 201</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9020', 'TOKEN_ROTATION', 'automated-worker', 'vault.tokens.prod-db', '201 Created')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 3 -->
+          <tr data-testid="audit-row" data-severity="WARNING" data-resource="auth.mfa">
+            <td>
+              <span class="ts-mono">2026-10-25 08:14:49 UTC</span>
+              <span class="ts-rel">22m ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">Unknown / Ingress</span>
+                <span class="actor-meta">unauth@gateway &bull; 66.249.79.1 (EU-DE)</span>
+              </div>
+            </td>
+            <td><span class="action-badge" style="color:#b91c1c; border-color:#fca5a5;">FAILED_AUTH_CHALLENGE</span></td>
+            <td><code class="resource-code">auth.mfa.totp</code></td>
+            <td><span class="sev-pill sev-warning">WARNING</span></td>
+            <td><span class="status-pill status-err">✖ DENIED / 401</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9019', 'FAILED_AUTH_CHALLENGE', 'Unknown / Ingress', 'auth.mfa.totp', '401 Unauthorized')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 4 -->
+          <tr data-testid="audit-row" data-severity="WARNING" data-resource="db.customers">
+            <td>
+              <span class="ts-mono">2026-10-25 07:55:00 UTC</span>
+              <span class="ts-rel">41m ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">David Kim</span>
+                <span class="actor-meta">david.kim@example.com &bull; 198.51.100.82 (US-CA)</span>
+              </div>
+            </td>
+            <td><span class="action-badge">EXPORT_CUSTOMER_RECORDS</span></td>
+            <td><code class="resource-code">db.customers.dump</code></td>
+            <td><span class="sev-pill sev-warning">WARNING</span></td>
+            <td><span class="status-pill status-ok">✔ ACCEPTED / 200</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9018', 'EXPORT_CUSTOMER_RECORDS', 'David Kim', 'db.customers.dump', '200 OK')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 5 -->
+          <tr data-testid="audit-row" data-severity="CRITICAL" data-resource="postgres.schema">
+            <td>
+              <span class="ts-mono">2026-10-25 07:30:18 UTC</span>
+              <span class="ts-rel">1h ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">Elena Rostova</span>
+                <span class="actor-meta">elena.r@agency.com &bull; 203.0.113.5 (UK-LON)</span>
+              </div>
+            </td>
+            <td><span class="action-badge">DATABASE_SCHEMA_MIGRATE</span></td>
+            <td><code class="resource-code">postgres.public.schema</code></td>
+            <td><span class="sev-pill sev-critical">CRITICAL</span></td>
+            <td><span class="status-pill status-ok">✔ COMMITTED / 200</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9017', 'DATABASE_SCHEMA_MIGRATE', 'Elena Rostova', 'postgres.public.schema', '200 OK')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 6 -->
+          <tr data-testid="audit-row" data-severity="INFO" data-resource="kms.key">
+            <td>
+              <span class="ts-mono">2026-10-25 07:12:44 UTC</span>
+              <span class="ts-rel">1h ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">KMS-Daemon</span>
+                <span class="actor-meta">kms@aws.us-east &bull; 172.16.0.42 (Internal VPC)</span>
+              </div>
+            </td>
+            <td><span class="action-badge">ENCRYPTION_KEY_REVOKE</span></td>
+            <td><code class="resource-code">kms.key.primary-us</code></td>
+            <td><span class="sev-pill sev-info">INFO</span></td>
+            <td><span class="status-pill status-ok">✔ ACCEPTED / 200</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9016', 'ENCRYPTION_KEY_REVOKE', 'KMS-Daemon', 'kms.key.primary-us', '200 OK')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 7 -->
+          <tr data-testid="audit-row" data-severity="INFO" data-resource="iam.roles">
+            <td>
+              <span class="ts-mono">2026-10-25 06:45:11 UTC</span>
+              <span class="ts-rel">2h ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">SecOps Bot</span>
+                <span class="actor-meta">secops@monitor.cloud &bull; 192.0.2.89 (US-IL)</span>
+              </div>
+            </td>
+            <td><span class="action-badge">SESSION_TERMINATED</span></td>
+            <td><code class="resource-code">session.jwt.usr_992</code></td>
+            <td><span class="sev-pill sev-info">INFO</span></td>
+            <td><span class="status-pill status-warn">● REVOKED / 204</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9015', 'SESSION_TERMINATED', 'SecOps Bot', 'session.jwt.usr_992', '204 No Content')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 8 -->
+          <tr data-testid="audit-row" data-severity="INFO" data-resource="security.firewall">
+            <td>
+              <span class="ts-mono">2026-10-25 06:10:02 UTC</span>
+              <span class="ts-rel">2h ago</span>
+            </td>
+            <td>
+              <div class="actor-cell">
+                <span class="actor-name">Alex Rivera</span>
+                <span class="actor-meta">root@adminpro.io &bull; 192.0.2.14 (US-VA)</span>
+              </div>
+            </td>
+            <td><span class="action-badge">FIREWALL_RULE_APPLIED</span></td>
+            <td><code class="resource-code">security.firewall.sg-prod</code></td>
+            <td><span class="sev-pill sev-info">INFO</span></td>
+            <td><span class="status-pill status-ok">✔ COMMITTED / 200</span></td>
+            <td>
+              <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('EVT-9014', 'FIREWALL_RULE_APPLIED', 'Alex Rivera', 'security.firewall.sg-prod', '200 OK')">
+                { } JSON
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Table Footer & Merkle Hash -->
+      <div class="table-footer">
+        <div class="merkle-proof">
+          <span>🔒 Showing 1-8 of 2,418 events</span>
+          <span>&bull;</span>
+          <span>SHA-256 Merkle root verification synced: <code>0x9b4e72a81c4e976f2...</code></span>
+        </div>
+
+        <div class="pagination-controls">
+          <button class="btn-pag" disabled data-testid="btn-prev-page">&larr; Previous</button>
+          <span style="font-size:0.75rem; font-weight:600;">Page 1 of 302</span>
+          <button class="btn-pag" data-testid="btn-next-page">Next &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Forensics JSON Inspection Modal -->
+  <div class="forensic-modal-backdrop" id="forensicModal">
+    <div class="forensic-modal">
+      <div class="modal-head">
+        <h4><span style="color:#38bdf8;">[ Forensic Inspection ]</span> <span id="modalEventId">EVT-9021</span></h4>
+        <button class="btn-close-modal" onclick="closeForensicsModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="json-code-box" id="jsonPayloadDisplay">
+          <!-- Dynamic JSON Content -->
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-outline-white" onclick="copyJsonPayload()">📋 Copy Payload</button>
+        <button class="btn-primary-dark" onclick="closeForensicsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Enterprise Footer -->
+  <footer class="admin-footer">
+    <div class="footer-inner-row">
+      <div class="footer-left-info">
+        <strong>AdminPro Enterprise</strong>
+        <span>&bull;</span>
+        <span>v3.12-enterprise</span>
+        <span>&bull;</span>
+        <span>spec::deterministic-loc-v4</span>
+      </div>
+      <div class="footer-nav-links">
+        <a href="../../index.html">&larr; Back to Portfolio Hub</a>
+        <a href="index.html">System Overview</a>
+        <a href="users.html">User Management</a>
+        <a href="rbac.html">RBAC Matrix</a>
+        <a href="audit.html">Audit Trail</a>
+        <a href="settings.html">System Settings</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="admin.js"></script>
+  <script>
+    // Live Filter Engine
+    function filterLogs() {
+      const query = document.getElementById("audit-search-input").value.toLowerCase().trim();
+      const severity = document.getElementById("audit-severity-filter").value;
+      const resource = document.getElementById("audit-resource-filter").value;
+      const rows = document.querySelectorAll("#audit-table-body tr");
+
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const rowSev = row.getAttribute("data-severity");
+        const rowRes = row.getAttribute("data-resource") || "";
+
+        const matchesQuery = query === "" || text.includes(query);
+        const matchesSev = severity === "ALL" || rowSev === severity;
+        const matchesRes = resource === "ALL" || rowRes.includes(resource);
+
+        if (matchesQuery && matchesSev && matchesRes) {
+          row.style.display = "";
+          visibleCount++;
+        } else {
+          row.style.display = "none";
+        }
+      });
+
+      document.getElementById("audit-count-badge").textContent = `${visibleCount} match${visibleCount === 1 ? '' : 'es'}`;
+    }
+
+    function clearAuditFilters() {
+      document.getElementById("audit-search-input").value = "";
+      document.getElementById("audit-severity-filter").value = "ALL";
+      document.getElementById("audit-resource-filter").value = "ALL";
+      document.getElementById("audit-window-filter").value = "24h";
+      filterLogs();
+      showAdminToast("Audit view filters cleared to system default.");
+    }
+
+    function exportAuditLogs() {
+      showAdminToast("Export generated: audit-trail-prod-20261025.json (2,418 events bundled).");
+    }
+
+    // SDET Synthetic Incident Injection
+    function triggerSyntheticIncident() {
+      const tbody = document.getElementById("audit-table-body");
+      const eventId = "EVT-" + Math.floor(1000 + Math.random() * 9000);
+      const now = new Date();
+      const ts = now.toISOString().replace("T", " ").substring(0, 19) + " UTC";
+
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-testid", "audit-row");
+      tr.setAttribute("data-severity", "CRITICAL");
+      tr.setAttribute("data-resource", "iam.roles");
+      tr.style.backgroundColor = "#fff1f2";
+      tr.style.transition = "background-color 2s ease";
+
+      tr.innerHTML = `
+        <td>
+          <span class="ts-mono">${ts}</span>
+          <span class="ts-rel" style="color:#e11d48; font-weight:700;">JUST NOW (SYNTHETIC)</span>
+        </td>
+        <td>
+          <div class="actor-cell">
+            <span class="actor-name" style="color:#b91c1c;">sdet-synthetic-agent</span>
+            <span class="actor-meta">ci-runner@playwright.e2e &bull; 10.0.99.44 (CI-POD)</span>
+          </div>
+        </td>
+        <td><span class="action-badge" style="border-color:#f43f5e; color:#be123c;">INJECT_PRIVILEGE_ATTACK</span></td>
+        <td><code class="resource-code" style="color:#be123c; background:#ffe4e6;">iam.roles.root.override</code></td>
+        <td><span class="sev-pill sev-critical">CRITICAL</span></td>
+        <td><span class="status-pill status-err">✖ BLOCKED / 403</span></td>
+        <td>
+          <button class="btn-forensics-json" data-testid="view-json-btn" onclick="openForensicsModal('${eventId}', 'INJECT_PRIVILEGE_ATTACK', 'sdet-synthetic-agent', 'iam.roles.root.override', '403 Forbidden')">
+            { } JSON
+          </button>
+        </td>
+      `;
+
+      tbody.insertBefore(tr, tbody.firstChild);
+
+      // Increment failed logins counter
+      const failedEl = document.getElementById("val-failed-logins");
+      if (failedEl) {
+        failedEl.textContent = parseInt(failedEl.textContent, 10) + 1;
+      }
+
+      filterLogs();
+      showAdminToast(`Synthetic security anomaly [${eventId}] dispatched! WAF rule triggered.`, "error");
+
+      setTimeout(() => {
+        tr.style.backgroundColor = "";
+      }, 3000);
+    }
+
+    // Forensic Modal Handling
+    let currentPayloadString = "";
+
+    function openForensicsModal(id, action, actor, resource, status) {
+      document.getElementById("modalEventId").textContent = id;
+      
+      const payloadObj = {
+        event_id: id,
+        timestamp_utc: new Date().toISOString(),
+        action: action,
+        actor: {
+          identifier: actor,
+          user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+          ip_source: "192.0.2.14",
+          geo_asn: "AS15169 Google LLC"
+        },
+        target: {
+          resource_urn: `urn:adminpro:cluster:us-east:resource:${resource}`,
+          cluster_node: "us-east-prod-k8s-w04"
+        },
+        cryptographic_proof: {
+          nonce: "0x7f4b82d9a1c5e638",
+          merkle_leaf_hash: "sha256:d84f88b0938b8c2ecda1bc04899c75be7e3c9ecbbba02cfbfa99009945112e02",
+          signature: "ECDSA_P256_SHA256:3045022100e4ab91223971e..."
+        },
+        http_envelope: {
+          status: status,
+          request_id: "req_a9c028df_993b",
+          latency_ms: 18.4
+        }
+      };
+
+      currentPayloadString = JSON.stringify(payloadObj, null, 2);
+      document.getElementById("jsonPayloadDisplay").textContent = currentPayloadString;
+      document.getElementById("forensicModal").style.display = "flex";
+    }
+
+    function closeForensicsModal() {
+      document.getElementById("forensicModal").style.display = "none";
+    }
+
+    function copyJsonPayload() {
+      if (navigator.clipboard && currentPayloadString) {
+        navigator.clipboard.writeText(currentPayloadString).then(() => {
+          showAdminToast("Forensic JSON payload copied to clipboard.");
+        });
+      } else {
+        showAdminToast("Payload copied to clipboard.");
+      }
+    }
+
+    // Close on backdrop click
+    window.addEventListener("click", (e) => {
+      const modal = document.getElementById("forensicModal");
+      if (e.target === modal) {
+        closeForensicsModal();
+      }
+    });
+  </script>
+</body>
+</html>

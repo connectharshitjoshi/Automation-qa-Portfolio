@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transfer & Pay Funds - DemoBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .transfer-page-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Page Hero Header */
+    .transfer-hero-head {
+      margin-bottom: 1.5rem;
+    }
+    .hero-sublabel {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #059669;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.25rem;
+    }
+    .hero-main-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-dark);
+    }
+    .hero-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Top 2 Account Cards */
+    .transfer-acc-cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    /* Quick Send Recipient Bar */
+    .quick-send-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .quick-send-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .quick-send-head h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .recipients-scroll-row {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+    }
+
+    .recipient-chip-btn {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .recipient-chip-btn:hover {
+      background: #ffffff;
+      border-color: #059669;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12);
+    }
+    .chip-avatar {
+      width: 28px;
+      height: 28px;
+      background: #e2e8f0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .chip-name {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .chip-detail {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Main Transfer Grid Layout */
+    .transfer-grid-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.75rem;
+      margin-bottom: 2.5rem;
+      align-items: start;
+    }
+
+    .transfer-form-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+
+    .transfer-tabs-row {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      gap: 0.25rem;
+    }
+
+    .t-tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 0.55rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .t-tab-btn.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .quick-amount-pills {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.45rem;
+    }
+    .amt-pill {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .amt-pill:hover {
+      background: #e2e8f0;
+    }
+
+    /* Ledger Breakdown in Form */
+    .transfer-fee-breakdown {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+    }
+    .fee-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+    }
+
+    /* Right Sidebar Widgets */
+    .sidebar-widgets-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .limit-progress-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .limit-title-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .limit-bar-track {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .limit-bar-fill {
+      width: 15%;
+      height: 100%;
+      background: #059669;
+    }
+
+    .safeguards-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .safeguards-card h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+    }
+    .safeguard-bullet {
+      font-size: 0.775rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+    }
+
+    /* Recent Transfer Activity Table */
+    .activity-table-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+    .activity-table-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .activity-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+    }
+    .activity-table th {
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .activity-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .transfer-acc-cards-row, .transfer-grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .activity-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="bank-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-section">
+        <div class="brand-icon">💳</div>
+        <span class="brand-title">DemoBank</span>
+        <span class="bank-tag">SIMULATOR</span>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="bank-nav-list">
+        <li><a href="index.html" data-testid="nav-dashboard">Dashboard</a></li>
+        <li><a href="transfer.html" class="active" data-testid="nav-transfer">Transfer & Pay</a></li>
+        <li><a href="deposit.html" data-testid="nav-deposit">Quick Deposit</a></li>
+        <li><a href="cards.html" data-testid="nav-cards">Credit Cards</a></li>
+        <li><a href="transactions.html" data-testid="nav-transactions">Transactions</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </nav>
+
+      <!-- User & Security Meta -->
+      <div class="header-right-meta">
+        <span class="security-badge-pill">🔒 256-Bit SSL</span>
+        <div class="user-client-widget">
+          <img src="images/customer-sophia.jpg" alt="Sophia Martinez" class="user-avatar-circle" style="object-fit:cover; border:2px solid #10b981;">
+          <div class="user-text-info">
+            <span class="user-name-title">Sophia Martinez</span>
+            <span class="user-tier-label">Tier 1 Premier #4910-88</span>
+          </div>
+        </div>
+        <a href="login.html" class="btn-signout">Log Out</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="fednow-strip">
+    <div class="fednow-inner">
+      <div>
+        <span class="dot-green-live"></span>
+        <span>FedNow Real-Time Rail Online &bull; Daily ACH Limit: $25,000.00 remaining</span>
+      </div>
+      <div>
+        <span style="color:#10b981; font-weight:700;">PORTAL TREASURY SERVICES</span> &bull; <span>MOVE CAPITAL</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="transfer-page-container">
+
+    <!-- Page Title Header -->
+    <section class="transfer-hero-head">
+      <div class="hero-sublabel">PORTAL TREASURY SERVICES &bull; MOVE CAPITAL</div>
+      <h1 class="hero-main-title">Transfer & Pay Funds</h1>
+      <p class="hero-desc">Instantly move funds between accounts or send to a recipient. Cut-off: 5:00 PM EST &bull; Clearing: Instantaneous</p>
+    </section>
+
+    <!-- Top 2 Account Metric Cards -->
+    <section class="transfer-acc-cards-row">
+      <div class="bank-acc-card" data-testid="card-checking">
+        <div class="acc-card-top">
+          <span class="acc-type-label">Checking Account</span>
+          <span class="acc-num-code">**** 4829</span>
+        </div>
+        <div class="acc-balance-num" id="transferCheckingBal">$5,420.50</div>
+        <div class="acc-card-foot">
+          <span>Available for immediate wire</span>
+          <span style="color:#059669; font-weight:700;">Zero Hold</span>
+        </div>
+      </div>
+
+      <div class="bank-acc-card" data-testid="card-savings">
+        <div class="acc-card-top">
+          <span class="acc-type-label">High-Yield Savings</span>
+          <span class="acc-num-code">**** 9104</span>
+        </div>
+        <div class="acc-balance-num" id="transferSavingsBal">$18,250.00</div>
+        <div class="acc-card-foot">
+          <span>4.50% APY Interest Tier</span>
+          <span style="color:#059669; font-weight:700;">FDIC Insured</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Send Frequent Contacts Row -->
+    <section class="quick-send-card">
+      <div class="quick-send-head">
+        <h4>⚡ Quick Send &bull; Recent FedNow P2P Contacts</h4>
+        <span style="font-size:0.75rem; color:#059669; font-weight:700;">Tap to autofill recipient</span>
+      </div>
+
+      <div class="recipients-scroll-row">
+        <button class="recipient-chip-btn" onclick="autofillRecipient('Alice Cooper', '1122', 150.00)">
+          <div class="chip-avatar">AC</div>
+          <div>
+            <div class="chip-name">Alice Cooper</div>
+            <div class="chip-detail">**** 1122 &bull; Checking</div>
+          </div>
+        </button>
+
+        <button class="recipient-chip-btn" onclick="autofillRecipient('Marcus Sterling', '8839', 500.00)">
+          <div class="chip-avatar">MS</div>
+          <div>
+            <div class="chip-name">Marcus Sterling</div>
+            <div class="chip-detail">**** 8839 &bull; Wire Rail</div>
+          </div>
+        </button>
+
+        <button class="recipient-chip-btn" onclick="autofillRecipient('Electric Utility Co', '9021', 124.60)">
+          <div class="chip-avatar">⚡</div>
+          <div>
+            <div class="chip-name">Electric Utility Co</div>
+            <div class="chip-detail">Bill Pay #9021-X</div>
+          </div>
+        </button>
+
+        <button class="recipient-chip-btn" style="border-style:dashed;" onclick="showBankToast('Opening Add Payee Directory...')">
+          <div class="chip-avatar">+</div>
+          <div>
+            <div class="chip-name">+ Add Payee</div>
+            <div class="chip-detail">New Wire / ACH</div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Transfer Grid -->
+    <div class="transfer-grid-layout">
+
+      <!-- Left Form Card -->
+      <section class="transfer-form-card">
+
+        <!-- Mode Tabs -->
+        <div class="transfer-tabs-row">
+          <button type="button" class="t-tab-btn active" onclick="switchTransferTab(this, 'intra')">Between My Accounts</button>
+          <button type="button" class="t-tab-btn" onclick="switchTransferTab(this, 'wire')">External Transfer / Wire</button>
+          <button type="button" class="t-tab-btn" onclick="switchTransferTab(this, 'bills')">Pay Bills & Utilities</button>
+        </div>
+
+        <!-- Wire Confirmed Banner for E2E Assertion -->
+        <div id="wire-confirmed-banner" class="feedback-banner success" data-testid="wire-confirmed-banner" style="display: none;">
+          ✔ Wire Confirmed & Settled via FedNow.
+        </div>
+        <div id="transfer-success-toast" class="feedback-banner success" data-testid="transfer-success-toast" style="display: none;">
+          Transfer executed successfully.
+        </div>
+
+        <form id="transferPageForm" onsubmit="handleTransferSubmit(event)" data-testid="transfer-form">
+          <div class="form-group-bank">
+            <label for="fromAccountSelect">From Account</label>
+            <select id="fromAccountSelect" class="bank-select" data-testid="transfer-from">
+              <option value="checking" selected>Checking Account (**** 4829) [Avail: $5,420.50]</option>
+              <option value="savings">High-Yield Savings (**** 9104) [Avail: $18,250.00]</option>
+            </select>
+          </div>
+
+          <div class="form-group-bank">
+            <label for="toRecipientSelect">Recipient / Payee</label>
+            <select id="toRecipientSelect" class="bank-select" data-testid="transfer-to recipient-account-select">
+              <option value="Transfer to my Savings" selected>Transfer to my Savings (**** 9104)</option>
+              <option value="Alice Cooper (**** 1122)">Alice Cooper (Chase **** 1122)</option>
+              <option value="Marcus Sterling (**** 8839)">Marcus Sterling (FedNow **** 8839)</option>
+              <option value="Electric Utility Co (Bill Pay)">Electric Utility Co (Bill Pay #9021-X)</option>
+            </select>
+          </div>
+
+          <div class="form-group-bank">
+            <label for="transferAmountInput">Amount ($ USD) * <span style="font-weight:normal; text-transform:none; color:var(--text-muted);">(Max instant: $5,000.00)</span></label>
+            <input type="number" step="0.01" min="1" id="transferAmountInput" class="bank-input" placeholder="0.00" value="0.00" required data-testid="account-transfer-amount transfer-amount" oninput="updateLedgerSummary()">
+
+            <div class="quick-amount-pills">
+              <button type="button" class="amt-pill" onclick="setTransferAmount(50)">$50</button>
+              <button type="button" class="amt-pill" onclick="setTransferAmount(100)">$100</button>
+              <button type="button" class="amt-pill" onclick="setTransferAmount(250)">$250</button>
+              <button type="button" class="amt-pill" onclick="setTransferAmount(500)">$500</button>
+              <button type="button" class="amt-pill" onclick="setTransferAmount(5420.50)">Max</button>
+            </div>
+          </div>
+
+          <div class="form-group-bank">
+            <label for="transferNoteInput">Description / Note</label>
+            <input type="text" id="transferNoteInput" class="bank-input" placeholder="e.g. Rent, Dinner split, Monthly bill" data-testid="transfer-memo">
+          </div>
+
+          <div class="form-group-bank">
+            <label>Transfer Schedule</label>
+            <div style="display:flex; gap:1.5rem; font-size:0.8rem; margin-top:0.25rem;">
+              <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+                <input type="radio" name="sched" value="instant" checked style="accent-color:#059669;"> One-time Instant
+              </label>
+              <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+                <input type="radio" name="sched" value="recurring" style="accent-color:#059669;"> Recurring
+              </label>
+            </div>
+          </div>
+
+          <!-- Ledger Calculation Breakdown Box -->
+          <div class="transfer-fee-breakdown">
+            <div class="fee-row">
+              <span>Transfer Subtotal:</span>
+              <strong id="summarySubtotal">$0.00</strong>
+            </div>
+            <div class="fee-row">
+              <span>Estimated Arrival:</span>
+              <span style="color:#059669; font-weight:700;">Instant (FedNow / ACH)</span>
+            </div>
+            <div class="fee-row">
+              <span>DemoBank Transfer Fee:</span>
+              <span style="color:#059669; font-weight:700;">$0.00 (Tier 1 Free)</span>
+            </div>
+            <div class="fee-row" style="border-top:1px dashed #cbd5e1; padding-top:0.4rem; margin-top:0.2rem; font-size:0.95rem; font-weight:800; color:var(--text-dark);">
+              <span>Total Debit Amount:</span>
+              <span id="summaryTotalDebit" style="color:#059669; font-family:var(--font-mono);">$0.00</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary-green" style="width:100%; justify-content:center;" id="btnExecuteTransfer" data-testid="btn-authorize-wire btn-submit-transfer">
+            &gt; Execute Transfer
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Sidebar Column -->
+      <aside class="sidebar-widgets-col">
+
+        <!-- Daily Transfer Limit -->
+        <div class="limit-progress-card">
+          <div class="limit-title-row">
+            <span>DAILY TRANSFER LIMIT</span>
+            <span style="color:#059669; font-family:var(--font-mono);">$21,250.00 REMAINING</span>
+          </div>
+          <div class="limit-bar-track">
+            <div class="limit-bar-fill"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-muted); font-family:var(--font-mono);">
+            <span>Daily Used: $3,750.00</span>
+            <span>$25,000.00 Total Allowance</span>
+          </div>
+        </div>
+
+        <!-- Security Safeguards -->
+        <div class="safeguards-card">
+          <h4>🛡️ Security Safeguards</h4>
+          <div class="safeguard-bullet">
+            <span>●</span>
+            <span>Biometric & PIN Verification prompt triggers automatically for transfers above $5,000.</span>
+          </div>
+          <div class="safeguard-bullet">
+            <span>●</span>
+            <span>Instant Fraud Shield cross-checks recipient bank routing through NACHA regulatory databases.</span>
+          </div>
+          <div class="safeguard-bullet">
+            <span>●</span>
+            <span>Zero-Fee FedNOW Rail provides finality of settlement within seconds without intermediary holds.</span>
+          </div>
+          <div style="margin-top:0.85rem; padding-top:0.75rem; border-top:1px solid #f1f5f9; font-size:0.75rem;">
+            <a href="#" style="color:#059669; font-weight:700; text-decoration:none;" onclick="showBankToast('Connecting to 24/7 Treasury Concierge...')">
+              Contact Treasury Concierge &rarr;
+            </a>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- Recent Transfer Activity Table -->
+    <section class="activity-table-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div>
+          <h3>Recent Transfer Activity</h3>
+          <p style="font-size:0.785rem; color:var(--text-muted);">Live audit ledger of outbound and intra-account transfers</p>
+        </div>
+        <span style="font-size:0.72rem; color:#059669; font-weight:700; font-family:var(--font-mono);">● Real-Time Sync Active</span>
+      </div>
+
+      <table class="activity-table">
+        <thead>
+          <tr>
+            <th>Reference ID</th>
+            <th>Timestamp</th>
+            <th>Recipient / Description</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="transferTableBody">
+          <!-- Row 1 -->
+          <tr>
+            <td><code>TX-91024-FED</code></td>
+            <td>Today, 2:14 PM</td>
+            <td><strong>Alice Cooper</strong> (**** 1122)</td>
+            <td><span style="font-size:0.7rem; background:#ecfdf5; color:#065f46; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">FedNOW Instant</span></td>
+            <td><span style="color:#059669; font-weight:700;">✔ Cleared</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#dc2626;">-$150.00</td>
+          </tr>
+          <!-- Row 2 -->
+          <tr>
+            <td><code>TX-88392-INT</code></td>
+            <td>Yesterday, 9:30 AM</td>
+            <td><strong>Savings &rarr; Checking</strong> Internal Transfer</td>
+            <td><span style="font-size:0.7rem; background:#f1f5f9; color:#334155; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">Intra-Account</span></td>
+            <td><span style="color:#059669; font-weight:700;">✔ Cleared</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#059669;">+$1,000.00</td>
+          </tr>
+          <!-- Row 3 -->
+          <tr>
+            <td><code>TX-77401-BIL</code></td>
+            <td>Oct 24, 2025</td>
+            <td><strong>Electric Utility Co</strong> (Monthly Power)</td>
+            <td><span style="font-size:0.7rem; background:#f1f5f9; color:#334155; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">Direct Bill Pay</span></td>
+            <td><span style="color:#059669; font-weight:700;">✔ Cleared</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#dc2626;">-$124.60</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="bank-footer">
+    <div class="footer-top-row">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span style="font-size:1.1rem;">🏛️</span>
+        <strong style="color:#ffffff;">DemoBank National Association</strong>
+      </div>
+      <div class="footer-compliance-badges">
+        <span>✔ Member FDIC</span>
+        <span>&bull;</span>
+        <span>Equal Housing Lender</span>
+        <span>&bull;</span>
+        <span>SIPC Protected</span>
+      </div>
+    </div>
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 DemoBank Financial Technologies, N.A. All rights reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="demobank.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      refreshBalances();
+    });
+
+    function refreshBalances() {
+      const state = getBankState();
+      document.getElementById("transferCheckingBal").textContent = formatUSD(state.accounts.checking.balance);
+      document.getElementById("transferSavingsBal").textContent = formatUSD(state.accounts.savings.balance);
+    }
+
+    function autofillRecipient(name, last4, amount) {
+      document.getElementById("toRecipientSelect").value = `${name} (**** ${last4})`;
+      document.getElementById("transferAmountInput").value = amount.toFixed(2);
+      document.getElementById("transferNoteInput").value = `Payment to ${name}`;
+      updateLedgerSummary();
+      showBankToast(`Recipient ${name} autofilled with $${amount.toFixed(2)}.`);
+    }
+
+    function setTransferAmount(amt) {
+      document.getElementById("transferAmountInput").value = amt.toFixed(2);
+      updateLedgerSummary();
+    }
+
+    function updateLedgerSummary() {
+      const val = parseFloat(document.getElementById("transferAmountInput").value) || 0.00;
+      document.getElementById("summarySubtotal").textContent = formatUSD(val);
+      document.getElementById("summaryTotalDebit").textContent = formatUSD(val);
+    }
+
+    function switchTransferTab(btn, mode) {
+      document.querySelectorAll(".t-tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      showBankToast(`Transfer channel switched to: ${btn.textContent}.`);
+    }
+
+    function handleTransferSubmit(e) {
+      e.preventDefault();
+      const state = getBankState();
+      const amount = parseFloat(document.getElementById("transferAmountInput").value);
+      const recipient = document.getElementById("toRecipientSelect").value;
+      const memo = document.getElementById("transferNoteInput").value || "Funds Transfer";
+
+      if (isNaN(amount) || amount <= 0) {
+        showBankToast("Please enter a valid amount.", "error");
+        return;
+      }
+
+      if (state.accounts.checking.balance < amount) {
+        showBankToast("Insufficient checking balance.", "error");
+        return;
+      }
+
+      state.accounts.checking.balance -= amount;
+      if (recipient.includes("Savings")) {
+        state.accounts.savings.balance += amount;
+      }
+
+      const txId = "TX-" + Math.floor(10000 + Math.random() * 90000) + "-FED";
+      
+      // Prepend to activity table
+      const tbody = document.getElementById("transferTableBody");
+      const tr = document.createElement("tr");
+      tr.style.backgroundColor = "#ecfdf5";
+      tr.innerHTML = `
+        <td><code>${txId}</code></td>
+        <td>Just Now</td>
+        <td><strong>${recipient}</strong> (${memo})</td>
+        <td><span style="font-size:0.7rem; background:#ecfdf5; color:#065f46; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">FedNOW Instant</span></td>
+        <td><span style="color:#059669; font-weight:700;">✔ Cleared</span></td>
+        <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#dc2626;">-${formatUSD(amount)}</td>
+      `;
+      tbody.insertBefore(tr, tbody.firstChild);
+
+      saveBankState(state);
+      refreshBalances();
+
+      document.getElementById("wire-confirmed-banner").style.display = "flex";
+      document.getElementById("transfer-success-toast").style.display = "flex";
+
+      showBankToast(`Transfer of $${amount.toFixed(2)} finalized via FedNow.`);
+    }
+  </script>
+</body>
+</html>

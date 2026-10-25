@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TripEase Mobility Suite - Flight & Hotel Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .search-hero-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Hero Search Panel */
+    .hero-search-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.75rem 2rem;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .search-type-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .search-tabs-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .tab-pill-btn {
+      background: none;
+      border: none;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.15s;
+    }
+    .tab-pill-btn:hover {
+      color: var(--text-dark);
+      background: #f1f5f9;
+    }
+    .tab-pill-btn.active {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .trip-options-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .radio-pill-group {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 8px;
+      gap: 0.25rem;
+    }
+
+    .radio-pill-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .radio-pill-label input[type="radio"] {
+      display: none;
+    }
+    .radio-pill-label.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .travelers-select-pill {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Main Inputs Grid */
+    .search-inputs-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 40px 1.25fr 1fr 1fr;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-cell {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.15s;
+    }
+    .input-cell:focus-within {
+      border-color: #0284c7;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+    }
+
+    .input-cell label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+
+    .input-cell input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      width: 100%;
+    }
+
+    .btn-swap-airports {
+      width: 36px;
+      height: 36px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: transform 0.15s;
+    }
+    .btn-swap-airports:hover {
+      transform: rotate(180deg);
+      border-color: #0284c7;
+      color: #0284c7;
+    }
+
+    /* Checkboxes & Search Action Row */
+    .search-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .checkboxes-group {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .chk-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+    }
+    .chk-label input {
+      accent-color: #0284c7;
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Popular Quick Route Pills */
+    .popular-routes-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid #f1f5f9;
+      flex-wrap: wrap;
+    }
+
+    .popular-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .popular-pill {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.785rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .popular-pill:hover {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+    }
+
+    /* Recent Searches & Fare Trends 2-Col */
+    .trends-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .trend-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .trend-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .trend-card-head h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .recent-search-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.85rem;
+    }
+    .recent-search-item:last-child {
+      border-bottom: none;
+    }
+
+    .recent-route {
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .recent-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .fare-trend-box {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+    }
+    .fare-trend-title {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.35rem;
+    }
+    .fare-trend-desc {
+      font-size: 0.775rem;
+      color: #334155;
+      line-height: 1.45;
+    }
+
+    /* Curated Escapes Grid */
+    .escapes-section {
+      margin-bottom: 2rem;
+    }
+    .section-title-wrap {
+      margin-bottom: 1.25rem;
+    }
+    .section-title-wrap h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .section-title-wrap p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+
+    .deals-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .deal-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      transition: all 0.15s;
+    }
+    .deal-card:hover {
+      box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .deal-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .deal-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      width: fit-content;
+      font-family: var(--font-mono);
+    }
+    .deal-cities {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .deal-carrier {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .deal-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.45rem;
+    }
+    .deal-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0284c7;
+      font-family: var(--font-mono);
+    }
+    .deal-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .search-inputs-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .btn-swap-airports {
+        display: none;
+      }
+      .trends-grid, .deals-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .search-inputs-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-search-card {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="tripease-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-block">
+        <div class="brand-icon">✈️</div>
+        <div class="brand-title-wrap">
+          <span class="brand-title">TripEase</span>
+          <span class="brand-tag">MOBILITY SUITE</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <ul class="header-nav-list">
+        <li><a href="index.html" class="active" data-testid="nav-flights">Flights</a></li>
+        <li><a href="#hotels" onclick="showTripToast('Hotels search module active.', 'info')">Hotels</a></li>
+        <li><a href="seat-selection.html" data-testid="nav-seat-selection">Seat Selection</a></li>
+        <li><a href="boarding-pass.html" data-testid="nav-my-bookings">My Bookings</a></li>
+        <li><a href="#explore" onclick="showTripToast('Explore low fare calendar matrix.', 'info')">Explore</a></li>
+        <li><a href="#alerts" onclick="showTripToast('Fare alerts: JFK-LHR price tracking active.', 'gold')">🔔 Alerts</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+
+      <!-- User & Region Meta -->
+      <div class="header-right-meta">
+        <div class="currency-lang-pill">
+          <span>🌐 EN</span>
+          <span>&bull;</span>
+          <span>USD ($)</span>
+        </div>
+
+        <div class="skypriority-badge" title="SkyPriority Gold Member">
+          <img src="images/traveler-alex.jpg" alt="Alex Morgan" class="skypriority-avatar" style="width:34px; height:34px; border-radius:50%; object-fit:cover; border:1.5px solid #38bdf8;">
+          <div class="skypriority-info">
+            <span class="skypriority-name">Alex Morgan</span>
+            <span class="skypriority-tier">SkyPriority Gold #TRIP-8820</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Telemetry Sub-Header Strip -->
+  <div class="telemetry-strip">
+    <div class="telemetry-strip-inner">
+      <div>
+        <span class="telemetry-status-dot"></span>
+        <span>GDS ENGINE ACTIVE v8.29 &bull; Global Seat Inventory Synchronized &bull; Seamless Horizon Search</span>
+      </div>
+      <div>
+        <span style="color:#38bdf8; font-weight:700;">TEST SUITE ANCHOR: AUTOMATION-HARNESS-LIVE</span> &bull; <span>Best Fare Guarantee</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="search-hero-container">
+
+    <!-- Hero Search Card -->
+    <section class="hero-search-card">
+      <div class="search-type-nav">
+        <div class="search-tabs-group">
+          <button class="tab-pill-btn active" data-testid="tab-flights">✈️ Flights</button>
+          <button class="tab-pill-btn" data-testid="tab-hotels" onclick="showTripToast('Hotels engine loaded.')">🏨 Hotels</button>
+          <button class="tab-pill-btn" data-testid="tab-flight-hotel" onclick="showTripToast('Bundle discount -20% applied.')">🏝️ Flight + Hotel</button>
+          <button class="tab-pill-btn" data-testid="tab-rental-cars" onclick="showTripToast('Car rental fleet synced.')">🚗 Rental Cars</button>
+        </div>
+
+        <div class="trip-options-row" style="margin-bottom:0;">
+          <div class="radio-pill-group">
+            <label class="radio-pill-label active" id="label-roundtrip">
+              <input type="radio" name="tripType" value="roundtrip" checked onchange="toggleTripType('roundtrip')"> Round Trip
+            </label>
+            <label class="radio-pill-label" id="label-oneway">
+              <input type="radio" name="tripType" value="oneway" onchange="toggleTripType('oneway')"> One Way
+            </label>
+            <label class="radio-pill-label" id="label-multicity">
+              <input type="radio" name="tripType" value="multicity" onchange="toggleTripType('multicity')"> Multi-City
+            </label>
+          </div>
+
+          <div class="travelers-select-pill" id="travelersWidget" data-testid="select-passengers">
+            <span>👤 1 Adult, Economy</span>
+            <span>▾</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Inputs Grid -->
+      <form id="searchFlightsForm" onsubmit="handleFlightSearch(event)">
+        <div class="search-inputs-grid">
+          <!-- Origin -->
+          <div class="input-cell">
+            <label for="inputOrigin">Departure Origin</label>
+            <input type="text" id="inputOrigin" value="New York, JFK Intl (JFK)" required data-testid="input-origin">
+          </div>
+
+          <!-- Swap Icon -->
+          <button type="button" class="btn-swap-airports" title="Swap Origin and Destination" onclick="swapAirports()">
+            ⇄
+          </button>
+
+          <!-- Destination -->
+          <div class="input-cell">
+            <label for="inputDestination">Arrival Destination</label>
+            <input type="text" id="inputDestination" value="London, Heathrow (LHR)" required data-testid="input-destination">
+          </div>
+
+          <!-- Departure Date -->
+          <div class="input-cell">
+            <label for="inputDepDate">Departure Date</label>
+            <input type="date" id="inputDepDate" value="2025-10-14" required data-testid="input-departure-date">
+          </div>
+
+          <!-- Return Date -->
+          <div class="input-cell" id="retDateCell">
+            <label for="inputRetDate">Return Date</label>
+            <input type="date" id="inputRetDate" value="2025-10-24" required data-testid="input-return-date">
+          </div>
+        </div>
+
+        <!-- Checkboxes & Search Button -->
+        <div class="search-bottom-row">
+          <div class="checkboxes-group">
+            <label class="chk-label">
+              <input type="checkbox" id="checkDirect" checked data-testid="check-direct-flights"> Direct Flights
+            </label>
+            <label class="chk-label">
+              <input type="checkbox" id="checkNearby" data-testid="check-nearby-airports"> Nearby Airports
+            </label>
+            <label class="chk-label">
+              <input type="checkbox" id="checkFlexible" checked data-testid="check-flexible-dates"> Flexible Travel (+/- 3 days fare matrix)
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary-blue" id="btnSearchFlights" data-testid="btn-search-flights">
+            🔍 Search Flights &rarr;
+          </button>
+        </div>
+      </form>
+
+      <!-- Popular Routes -->
+      <div class="popular-routes-bar">
+        <span class="popular-label">POPULAR:</span>
+        <a href="results.html?origin=JFK&dest=LHR" class="popular-pill" data-testid="route-jfk-lhr">JFK &rarr; LHR <strong>$420</strong></a>
+        <a href="results.html?origin=SFO&dest=HND" class="popular-pill" data-testid="route-sfo-hnd">SFO &rarr; HND <strong>$780</strong></a>
+        <a href="results.html?origin=LAX&dest=CDG" class="popular-pill" data-testid="route-lax-cdg">LAX &rarr; CDG <strong>$512</strong></a>
+        <span style="font-size:0.75rem; color:#059669; font-weight:700; margin-left:auto;">🔥 Save up to 25% on transatlantic fall departures</span>
+      </div>
+    </section>
+
+    <!-- Recent Searches & Fare Trends -->
+    <section class="trends-grid">
+      <!-- Card 1: Recent Searches -->
+      <div class="trend-card">
+        <div class="trend-card-head">
+          <h4>YOUR RECENT SEARCHES</h4>
+          <button style="background:none; border:none; font-size:0.75rem; color:#0284c7; cursor:pointer; font-weight:600;" onclick="showTripToast('Search history cleared.')">Clear History</button>
+        </div>
+
+        <div class="recent-search-item">
+          <div>
+            <div class="recent-route">JFK &rarr; LHR <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">Round trip</span></div>
+            <div class="recent-meta">Oct 14 - Oct 24 &bull; 1 Adult</div>
+          </div>
+          <a href="results.html" class="btn-outline-navy" style="font-size:0.75rem; padding:0.35rem 0.65rem;" data-testid="recent-search-rebook">View Fares</a>
+        </div>
+
+        <div class="recent-search-item">
+          <div>
+            <div class="recent-route">SFO &rarr; HND <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">Round trip</span></div>
+            <div class="recent-meta">Nov 02 - Nov 12 &bull; 1 Adult</div>
+          </div>
+          <a href="results.html?origin=SFO&dest=HND" class="btn-outline-navy" style="font-size:0.75rem; padding:0.35rem 0.65rem;">View Fares</a>
+        </div>
+
+        <div class="recent-search-item">
+          <div>
+            <div class="recent-route">LAX &rarr; CDG <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">One way</span></div>
+            <div class="recent-meta">Dec 18 &bull; 2 Adults</div>
+          </div>
+          <a href="results.html?origin=LAX&dest=CDG" class="btn-outline-navy" style="font-size:0.75rem; padding:0.35rem 0.65rem;">View Fares</a>
+        </div>
+      </div>
+
+      <!-- Card 2: Fare Trends -->
+      <div class="trend-card">
+        <div class="trend-card-head">
+          <h4>TRANSATLANTIC & PACIFIC FARE TRENDS</h4>
+          <span style="font-size:0.72rem; background:#ecfdf5; color:#065f46; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">LOW THIS WEEK</span>
+        </div>
+
+        <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.5;">
+          Prices for fall international departures from East Coast hubs are running 14% below median seasonal rates. Automated price monitoring is active for this route.
+        </p>
+
+        <div class="fare-trend-box">
+          <div class="fare-trend-title">
+            <span>📈 Moderate Fares Forecast</span>
+            <span style="margin-left:auto; font-size:0.7rem; font-family:var(--font-mono); color:#1e3a8a;">GDS-CONFIDENCE: 94%</span>
+          </div>
+          <div class="fare-trend-desc">
+            Recommendation: <strong>Book now</strong>. Airfare for New York (JFK) to London (LHR) is projected to increase by $85 in 6 days as peak autumn business bookings surge.
+          </div>
+        </div>
+
+        <div style="margin-top:0.85rem; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.75rem; color:var(--text-muted);">Notifications enabled for Alex Morgan</span>
+          <button class="btn-outline-navy" style="font-size:0.72rem; padding:0.25rem 0.55rem;" onclick="showTripToast('Price drop alerts configured for JFK-LHR.')">Track Immediate Alerts</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Curated Escapes: Trending Weekend Flight Deals -->
+    <section class="escapes-section">
+      <div class="section-title-wrap">
+        <h3>CURATED ESCAPES &bull; Trending Weekend Flight Deals</h3>
+        <p>Hand-picked nonstop international itineraries verified for SkyPriority Gold elite upgrades.</p>
+      </div>
+
+      <div class="deals-grid">
+        <!-- Deal 1: London -->
+        <div class="deal-card" data-testid="deal-jfk-lhr" style="display:flex; gap:1.25rem; align-items:center;">
+          <img src="images/dest-london.jpg" alt="London Big Ben & River Thames" style="width:130px; height:95px; border-radius:8px; object-fit:cover; flex-shrink:0;">
+          <div class="deal-left" style="flex:1;">
+            <span class="deal-badge">NON-STOP &bull; 7H 05M</span>
+            <div class="deal-cities">New York (JFK) &rarr; London (LHR)</div>
+            <div class="deal-carrier">British Airways &bull; Boeing 787-9 Dreamliner</div>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.25rem;">Depart: Oct 14 &bull; Return: Oct 24</div>
+          </div>
+          <div class="deal-right">
+            <div class="deal-price">$389</div>
+            <div class="deal-sub">Roundtrip / Traveler</div>
+            <a href="results.html?origin=JFK&dest=LHR" class="btn-primary-blue" style="font-size:0.75rem; padding:0.4rem 0.85rem;">Select Route &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Deal 2: Tokyo -->
+        <div class="deal-card" data-testid="deal-sea-hnd" style="display:flex; gap:1.25rem; align-items:center;">
+          <img src="images/dest-tokyo.jpg" alt="Tokyo Shibuya Crossing Night" style="width:130px; height:95px; border-radius:8px; object-fit:cover; flex-shrink:0;">
+          <div class="deal-left" style="flex:1;">
+            <span class="deal-badge">NON-STOP &bull; 11H 20M</span>
+            <div class="deal-cities">Seattle (SEA) &rarr; Tokyo (HND)</div>
+            <div class="deal-carrier">ANA &bull; United Airlines &bull; Boeing 787-9</div>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.25rem;">Depart: Nov 02 &bull; Return: Nov 12</div>
+          </div>
+          <div class="deal-right">
+            <div class="deal-price">$540</div>
+            <div class="deal-sub">Roundtrip / Traveler</div>
+            <a href="results.html?origin=SEA&dest=HND" class="btn-primary-blue" style="font-size:0.75rem; padding:0.4rem 0.85rem;">Select Route &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Deal 3: Paris -->
+        <div class="deal-card" data-testid="deal-lax-cdg" style="display:flex; gap:1.25rem; align-items:center;">
+          <img src="images/dest-paris.jpg" alt="Paris Eiffel Tower Sunset" style="width:130px; height:95px; border-radius:8px; object-fit:cover; flex-shrink:0;">
+          <div class="deal-left" style="flex:1;">
+            <span class="deal-badge">PREMIUM &bull; 10H 45M</span>
+            <div class="deal-cities">Los Angeles (LAX) &rarr; Paris (CDG)</div>
+            <div class="deal-carrier">Air France &bull; Airbus A350-900</div>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.25rem;">Depart: Dec 18 &bull; Return: Dec 28</div>
+          </div>
+          <div class="deal-right">
+            <div class="deal-price">$512</div>
+            <div class="deal-sub">Roundtrip / Traveler</div>
+            <a href="results.html?origin=LAX&dest=CDG" class="btn-primary-blue" style="font-size:0.75rem; padding:0.4rem 0.85rem;">Select Route &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Deal 4: Maldives -->
+        <div class="deal-card" data-testid="deal-jfk-mle" style="display:flex; gap:1.25rem; align-items:center;">
+          <img src="images/dest-maldives.jpg" alt="Maldives Overwater Resort" style="width:130px; height:95px; border-radius:8px; object-fit:cover; flex-shrink:0;">
+          <div class="deal-left" style="flex:1;">
+            <span class="deal-badge" style="background:#fef3c7; color:#92400e; border-color:#fde68a;">LUXURY &bull; 1-STOP</span>
+            <div class="deal-cities">New York (JFK) &rarr; Maldives (MLE)</div>
+            <div class="deal-carrier">Qatar Airways &bull; Qsuite Business Class</div>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.25rem;">Depart: Jan 15 &bull; Return: Jan 25</div>
+          </div>
+          <div class="deal-right">
+            <div class="deal-price">$890</div>
+            <div class="deal-sub">Roundtrip / Traveler</div>
+            <a href="results.html?origin=JFK&dest=MLE" class="btn-primary-blue" style="font-size:0.75rem; padding:0.4rem 0.85rem;">Select Route &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="tripease-footer">
+    <div class="footer-top-strip">
+      <div class="footer-top-inner">
+        <!-- Col 1 -->
+        <div class="footer-col">
+          <h4>TripEase MOBILITY SUITE</h4>
+          <p>High-velocity travel mobility suite engineered for precision itineraries, dynamic flight orchestration, and continuous sky-tier passenger comfort.</p>
+          <div class="alliance-badge">
+            <span>✈️ ALLIANCE NETWORK:</span>
+            <strong>Worldwide Aero One Alliance</strong>
+          </div>
+        </div>
+
+        <!-- Col 2 -->
+        <div class="footer-col">
+          <h4>24/7 Global Air Support</h4>
+          <p>Instant re-routing, baggage tracing, and VIP flight concierge operations.</p>
+          <p style="margin-top:0.5rem; font-weight:700; color:#38bdf8; font-family:var(--font-mono);">+1 (800) 555-EASE</p>
+          <p style="font-size:0.72rem; color:#94a3b8;">Direct Concierge: sky-priority@tripease.travel</p>
+        </div>
+
+        <!-- Col 3 -->
+        <div class="footer-col">
+          <h4>Quick Itinerary Hub</h4>
+          <ul class="footer-link-list">
+            <li><a href="results.html">Multi-City Flight Search</a></li>
+            <li><a href="results.html">Fare Matrix & Cabin Filters</a></li>
+            <li><a href="seat-selection.html">Aircraft Seat Configurator</a></li>
+            <li><a href="boarding-pass.html">Fast-pass Mobile Boarding</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4 -->
+        <div class="footer-col">
+          <h4>Preferences & Region</h4>
+          <p>Select your display currency and local dispatch center.</p>
+          <div style="margin-top:0.75rem; display:flex; flex-direction:column; gap:0.4rem;">
+            <div style="background:#1e293b; padding:0.4rem 0.65rem; border-radius:6px; font-size:0.75rem; color:#f8fafc;">
+              🇺🇸 English (US) - International
+            </div>
+            <div style="background:#1e293b; padding:0.4rem 0.65rem; border-radius:6px; font-size:0.75rem; color:#f8fafc;">
+              💵 USD ($) - United States Dollar
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Regulatory Disclosures -->
+    <div class="footer-regulatory-strip">
+      <div class="footer-regulatory-inner">
+        <strong>REGULATORY DISCLOSURES & CONSUMER AVIATION NOTICES:</strong><br>
+        TripEase operates in full compliance with United States Department of Transportation (DOT) Part 259 passenger protection standards, IATA Operational Safety Audit (IOSA) protocols, and the EU Air Passenger Rights Directive (EC 261/2004). All fares displayed include mandatory government taxes, passenger civil aviation security service fees, and carrier-imposed international surcharges.
+      </div>
+    </div>
+
+    <!-- Bottom Copyright Row -->
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 TripEase Global Mobility Inc. All Rights Reserved. Deterministic SDET Automation Ready.</div>
+      <div style="display:flex; gap:1.25rem;">
+        <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+        <a href="index.html" style="color:#94a3b8; text-decoration:none;">Flight Search</a>
+        <a href="results.html" style="color:#94a3b8; text-decoration:none;">Fare Matrix</a>
+        <a href="seat-selection.html" style="color:#94a3b8; text-decoration:none;">Seat Map</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="tripease.js"></script>
+  <script>
+    function toggleTripType(type) {
+      document.getElementById("label-roundtrip").classList.remove("active");
+      document.getElementById("label-oneway").classList.remove("active");
+      document.getElementById("label-multicity").classList.remove("active");
+      
+      const retCell = document.getElementById("retDateCell");
+      if (type === "roundtrip") {
+        document.getElementById("label-roundtrip").classList.add("active");
+        retCell.style.opacity = "1";
+        retCell.style.pointerEvents = "auto";
+      } else if (type === "oneway") {
+        document.getElementById("label-oneway").classList.add("active");
+        retCell.style.opacity = "0.35";
+        retCell.style.pointerEvents = "none";
+      } else {
+        document.getElementById("label-multicity").classList.add("active");
+        showTripToast("Multi-city routing grid initialized.", "info");
+      }
+    }
+
+    function swapAirports() {
+      const orig = document.getElementById("inputOrigin");
+      const dest = document.getElementById("inputDestination");
+      const tmp = orig.value;
+      orig.value = dest.value;
+      dest.value = tmp;
+      showTripToast(`Route inverted: ${orig.value.split(" ")[0]} ⇄ ${dest.value.split(" ")[0]}`);
+    }
+
+    function handleFlightSearch(e) {
+      e.preventDefault();
+      const state = getTripState();
+      state.search.origin = document.getElementById("inputOrigin").value;
+      state.search.destination = document.getElementById("inputDestination").value;
+      state.search.depDate = document.getElementById("inputDepDate").value;
+      state.search.retDate = document.getElementById("inputRetDate").value;
+      state.search.directOnly = document.getElementById("checkDirect").checked;
+      state.search.flexibleDates = document.getElementById("checkFlexible").checked;
+      saveTripState(state);
+
+      showTripToast("GDS Inventory query dispatched... Redirecting to Fare Matrix.");
+      setTimeout(() => {
+        window.location.href = "results.html";
+      }, 400);
+    }
+  </script>
+</body>
+</html>

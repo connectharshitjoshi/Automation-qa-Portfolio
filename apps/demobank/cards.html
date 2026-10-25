@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit & Virtual Cards Manager - DemoBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .cards-page-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .cards-hero-head {
+      margin-bottom: 1.5rem;
+    }
+    .cards-hero-head h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+    .cards-hero-head p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* 2-Column Cards Layout */
+    .cards-main-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Visual Plastic Card Container */
+    .card-visual-wrapper {
+      perspective: 1000px;
+      margin-bottom: 1.5rem;
+    }
+
+    .credit-card-art {
+      width: 100%;
+      max-width: 480px;
+      height: 270px;
+      border-radius: 18px;
+      padding: 1.75rem 2rem;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.4);
+      transition: all 0.2s ease-in-out;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 41, 59, 0.82) 50%, rgba(6, 78, 59, 0.88) 100%), url('images/card-obsidian-bg.jpg') center/cover no-repeat;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .credit-card-art.frozen {
+      filter: grayscale(85%) opacity(0.85);
+      border: 2px dashed #ef4444;
+    }
+
+    .card-top-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-chip {
+      width: 44px;
+      height: 32px;
+      background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+      border-radius: 6px;
+      position: relative;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+    }
+    .card-network-logo {
+      font-size: 1.35rem;
+      font-weight: 900;
+      font-style: italic;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+    }
+
+    .card-number-large {
+      font-size: 1.45rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      letter-spacing: 0.18em;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .card-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .card-holder-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .card-meta-dates {
+      display: flex;
+      gap: 1.25rem;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+    }
+
+    /* Card Controls Card */
+    .card-controls-panel {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .controls-head {
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .controls-head h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .control-toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .control-toggle-item:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-info h4 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .toggle-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Switch */
+    .switch-ui {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch-ui input { opacity: 0; width: 0; height: 0; }
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #cbd5e1;
+      transition: .2s;
+      border-radius: 24px;
+    }
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .switch-slider { background-color: #059669; }
+    input:checked + .switch-slider:before { transform: translateX(20px); }
+
+    /* Switcher Pills between Debit & Credit */
+    .card-selector-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card-tab-btn {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .card-tab-btn.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .cards-main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="bank-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-section">
+        <div class="brand-icon">💳</div>
+        <span class="brand-title">DemoBank</span>
+        <span class="bank-tag">SIMULATOR</span>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="bank-nav-list">
+        <li><a href="index.html" data-testid="nav-dashboard">Dashboard</a></li>
+        <li><a href="transfer.html" data-testid="nav-transfer">Transfer & Pay</a></li>
+        <li><a href="deposit.html" data-testid="nav-deposit">Quick Deposit</a></li>
+        <li><a href="cards.html" class="active" data-testid="nav-cards">Credit Cards</a></li>
+        <li><a href="transactions.html" data-testid="nav-transactions">Transactions</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </nav>
+
+      <!-- User & Security Meta -->
+      <div class="header-right-meta">
+        <span class="security-badge-pill">🔒 256-Bit SSL</span>
+        <div class="user-client-widget">
+          <img src="images/customer-sophia.jpg" alt="Sophia Martinez" class="user-avatar-circle" style="object-fit:cover; border:2px solid #10b981;">
+          <div class="user-text-info">
+            <span class="user-name-title">Sophia Martinez</span>
+            <span class="user-tier-label">Tier 1 Premier #4910-88</span>
+          </div>
+        </div>
+        <a href="login.html" class="btn-signout">Log Out</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="fednow-strip">
+    <div class="fednow-inner">
+      <div>
+        <span class="dot-green-live"></span>
+        <span>CARD FRAUD SHIELD ACTIVE &bull; Zero Liability Policy In Effect</span>
+      </div>
+      <div>
+        <span style="color:#10b981; font-weight:700;">VISA DIRECT DISPATCH READY</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="cards-page-container">
+
+    <section class="cards-hero-head">
+      <h1>Credit & Virtual Cards Manager</h1>
+      <p>Instant virtual card issuance, dynamic freeze states, spend velocity throttles, and PCI-DSS credential reveals.</p>
+    </section>
+
+    <!-- Card Selector Tabs -->
+    <div class="card-selector-tabs">
+      <button class="card-tab-btn active" id="tabDebit" onclick="switchCard('debit')">
+        💳 Platinum Visa Debit (**** 4829)
+      </button>
+      <button class="card-tab-btn" id="tabCredit" onclick="switchCard('credit')">
+        ✨ DemoBank Sapphire Credit (**** 9104)
+      </button>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="cards-main-grid">
+
+      <!-- Left: Visual Plastic & Action Buttons -->
+      <div>
+        <div class="card-visual-wrapper">
+          <div class="credit-card-art" id="visualCard" data-testid="visual-card">
+            <div class="card-top-strip">
+              <div class="card-chip"></div>
+              <div class="card-network-logo" id="cardNetworkLabel">VISA</div>
+            </div>
+
+            <div>
+              <div style="font-size:0.65rem; color:#94a3b8; font-family:var(--font-mono); margin-bottom:0.25rem;">
+                <span id="cardFrozenTag" style="display:none; background:#dc2626; color:#fff; padding:0.1rem 0.4rem; border-radius:4px; font-weight:bold;">CARD FROZEN</span>
+              </div>
+              <div class="card-number-large" id="displayCardNum" data-testid="display-card-number">
+                4829 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4829
+              </div>
+            </div>
+
+            <div class="card-bottom-row">
+              <div>
+                <div style="font-size:0.65rem; color:#94a3b8; text-transform:uppercase;">Cardholder</div>
+                <div class="card-holder-name">SOPHIA MARTINEZ</div>
+              </div>
+
+              <div class="card-meta-dates">
+                <div>
+                  <div style="font-size:0.65rem; color:#94a3b8;">EXPIRES</div>
+                  <div id="displayCardExp">09/29</div>
+                </div>
+                <div>
+                  <div style="font-size:0.65rem; color:#94a3b8;">CVV</div>
+                  <div id="displayCardCvv">&bull;&bull;&bull;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <button class="btn-outline-bank" id="btnRevealCard" data-testid="btn-reveal-card" onclick="toggleRevealCredentials()">
+            👁️ Reveal Numbers & CVV
+          </button>
+          <button class="btn-outline-bank" data-testid="btn-replace-card" onclick="showBankToast('New instant virtual card issued. Prior token retired.')">
+            🔄 Replace Virtual Token
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Controls & Toggles Panel -->
+      <aside class="card-controls-panel">
+        <div class="controls-head">
+          <h3>Card Security & Limits</h3>
+          <span style="font-size:0.75rem; color:#059669; font-weight:700;">● Real-Time Sync</span>
+        </div>
+
+        <!-- Toggle: Freeze Card -->
+        <div class="control-toggle-item">
+          <div class="toggle-info">
+            <h4 style="color:#dc2626;">Freeze / Lock Card</h4>
+            <p>Instantly block all new transactions, point-of-sale authorizations, and recurring debits.</p>
+          </div>
+          <label class="switch-ui">
+            <input type="checkbox" id="toggleFreeze" data-testid="toggle-freeze-card" onchange="handleFreezeToggle(this)">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+
+        <!-- Toggle: International Purchases -->
+        <div class="control-toggle-item">
+          <div class="toggle-info">
+            <h4>International & Cross-Border Usage</h4>
+            <p>Allow foreign currency clearing outside the United States.</p>
+          </div>
+          <label class="switch-ui">
+            <input type="checkbox" id="toggleIntl" checked onchange="showBankToast('International purchase policy updated.')">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+
+        <!-- Toggle: Online / E-Commerce -->
+        <div class="control-toggle-item">
+          <div class="toggle-info">
+            <h4>Card-Not-Present Transactions</h4>
+            <p>Authorize internet checkouts, subscription billing, and mobile wallet provisions.</p>
+          </div>
+          <label class="switch-ui">
+            <input type="checkbox" id="toggleOnline" checked onchange="showBankToast('E-Commerce permissions active.')">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+
+        <!-- Daily Limit Slider -->
+        <div style="padding-top:1.25rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; margin-bottom:0.5rem;">
+            <span>DAILY SPEND LIMIT</span>
+            <span id="limitDisplay" style="color:#059669; font-family:var(--font-mono);">$5,000.00</span>
+          </div>
+          <input type="range" min="500" max="15000" step="250" value="5000" id="spendLimitSlider" data-testid="card-spending-limit" style="width:100%; accent-color:#059669;" oninput="updateLimitDisplay(this.value)">
+          <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); font-family:var(--font-mono); margin-top:0.25rem;">
+            <span>$500.00</span>
+            <span>$15,000.00 Max</span>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="bank-footer">
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 DemoBank Financial Technologies, N.A. All rights reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="demobank.js"></script>
+  <script>
+    let activeCardKey = "debit";
+    let isRevealed = false;
+
+    function switchCard(type) {
+      activeCardKey = type;
+      isRevealed = false;
+      document.getElementById("btnRevealCard").textContent = "👁️ Reveal Numbers & CVV";
+
+      if (type === "debit") {
+        document.getElementById("tabDebit").classList.add("active");
+        document.getElementById("tabCredit").classList.remove("active");
+        document.getElementById("cardNetworkLabel").textContent = "VISA";
+        document.getElementById("displayCardNum").textContent = "4829 •••• •••• 4829";
+        document.getElementById("displayCardExp").textContent = "09/29";
+        document.getElementById("displayCardCvv").textContent = "•••";
+        document.getElementById("visualCard").style.background = "linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(30, 41, 59, 0.82) 50%, rgba(6, 78, 59, 0.88) 100%), url('images/card-obsidian-bg.jpg') center/cover no-repeat";
+        document.getElementById("spendLimitSlider").value = 5000;
+        document.getElementById("limitDisplay").textContent = "$5,000.00";
+      } else {
+        document.getElementById("tabCredit").classList.add("active");
+        document.getElementById("tabDebit").classList.remove("active");
+        document.getElementById("cardNetworkLabel").textContent = "MASTERCARD";
+        document.getElementById("displayCardNum").textContent = "5412 •••• •••• 9104";
+        document.getElementById("displayCardExp").textContent = "12/28";
+        document.getElementById("displayCardCvv").textContent = "•••";
+        document.getElementById("visualCard").style.background = "linear-gradient(135deg, rgba(6, 78, 59, 0.88) 0%, rgba(15, 23, 42, 0.82) 50%, rgba(16, 185, 129, 0.75) 100%), url('images/card-emerald-bg.jpg') center/cover no-repeat";
+        document.getElementById("spendLimitSlider").value = 15000;
+        document.getElementById("limitDisplay").textContent = "$15,000.00";
+      }
+    }
+
+    function handleFreezeToggle(checkbox) {
+      const card = document.getElementById("visualCard");
+      const tag = document.getElementById("cardFrozenTag");
+      if (checkbox.checked) {
+        card.classList.add("frozen");
+        tag.style.display = "inline-block";
+        showBankToast("Card locked. All authorization requests will return 05 DO NOT HONOR.", "warning");
+      } else {
+        card.classList.remove("frozen");
+        tag.style.display = "none";
+        showBankToast("Card unfrozen. Normal clearing re-established.");
+      }
+    }
+
+    function toggleRevealCredentials() {
+      isRevealed = !isRevealed;
+      const btn = document.getElementById("btnRevealCard");
+
+      if (isRevealed) {
+        btn.textContent = "🔒 Hide Numbers";
+        if (activeCardKey === "debit") {
+          document.getElementById("displayCardNum").textContent = "4829 8812 9014 4829";
+          document.getElementById("displayCardCvv").textContent = "492";
+        } else {
+          document.getElementById("displayCardNum").textContent = "5412 7519 2240 9104";
+          document.getElementById("displayCardCvv").textContent = "818";
+        }
+        showBankToast("PCI-DSS decrypted card numbers displayed (60s security timeout).");
+      } else {
+        btn.textContent = "👁️ Reveal Numbers & CVV";
+        if (activeCardKey === "debit") {
+          document.getElementById("displayCardNum").textContent = "4829 •••• •••• 4829";
+        } else {
+          document.getElementById("displayCardNum").textContent = "5412 •••• •••• 9104";
+        }
+        document.getElementById("displayCardCvv").textContent = "•••";
+      }
+    }
+
+    function updateLimitDisplay(val) {
+      document.getElementById("limitDisplay").textContent = formatUSD(parseFloat(val));
+    }
+  </script>
+</body>
+</html>

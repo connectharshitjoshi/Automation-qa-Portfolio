@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Mobile Deposit & Instant Ledger - DemoBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .deposit-page-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* 3 Account Metric Cards */
+    .deposit-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    /* 2-Column Deposit Layout */
+    .deposit-layout-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 1.75rem;
+      margin-bottom: 2.5rem;
+      align-items: start;
+    }
+
+    .deposit-panel-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+
+    .deposit-panel-header {
+      margin-bottom: 1.25rem;
+    }
+    .deposit-panel-header h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .deposit-panel-header p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .deposit-tabs-strip {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .dep-tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 0.55rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .dep-tab-btn.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .quick-add-btn-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .btn-quick-add {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #059669;
+      cursor: pointer;
+    }
+    .btn-quick-add:hover {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    /* Check Capture Boxes */
+    .check-capture-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .check-upload-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      background: #f8fafc;
+      transition: all 0.15s;
+    }
+    .check-upload-box:hover {
+      border-color: #059669;
+      background: #ecfdf5;
+    }
+
+    /* Right Sidebar Cards */
+    .sidebar-cards-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .info-card-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .info-card-box h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      color: var(--text-dark);
+    }
+
+    .limit-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-family: var(--font-mono);
+    }
+
+    /* Recent Deposits Table */
+    .deposits-table-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+
+    .deposits-table-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .filter-pills-row {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.2rem;
+      border-radius: 6px;
+    }
+    .f-pill-btn {
+      border: none;
+      background: none;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .f-pill-btn.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .deposits-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+    }
+    .deposits-table th {
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .deposits-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .deposit-cards-grid, .deposit-layout-grid, .check-capture-boxes {
+        grid-template-columns: 1fr;
+      }
+      .deposits-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="bank-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-section">
+        <div class="brand-icon">💳</div>
+        <span class="brand-title">DemoBank</span>
+        <span class="bank-tag">SIMULATOR</span>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="bank-nav-list">
+        <li><a href="index.html" data-testid="nav-dashboard">Dashboard</a></li>
+        <li><a href="transfer.html" data-testid="nav-transfer">Transfer & Pay</a></li>
+        <li><a href="deposit.html" class="active" data-testid="nav-deposit">Quick Deposit</a></li>
+        <li><a href="cards.html" data-testid="nav-cards">Credit Cards</a></li>
+        <li><a href="transactions.html" data-testid="nav-transactions">Transactions</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </nav>
+
+      <!-- User & Security Meta -->
+      <div class="header-right-meta">
+        <span class="security-badge-pill">🔒 256-Bit SSL</span>
+        <div class="user-client-widget">
+          <img src="images/customer-sophia.jpg" alt="Sophia Martinez" class="user-avatar-circle" style="object-fit:cover; border:2px solid #10b981;">
+          <div class="user-text-info">
+            <span class="user-name-title">Sophia Martinez</span>
+            <span class="user-tier-label">Tier 1 Premier #4910-88</span>
+          </div>
+        </div>
+        <a href="login.html" class="btn-signout">Log Out</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="fednow-strip">
+    <div class="fednow-inner">
+      <div>
+        <span class="dot-green-live"></span>
+        <span>FedNow Real-Time Rail Online &bull; Daily ACH Limit: $25,000.00 remaining</span>
+      </div>
+      <div>
+        <span style="color:#10b981; font-weight:700;">OPTICAL CHECK CAPTURE READY</span> &bull; <span>Instant Balance Credit</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="deposit-page-container">
+
+    <!-- Top 3 Account Cards Grid -->
+    <section class="deposit-cards-grid">
+      <!-- Checking Card -->
+      <div class="bank-acc-card" data-testid="card-checking">
+        <div class="acc-card-top">
+          <span class="acc-type-label">Checking Account</span>
+          <span class="acc-num-code">**** 4829</span>
+        </div>
+        <div class="acc-balance-num" id="depCheckingBal">$5,420.50</div>
+        <div class="acc-card-foot">
+          <span>Available for instant credit</span>
+          <span style="font-family:var(--font-mono);">Routing: 12200049</span>
+        </div>
+      </div>
+
+      <!-- Savings Card -->
+      <div class="bank-acc-card" data-testid="card-savings">
+        <div class="acc-card-top">
+          <span class="acc-type-label">High-Yield Savings</span>
+          <span class="acc-num-code">**** 9104</span>
+        </div>
+        <div class="acc-balance-num" id="depSavingsBal">$18,250.00</div>
+        <div class="acc-card-foot">
+          <span style="color:#059669; font-weight:700;">4.50% APY Guaranteed</span>
+          <span style="font-family:var(--font-mono);">Interest YTD: $412.30</span>
+        </div>
+      </div>
+
+      <!-- Deposit Quota Card -->
+      <div class="bank-acc-card" data-testid="card-deposit-quota">
+        <div class="acc-card-top">
+          <span class="acc-type-label">Daily Mobile Deposit Quota</span>
+          <span class="acc-num-code" style="color:#059669;">Reset 12:00 AM</span>
+        </div>
+        <div class="acc-balance-num" style="color:#059669;">$10,000.00</div>
+        <div class="acc-card-foot">
+          <span>Tier 1 Limit: $10,000.00</span>
+          <span style="font-weight:700; color:#059669;">First $500 Immediate</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main 2-Column Deposit Layout -->
+    <div class="deposit-layout-grid">
+
+      <!-- Left Form Column -->
+      <section class="deposit-panel-card">
+        <div class="deposit-panel-header">
+          <h3>📥 Quick Deposit Instant Ledger</h3>
+          <p>Add mock test funds to your accounts instantly or submit mobile check deposits.</p>
+        </div>
+
+        <!-- Mode Tabs -->
+        <div class="deposit-tabs-strip">
+          <button type="button" class="dep-tab-btn active" id="tabInstant" onclick="switchDepositMode('instant')">
+            ⚡ Instant Test Deposit
+          </button>
+          <button type="button" class="dep-tab-btn" id="tabCapture" onclick="switchDepositMode('capture')">
+            📷 Mobile Check Capture
+          </button>
+        </div>
+
+        <form id="depositActionForm" onsubmit="handleDepositSubmit(event)">
+          <div class="form-group-bank">
+            <label for="depositTargetSelect">Deposit Into</label>
+            <select id="depositTargetSelect" class="bank-select" data-testid="select-deposit-account">
+              <option value="checking" selected>Checking Account (**** 4829) - Available: $5,420.50</option>
+              <option value="savings">High-Yield Savings (**** 9104) - Available: $18,250.00</option>
+            </select>
+          </div>
+
+          <div class="form-group-bank">
+            <label for="depositAmountInput">Deposit Amount ($ USD) * <span style="font-weight:normal; text-transform:none; color:var(--text-muted);">(Min. $10.00)</span></label>
+            <input type="number" step="0.01" min="10" max="10000" id="depositAmountInput" class="bank-input" value="500.00" required data-testid="input-deposit-amount">
+
+            <div class="quick-add-btn-group">
+              <span style="font-size:0.75rem; color:var(--text-muted); align-self:center;">Quick Add:</span>
+              <button type="button" class="btn-quick-add" onclick="addDepositAmount(100)">+ $100</button>
+              <button type="button" class="btn-quick-add" onclick="addDepositAmount(500)">+ $500</button>
+              <button type="button" class="btn-quick-add" onclick="addDepositAmount(1000)">+ $1,000</button>
+              <button type="button" class="btn-quick-add" onclick="addDepositAmount(5000)">+ $5,000</button>
+            </div>
+          </div>
+
+          <!-- Mobile Check Capture Upload Boxes (Conditional) -->
+          <div id="checkUploadSection" style="display:none;">
+            <div class="check-capture-boxes">
+              <div class="check-upload-box" onclick="showBankToast('Front check camera active (Simulated).')">
+                <img src="images/check-front-sample.jpg" alt="Check Front" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:0.4rem; border:1px solid #cbd5e1;">
+                <div style="font-size:0.8rem; font-weight:700;">Front of Check (Captured)</div>
+                <div style="font-size:0.7rem; color:#059669; font-weight:600;">✓ MICR Routing & Account Verified</div>
+              </div>
+
+              <div class="check-upload-box" onclick="showBankToast('Back check camera active (Simulated).')">
+                <div style="height:90px; border-radius:6px; background:#f1f5f9; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed #94a3b8; margin-bottom:0.4rem;">
+                  <span style="font-size:1.4rem;">✍️</span>
+                  <span style="font-size:0.7rem; color:#64748b; font-family:var(--font-mono);">ENDORSEMENT ZONE</span>
+                </div>
+                <div style="font-size:0.8rem; font-weight:700;">Back of Check</div>
+                <div style="font-size:0.7rem; color:var(--text-muted);">Sign: 'For DemoBank Mobile Deposit Only'</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group-bank">
+            <label for="depositMemoInput">Deposit Reference / Memo (Optional)</label>
+            <input type="text" id="depositMemoInput" class="bank-input" value="Direct Instant Settlement (Zero-Latency FedNow Simulation)" data-testid="input-deposit-memo">
+          </div>
+
+          <div style="font-size:0.75rem; color:var(--text-muted); background:#f8fafc; border:1px solid var(--border-color); padding:0.65rem 0.85rem; border-radius:8px; margin-bottom:1.25rem; line-height:1.45;">
+            ℹ️ Instant deposits bypass typical clearing settlement rails and adjust your available ledger immediately. No reserve holds are placed.
+          </div>
+
+          <button type="submit" class="btn-primary-green" style="width:100%; justify-content:center;" id="btnInstantDeposit" data-testid="btn-instant-deposit">
+            + Instant Deposit
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Sidebar Column -->
+      <aside class="sidebar-cards-col">
+
+        <!-- Deposit Limits Card -->
+        <div class="info-card-box">
+          <h4>Deposit Limits & Availability</h4>
+          <p style="font-size:0.785rem; color:var(--text-secondary); line-height:1.45; margin-bottom:0.85rem;">
+            <strong>Immediate $500 Availability:</strong> The initial $500 of any mobile check deposit is credited instantly to your available balance. The remainder is cleared by 9:00 AM the next business day.
+          </p>
+          <p style="font-size:0.785rem; color:var(--text-secondary); line-height:1.45; margin-bottom:1rem;">
+            <strong>Zero Processing Fees:</strong> DemoBank covers all Federal Reserve clearinghouse and interchange fees. Instant simulated and mobile deposits are completely free.
+          </p>
+
+          <div class="limit-stat-row">
+            <span>Daily Rolling Limit:</span>
+            <strong>$10,000.00 / day</strong>
+          </div>
+          <div class="limit-stat-row">
+            <span>Monthly Rolling Limit:</span>
+            <strong>$50,000.00 / mo</strong>
+          </div>
+        </div>
+
+        <!-- Tips For Fast Clearing -->
+        <div class="info-card-box">
+          <h4>TIPS FOR FAST CLEARING</h4>
+          <ul style="font-size:0.75rem; color:var(--text-muted); padding-left:1.15rem; line-height:1.6;">
+            <li>Flatten all folds and wrinkles before photo capture.</li>
+            <li>Ensure lighting is uniform with no harsh glares or shadow.</li>
+            <li>Keep original paper checks safe for at least 14 days.</li>
+          </ul>
+
+          <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; padding:0.65rem; margin-top:1rem; font-size:0.72rem; color:#065f46;">
+            <strong>PRIVATE CLIENT PROTECTION:</strong> Tier 1 Premier Expedited &bull; Dedicated clearing priority with automated optical character validation.
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- Recent Deposits & Ledgers Table -->
+    <section class="deposits-table-card">
+      <div class="deposits-table-head">
+        <div>
+          <h3 style="font-size:1.05rem; font-weight:700;">Recent Deposits & Ledgers</h3>
+          <p style="font-size:0.785rem; color:var(--text-muted);">Real-time status of mock instant funds and captured paper deposits.</p>
+        </div>
+
+        <div class="filter-pills-row">
+          <button class="f-pill-btn active" onclick="filterDeposits('all', this)">All</button>
+          <button class="f-pill-btn" onclick="filterDeposits('instant', this)">Instant Credits</button>
+          <button class="f-pill-btn" onclick="filterDeposits('mobile', this)">Mobile Checks</button>
+        </div>
+      </div>
+
+      <table class="deposits-table">
+        <thead>
+          <tr>
+            <th>Reference / ID</th>
+            <th>Date & Time</th>
+            <th>Channel Source</th>
+            <th>Target Account</th>
+            <th>Status</th>
+            <th style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="depositsTableBody">
+          <!-- Row 1 -->
+          <tr data-type="instant">
+            <td><code>DEP-88391</code></td>
+            <td>Today, 02:45 PM</td>
+            <td><strong>Instant Test Credit</strong></td>
+            <td>Checking (**** 4829)</td>
+            <td><span style="font-size:0.7rem; background:#ecfdf5; color:#065f46; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">Instant Credit</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#059669;">+$500.00</td>
+          </tr>
+          <!-- Row 2 -->
+          <tr data-type="mobile">
+            <td><code>CHK-10924</code></td>
+            <td>Yesterday, 10:12 AM</td>
+            <td><strong>Mobile Check #1041</strong> 📷</td>
+            <td>Savings (**** 9104)</td>
+            <td><span style="font-size:0.7rem; background:#f0fdf4; color:#065f46; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">Cleared ($500 Adv)</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#059669;">+$1,250.00</td>
+          </tr>
+          <!-- Row 3 -->
+          <tr data-type="mobile">
+            <td><code>CHK-10923</code></td>
+            <td>Oct 23, 04:19 PM</td>
+            <td><strong>Mobile Check #0893</strong></td>
+            <td>Checking (**** 4829)</td>
+            <td><span style="font-size:0.7rem; background:#f1f5f9; color:#334155; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">Cleared</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#059669;">+$750.00</td>
+          </tr>
+          <!-- Row 4 -->
+          <tr data-type="instant">
+            <td><code>DEP-88310</code></td>
+            <td>Oct 22, 11:30 AM</td>
+            <td><strong>Instant Test Credit</strong></td>
+            <td>Savings (**** 9104)</td>
+            <td><span style="font-size:0.7rem; background:#ecfdf5; color:#065f46; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">Instant Credit</span></td>
+            <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#059669;">+$2,000.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="bank-footer">
+    <div class="footer-top-row">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span style="font-size:1.1rem;">🏛️</span>
+        <strong style="color:#ffffff;">DemoBank National Association</strong>
+      </div>
+      <div class="footer-compliance-badges">
+        <span>✔ Member FDIC</span>
+        <span>&bull;</span>
+        <span>Equal Housing Lender</span>
+        <span>&bull;</span>
+        <span>SIPC Protected</span>
+      </div>
+    </div>
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 DemoBank Financial Technologies, N.A. All rights reserved.</div>
+      <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+    </div>
+  </footer>
+
+  <script src="demobank.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      refreshBalances();
+    });
+
+    function refreshBalances() {
+      const state = getBankState();
+      document.getElementById("depCheckingBal").textContent = formatUSD(state.accounts.checking.balance);
+      document.getElementById("depSavingsBal").textContent = formatUSD(state.accounts.savings.balance);
+    }
+
+    function switchDepositMode(mode) {
+      if (mode === "instant") {
+        document.getElementById("tabInstant").classList.add("active");
+        document.getElementById("tabCapture").classList.remove("active");
+        document.getElementById("checkUploadSection").style.display = "none";
+        document.getElementById("btnInstantDeposit").textContent = "+ Instant Deposit";
+      } else {
+        document.getElementById("tabCapture").classList.add("active");
+        document.getElementById("tabInstant").classList.remove("active");
+        document.getElementById("checkUploadSection").style.display = "block";
+        document.getElementById("btnInstantDeposit").textContent = "📷 Submit Mobile Check for Clearing";
+      }
+    }
+
+    function addDepositAmount(amt) {
+      const input = document.getElementById("depositAmountInput");
+      const current = parseFloat(input.value) || 0;
+      input.value = (current + amt).toFixed(2);
+      showBankToast(`Added $${amt}. New deposit sum: $${input.value}`);
+    }
+
+    function handleDepositSubmit(e) {
+      e.preventDefault();
+      const state = getBankState();
+      const amount = parseFloat(document.getElementById("depositAmountInput").value);
+      const target = document.getElementById("depositTargetSelect").value;
+      const memo = document.getElementById("depositMemoInput").value || "Deposit Credit";
+
+      if (isNaN(amount) || amount <= 0) {
+        showBankToast("Please enter a valid deposit amount.", "error");
+        return;
+      }
+
+      if (target === "checking") {
+        state.accounts.checking.balance += amount;
+      } else {
+        state.accounts.savings.balance += amount;
+      }
+
+      const depId = "DEP-" + Math.floor(10000 + Math.random() * 90000);
+      const targetLabel = target === "checking" ? "Checking (**** 4829)" : "Savings (**** 9104)";
+
+      // Prepend to deposits table
+      const tbody = document.getElementById("depositsTableBody");
+      const tr = document.createElement("tr");
+      tr.style.backgroundColor = "#ecfdf5";
+      tr.setAttribute("data-type", "instant");
+      tr.innerHTML = `
+        <td><code>${depId}</code></td>
+        <td>Just Now</td>
+        <td><strong>Instant Test Credit</strong> (${memo.substring(0, 25)})</td>
+        <td>${targetLabel}</td>
+        <td><span style="font-size:0.7rem; background:#ecfdf5; color:#065f46; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700;">Instant Credit</span></td>
+        <td style="text-align:right; font-weight:800; font-family:var(--font-mono); color:#059669;">+${formatUSD(amount)}</td>
+      `;
+      tbody.insertBefore(tr, tbody.firstChild);
+
+      saveBankState(state);
+      refreshBalances();
+
+      showBankToast(`Deposit of $${amount.toFixed(2)} credited immediately to ${targetLabel}!`);
+    }
+
+    function filterDeposits(type, btn) {
+      document.querySelectorAll(".f-pill-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const rows = document.querySelectorAll("#depositsTableBody tr");
+      rows.forEach(r => {
+        if (type === "all" || r.getAttribute("data-type") === type) {
+          r.style.display = "";
+        } else {
+          r.style.display = "none";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

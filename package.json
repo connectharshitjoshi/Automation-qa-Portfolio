@@ -1,0 +1,33 @@
+{
+  "name": "qa-automation-benchmark-suite",
+  "version": "1.0.0",
+  "description": "Production-grade QA Automation Portfolio featuring 4 web topologies, Page Object Model (POM), deterministic data-testid locators, Playwright test suite, and CI/CD pipelines.",
+  "main": "playwright.config.js",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "test:ecommerce": "playwright test tests/ecommerce",
+    "test:admin": "playwright test tests/admin",
+    "test:banking": "playwright test tests/banking",
+    "test:travel": "playwright test tests/travel"
+  },
+  "keywords": [
+    "playwright",
+    "automation",
+    "testing",
+    "qa",
+    "sdet",
+    "page-object-model",
+    "portfolio",
+    "e2e-testing"
+  ],
+  "author": "Harshit Joshi <connectharshitjoshi@github>",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.44.0"
+  }
+}

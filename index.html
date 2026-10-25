@@ -1,0 +1,2624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Automation Benchmark Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --bg-hero: #e6f7f2;
+      --hero-gradient: linear-gradient(180deg, #dbf5ec 0%, #eefbf7 60%, #f8fafc 100%);
+      --text-dark: #0f172a;
+      --text-slate: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --border-card: #e5e7eb;
+      --card-bg: #ffffff;
+      --brand-green: #059669;
+      --brand-green-light: #10b981;
+      --brand-green-badge: #d1fae5;
+      --brand-blue: #2563eb;
+      --brand-blue-badge: #eff6ff;
+      --brand-purple: #7c3aed;
+      --brand-purple-badge: #f5f3ff;
+      --code-bg: #0d1117;
+      --code-border: #30363d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-dark);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Nav */
+    .top-nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      text-decoration: none;
+    }
+
+    .brand-icon-circ {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ecfdf5;
+      border: 1.5px solid var(--brand-green-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brand-green);
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-dark);
+    }
+
+    .nav-links a.active {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .nav-app-shortcuts {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-app-link {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #475569;
+      text-decoration: none;
+      padding: 0.25rem 0.55rem;
+      border-radius: 5px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      transition: all 0.15s;
+    }
+
+    .nav-app-link:hover {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    @media (max-width: 1024px) {
+      .nav-app-shortcuts {
+        display: none;
+      }
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-github:hover {
+      background: #f1f5f9;
+    }
+
+    .user-avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: var(--hero-gradient);
+      padding: 2.25rem 1.5rem 3.5rem;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .hero-container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .hero-top-badges {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .spec-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #0284c7;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .ci-status-info {
+      font-size: 0.785rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+
+    .dot-green {
+      width: 7px;
+      height: 7px;
+      background: var(--brand-green-light);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--brand-green-light);
+    }
+
+    .sdet-pill {
+      display: inline-block;
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-right: 0.6rem;
+    }
+
+    .candidate-text {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .hero-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--text-dark);
+      margin: 0.65rem 0 0.85rem;
+      line-height: 1.15;
+    }
+
+    .hero-description {
+      font-size: 1.05rem;
+      color: #334155;
+      max-width: 880px;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .hero-description code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #0f172a;
+    }
+
+    /* 4 Stat Cards */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .metrics-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 550px) {
+      .metrics-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 1.25rem 1.35rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      position: relative;
+    }
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .metric-icon {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-size: 1.95rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+    }
+
+    .metric-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Hero CTA Row */
+    .hero-actions {
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-action-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #0f172a;
+      color: #ffffff;
+      border: 1px solid #0f172a;
+      padding: 0.6rem 1.15rem;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-action-primary:hover {
+      background: #1e293b;
+    }
+
+    .btn-action-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #ffffff;
+      color: #334155;
+      border: 1px solid var(--border-color);
+      padding: 0.6rem 1.15rem;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-action-outline:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    /* Hero Quick Launch Strip */
+    .hero-quick-launch {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .quick-launch-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-right: 0.25rem;
+    }
+
+    .quick-app-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-decoration: none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: all 0.15s ease;
+    }
+
+    .quick-app-btn:hover {
+      border-color: var(--brand-green);
+      background: #ecfdf5;
+      color: var(--brand-green);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .quick-app-badge {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 9999px;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+    }
+
+    .quick-app-badge.live {
+      background: #d1fae5;
+      color: #065f46;
+      font-weight: 700;
+    }
+
+    /* Main Container */
+    .main-section {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .section-pretitle {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .section-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle-right {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      max-width: 480px;
+      text-align: right;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 768px) {
+      .section-subtitle-right {
+        text-align: left;
+      }
+    }
+
+    /* Apps Grid */
+    .apps-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .apps-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+    }
+
+    .apps-row-full {
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .apps-row-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Standard App Card */
+    .app-box {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .app-box:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .app-box-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .app-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .app-icon-wrap {
+      width: 32px;
+      height: 32px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .app-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .app-name-link {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .app-name-link:hover {
+      color: var(--brand-green);
+    }
+
+    .pill-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .pill-tag.productivity {
+      background: #f5f3ff;
+      color: #7c3aed;
+    }
+
+    .pill-tag.travel {
+      background: #fdf2f8;
+      color: #db2777;
+    }
+
+    .screens-spec-badge {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .app-path {
+      font-size: 0.775rem;
+      color: var(--text-light);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.85rem;
+    }
+
+    .app-path-link {
+      color: var(--text-light);
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.775rem;
+      transition: color 0.15s;
+    }
+
+    .app-path-link:hover {
+      color: var(--brand-blue);
+      text-decoration: underline;
+    }
+
+    .app-desc-text {
+      font-size: 0.885rem;
+      color: #334155;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+
+    .screens-sublabel {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.65rem;
+    }
+
+    .screen-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.25rem;
+      padding: 0.85rem;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 8px;
+    }
+
+    .screen-item-pill {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: #334155;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 0.65rem;
+      border-radius: 5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+    }
+
+    .screen-item-pill:hover {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .challenges-box {
+      margin-top: auto;
+      margin-bottom: 1.25rem;
+    }
+
+    .challenges-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem 1rem;
+      font-size: 0.775rem;
+      color: #475569;
+    }
+
+    .challenge-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.35rem;
+    }
+
+    .challenge-bullet {
+      color: var(--text-light);
+      font-weight: bold;
+    }
+
+    .app-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1.25rem;
+      border-top: 1px solid #f1f5f9;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-left-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-launch-dark {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-launch-dark:hover {
+      background: #1e293b;
+    }
+
+    .btn-view-selectors {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid var(--border-color);
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.785rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-view-selectors:hover {
+      background: #f8fafc;
+      color: var(--text-dark);
+    }
+
+    .status-text-ready {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Featured App Card (DemoBank) */
+    .featured-bank-card {
+      background: #ffffff;
+      border: 1.5px solid #10b981;
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 2rem;
+      box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.12);
+      position: relative;
+    }
+
+    @media (max-width: 990px) {
+      .featured-bank-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .featured-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .complete-badge {
+      background: #15803d;
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      margin-left: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+
+    .bank-screens-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.25rem 0 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .bank-screens-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bank-screen-tile {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .bank-screen-tile:hover {
+      background: #f0fdf4;
+      border-color: #10b981;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.12);
+    }
+
+    .screen-num-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+    }
+
+    .screen-name-bold {
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .btn-launch-green {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #059669;
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-launch-green:hover {
+      background: #047857;
+    }
+
+    .interactive-canvas-tag {
+      font-size: 0.75rem;
+      color: #059669;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Code Preview Widget inside Featured Card */
+    .featured-right-code {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .code-top-strip {
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .code-body-inner {
+      padding: 1.15rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.775rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      flex: 1;
+      overflow-x: auto;
+    }
+
+    .syn-keyword { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-string { color: #34d399; }
+    .syn-num { color: #f59e0b; }
+    .syn-prop { color: #a78bfa; }
+
+    .code-bottom-strip {
+      background: #111827;
+      border-top: 1px solid #1f2937;
+      padding: 0.55rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+    }
+
+    .status-passing {
+      color: #34d399;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .runtime-badge {
+      color: #38bdf8;
+      font-weight: 500;
+    }
+
+    /* Automation Matrix Section */
+    .matrix-section {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-top: 2rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .matrix-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .matrix-legend {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      font-size: 0.775rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legend-check {
+      color: var(--brand-green);
+      font-weight: bold;
+    }
+
+    .legend-clock {
+      color: var(--text-light);
+    }
+
+    .matrix-table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .matrix-table th {
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.75rem 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .matrix-table th:first-child {
+      text-align: left;
+    }
+
+    .matrix-table td {
+      padding: 0.9rem 0.85rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .matrix-table td:first-child {
+      text-align: left;
+    }
+
+    .app-cell-title {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .matrix-app-link {
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.15s;
+    }
+
+    .matrix-app-link:hover {
+      color: var(--brand-green);
+      text-decoration: underline;
+    }
+
+    .table-launch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: 4px;
+      background: #0f172a;
+      color: #ffffff;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .table-launch-btn:hover {
+      background: #2563eb;
+    }
+
+    .app-cell-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .icon-supported {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ecfdf5;
+      color: #059669;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .icon-planned {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    /* Matrix Bottom Strip */
+    .matrix-sub-strip {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.9rem 1.25rem;
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .sub-strip-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .strip-icon {
+      font-size: 1.2rem;
+      color: #0284c7;
+      margin-top: 0.1rem;
+    }
+
+    .strip-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.15rem;
+    }
+
+    .strip-desc {
+      font-size: 0.785rem;
+      color: var(--text-muted);
+    }
+
+    .strip-desc code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #0f172a;
+    }
+
+    .selector-pill-tag {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    /* Terminal Quickstart Section */
+    .quickstart-section {
+      margin-top: 2.75rem;
+    }
+
+    .terminal-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .terminal-header {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+    }
+
+    .terminal-tabs {
+      display: flex;
+    }
+
+    .term-tab {
+      padding: 0.75rem 1.15rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .term-tab:hover {
+      color: #ffffff;
+    }
+
+    .term-tab.active {
+      color: #ffffff;
+      border-bottom-color: #38bdf8;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .term-header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .btn-copy-config {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .btn-copy-config:hover {
+      color: #ffffff;
+    }
+
+    .terminal-code {
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+      overflow-x: auto;
+    }
+
+    .terminal-bottom-bar {
+      background: #050811;
+      border-top: 1px solid #1e293b;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .term-cli-cmd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .term-prompt {
+      color: #10b981;
+      font-weight: bold;
+    }
+
+    .btn-copy-cli {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background 0.15s;
+    }
+
+    .btn-copy-cli:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Footer */
+    .site-footer {
+      border-top: 1px solid var(--border-color);
+      background: #ffffff;
+      margin-top: 4rem;
+      padding: 2.5rem 1.5rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .footer-brand h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.35rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      max-width: 420px;
+      line-height: 1.45;
+    }
+
+    .frameworks-group h5 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.65rem;
+    }
+
+    .framework-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .fw-pill {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+    }
+
+    .footer-bottom {
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-status-right {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .passing-text {
+      color: var(--brand-green);
+      font-weight: 600;
+    }
+
+    /* Footer Apps Directory Grid */
+    .footer-apps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.75rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 900px) {
+      .footer-apps-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .footer-apps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .footer-app-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-app-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-app-title:hover {
+      color: var(--brand-green);
+      text-decoration: underline;
+    }
+
+    .footer-screen-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .footer-screen-list a {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.15s;
+    }
+
+    .footer-screen-list a:hover {
+      color: var(--brand-blue);
+      text-decoration: underline;
+    }
+
+    .modal-launch-app-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #059669;
+      color: #ffffff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .modal-launch-app-btn:hover {
+      background: #047857;
+    }
+
+    /* Modal for View Selectors */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-card-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-card-header h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-card-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .selector-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .selector-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+    }
+
+    .selector-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--text-dark);
+    }
+
+    .selector-tag {
+      color: #0284c7;
+      background: #f0f9ff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Toast */
+    .toast-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: none;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      z-index: 200;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile & Responsive Polish */
+    .mobile-scroll-hint {
+      display: none;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+
+    @media (max-width: 860px) {
+      .nav-inner {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+      }
+      .nav-left {
+        font-size: 0.85rem;
+      }
+      .nav-links {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+        -webkit-overflow-scrolling: touch;
+      }
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+      .nav-links a {
+        white-space: nowrap;
+        font-size: 0.8rem;
+        padding: 0.35rem 0.65rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 1.5rem 1rem 2.25rem;
+      }
+      .hero-top-badges {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      .spec-pill {
+        font-size: 0.68rem;
+        padding: 0.2rem 0.55rem;
+      }
+      .ci-status-info {
+        font-size: 0.72rem;
+      }
+      .hero-title {
+        font-size: 1.85rem;
+        line-height: 1.2;
+        margin: 0.5rem 0 0.75rem;
+      }
+      .hero-description {
+        font-size: 0.925rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+      }
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      .hero-actions a, .hero-actions button {
+        width: 100%;
+        justify-content: center;
+      }
+      .main-section {
+        padding: 2rem 1rem;
+      }
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+      }
+      .section-title {
+        font-size: 1.35rem;
+      }
+      .section-subtitle-right {
+        text-align: left;
+        font-size: 0.8rem;
+      }
+      .challenges-grid {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+      }
+      .footer-left-buttons {
+        width: 100%;
+        flex-direction: column;
+      }
+      .footer-left-buttons a, .footer-left-buttons button {
+        width: 100%;
+        justify-content: center;
+      }
+      .featured-bank-card {
+        padding: 1.25rem;
+        gap: 1.5rem;
+      }
+      .matrix-section {
+        padding: 1.25rem 1rem;
+      }
+      .matrix-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      .matrix-sub-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.85rem;
+      }
+      .selector-pill-tag {
+        width: 100%;
+        text-align: center;
+      }
+      .mobile-scroll-hint {
+        display: block;
+      }
+      .terminal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem 0.75rem;
+        gap: 0.5rem;
+      }
+      .terminal-tabs {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .term-tab {
+        white-space: nowrap;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+      }
+      .term-header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .terminal-code {
+        padding: 1rem;
+        font-size: 0.75rem;
+      }
+      .terminal-bottom-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 0.85rem;
+      }
+      .btn-copy-cli {
+        width: 100%;
+        justify-content: center;
+      }
+      .site-footer {
+        padding: 2rem 1rem 1.5rem;
+        margin-top: 2.5rem;
+      }
+      .footer-top {
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .metrics-row {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+      }
+      .metric-card {
+        padding: 1rem 1.15rem;
+      }
+      .metric-value {
+        font-size: 1.6rem;
+      }
+      .bank-screens-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav Bar -->
+  <header class="top-nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-left" data-testid="nav-suite-title">
+        <span class="brand-icon-circ">✓</span>
+        <span>QA Automation Benchmark Suite</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#overview" class="active">Overview</a></li>
+        <li><a href="#applications">Applications</a></li>
+        <li><a href="#matrix">Test Matrix</a></li>
+        <li><a href="#quickstart">Automation Docs</a></li>
+      </ul>
+
+      <div class="nav-app-shortcuts" data-testid="nav-app-shortcuts">
+        <a href="./apps/shoptest/index.html" class="nav-app-link" title="ShopTest E-Commerce" data-testid="nav-link-shoptest">🛍️ ShopTest</a>
+        <a href="./apps/adminpro/index.html" class="nav-app-link" title="AdminPro Analytics" data-testid="nav-link-adminpro">📊 AdminPro</a>
+        <a href="./apps/demobank/index.html" class="nav-app-link" title="DemoBank FinTech" data-testid="nav-link-demobank">🏛️ DemoBank</a>
+        <a href="./apps/tripease/index.html" class="nav-app-link" title="TripEase Mobility" data-testid="nav-link-tripease">✈️ TripEase</a>
+      </div>
+
+      <div class="nav-right">
+        <a href="https://github.com" target="_blank" class="btn-github" data-testid="btn-github-repo">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+          </svg>
+          GitHub Repo
+        </a>
+        <div class="user-avatar-circle" title="User Profile">👤</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="overview">
+    <div class="hero-container">
+      <div class="hero-top-badges">
+        <div class="spec-pill" data-testid="spec-pill">
+          ⚙ SPEC V2.4 // DETERMINISTIC TEST HARNESS
+        </div>
+        <div class="ci-status-info">
+          <span class="dot-green"></span>
+          <span>CI Mock Servers Active</span>
+          <span>/</span>
+          <span>Target: Chromium 124+</span>
+        </div>
+      </div>
+
+      <div>
+        <span class="sdet-pill">SDET BENCHMARKING SUITE</span>
+        <span class="candidate-text">Release Candidate 2025.1</span>
+      </div>
+
+      <h1 class="hero-title">QA Automation Benchmark Suite</h1>
+      <p class="hero-description">
+        Production-grade web applications instrumented with robust <code>data-testid</code> selectors, deterministic DOM states, dynamic edge cases, and asynchronous API mocking surfaces.
+      </p>
+
+      <!-- 4 Stat Cards -->
+      <div class="metrics-row">
+        <!-- Metric 1 -->
+        <div class="metric-card" data-testid="metric-target-apps">
+          <div class="metric-header">
+            <span class="metric-label">TARGET APPS</span>
+            <span class="metric-icon">⊞</span>
+          </div>
+          <div class="metric-value">4 Apps</div>
+          <div class="metric-sub">Full-stack web topologies</div>
+        </div>
+
+        <!-- Metric 2 -->
+        <div class="metric-card" data-testid="metric-coverage-surface">
+          <div class="metric-header">
+            <span class="metric-label">COVERAGE SURFACE</span>
+            <span class="metric-icon">⚙</span>
+          </div>
+          <div class="metric-value">21 Screens</div>
+          <div class="metric-sub">Deterministic flow states</div>
+        </div>
+
+        <!-- Metric 3 -->
+        <div class="metric-card" data-testid="metric-attributes">
+          <div class="metric-header">
+            <span class="metric-label">ATTRIBUTES</span>
+            <span class="metric-icon">🛡️</span>
+          </div>
+          <div class="metric-value">100% data-testid</div>
+          <div class="metric-sub">Uniform BEM-semantic tags</div>
+        </div>
+
+        <!-- Metric 4 -->
+        <div class="metric-card" data-testid="metric-stability">
+          <div class="metric-header">
+            <span class="metric-label">STABILITY</span>
+            <span class="metric-icon">⚡</span>
+          </div>
+          <div class="metric-value">0% Flakiness</div>
+          <div class="metric-sub">Explicit wait & DOM hooks</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons Row -->
+      <div class="hero-actions">
+        <a href="#applications" class="btn-action-primary" data-testid="btn-explore-apps">
+          <span>📦</span> Explore Apps Catalog
+        </a>
+        <a href="#matrix" class="btn-action-outline" data-testid="btn-view-guide">
+          <span>📖</span> View Automation Guide
+        </a>
+        <button class="btn-action-outline" id="btn-copy-boilerplate" data-testid="btn-copy-boilerplate">
+          <span>📋</span> Copy Playwright Boilerplate
+        </button>
+      </div>
+
+      <!-- Direct Quick Launch Strip -->
+      <div class="hero-quick-launch" data-testid="hero-quick-launch">
+        <span class="quick-launch-label">Direct App Launch:</span>
+        <a href="./apps/shoptest/index.html" class="quick-app-btn" data-testid="hero-launch-shoptest" title="Launch ShopTest E-Commerce Suite">
+          <span class="quick-app-icon">🛍️</span>
+          <span class="quick-app-name">shoptest</span>
+          <span class="quick-app-badge">5 screens</span>
+        </a>
+        <a href="./apps/adminpro/index.html" class="quick-app-btn" data-testid="hero-launch-adminpro" title="Launch AdminPro Enterprise Portal">
+          <span class="quick-app-icon">📊</span>
+          <span class="quick-app-name">adminpro</span>
+          <span class="quick-app-badge">5 screens</span>
+        </a>
+        <a href="./apps/demobank/index.html" class="quick-app-btn" data-testid="hero-launch-demobank" title="Launch DemoBank FinTech Core">
+          <span class="quick-app-icon">🏛️</span>
+          <span class="quick-app-name">demobank</span>
+          <span class="quick-app-badge live">6 screens ●</span>
+        </a>
+        <a href="./apps/tripease/index.html" class="quick-app-btn" data-testid="hero-launch-tripease" title="Launch TripEase Booking Engine">
+          <span class="quick-app-icon">✈️</span>
+          <span class="quick-app-name">tripease</span>
+          <span class="quick-app-badge">5 screens</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Applications Directory Section -->
+  <main class="main-section" id="applications">
+    <div class="section-header">
+      <div>
+        <div class="section-pretitle">TARGET ARCHITECTURE &bull; 4 Distinct Business Archetypes</div>
+        <h2 class="section-title">Target Applications Directory</h2>
+      </div>
+      <div class="section-subtitle-right">
+        Engineered to stress-test your locator strategies, asynchronous handling, DOM tree mutations, and shadow boundaries.
+      </div>
+    </div>
+
+    <div class="apps-layout">
+      <!-- Row 1: shoptest & adminpro -->
+      <div class="apps-row-2col">
+        <!-- 1. shoptest -->
+        <div class="app-box" data-testid="card-shoptest">
+          <div class="app-box-top">
+            <div class="app-title-group">
+              <div class="app-icon-wrap">🛍️</div>
+              <h3 class="app-name">
+                <a href="./apps/shoptest/index.html" class="app-name-link" data-testid="title-link-shoptest">shoptest ↗</a>
+              </h3>
+              <span class="pill-tag">E-Commerce</span>
+            </div>
+            <span class="screens-spec-badge">5 Screens Spec'd</span>
+          </div>
+          <div class="app-path">
+            <a href="./apps/shoptest/index.html" class="app-path-link">apps/shoptest/ ↗</a>
+          </div>
+          <!-- App Visual Showcase Banner -->
+          <div style="height:120px; border-radius:8px; overflow:hidden; margin-bottom:1rem; position:relative;">
+            <img src="assets/images/preview-shoptest.jpg" alt="ShopTest E-Commerce Showcase" style="width:100%; height:100%; object-fit:cover;">
+            <div style="position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(15,23,42,0.75) 100%); display:flex; align-items:flex-end; padding:0.6rem 0.85rem;">
+              <span style="color:#ffffff; font-size:0.75rem; font-weight:700;">Minimal Electronics &bull; Real-time Stock Sync</span>
+            </div>
+          </div>
+          <p class="app-desc-text">
+            Complex Form Validations & Multi-step Checkout with promo code calculation engines and inventory decrement simulation.
+          </p>
+
+          <div class="screens-sublabel">SCREENS FLOWS INCLUDED (CLICK TO JUMP):</div>
+          <div class="screen-pills-wrap">
+            <a href="./apps/shoptest/index.html" class="screen-item-pill" data-testid="link-shoptest-catalog">Catalog & Search ↗</a>
+            <a href="./apps/shoptest/product-detail.html" class="screen-item-pill" data-testid="link-shoptest-pdp">Product Details (PDP) ↗</a>
+            <a href="./apps/shoptest/cart.html" class="screen-item-pill" data-testid="link-shoptest-cart">Cart & Promos ↗</a>
+            <a href="./apps/shoptest/checkout.html" class="screen-item-pill" data-testid="link-shoptest-checkout">3-Step Checkout ↗</a>
+            <a href="./apps/shoptest/order-tracking.html" class="screen-item-pill" data-testid="link-shoptest-tracking">Order Tracking ↗</a>
+          </div>
+
+          <div class="challenges-box">
+            <div class="challenges-title">SDET TEST CHALLENGES:</div>
+            <div class="challenges-grid">
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Dynamic price & tax calculations</div>
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Stock out-of-bounds validations</div>
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Cart localStorage persistence</div>
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Credit card Luhn algorithm regex</div>
+            </div>
+          </div>
+
+          <div class="app-card-footer">
+            <div class="footer-left-buttons">
+              <a href="./apps/shoptest/index.html" class="btn-launch-dark" data-testid="launch-shoptest">
+                Launch shoptest &rarr;
+              </a>
+              <button class="btn-view-selectors" onclick="openSelectorsModal('shoptest')" data-testid="view-selectors-shoptest">
+                &lt; &gt; View Selectors
+              </button>
+            </div>
+            <span class="status-text-ready">E2E Ready</span>
+          </div>
+        </div>
+
+        <!-- 2. adminpro -->
+        <div class="app-box" data-testid="card-adminpro">
+          <div class="app-box-top">
+            <div class="app-title-group">
+              <div class="app-icon-wrap">📊</div>
+              <h3 class="app-name">
+                <a href="./apps/adminpro/index.html" class="app-name-link" data-testid="title-link-adminpro">adminpro ↗</a>
+              </h3>
+              <span class="pill-tag productivity">Analytics & RBAC</span>
+            </div>
+            <span class="screens-spec-badge">5 Screens Spec'd</span>
+          </div>
+          <div class="app-path">
+            <a href="./apps/adminpro/index.html" class="app-path-link">apps/adminpro/ ↗</a>
+          </div>
+          <!-- App Visual Showcase Banner -->
+          <div style="height:120px; border-radius:8px; overflow:hidden; margin-bottom:1rem; position:relative;">
+            <img src="assets/images/preview-adminpro.jpg" alt="AdminPro Cloud Telemetry" style="width:100%; height:100%; object-fit:cover;">
+            <div style="position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(15,23,42,0.75) 100%); display:flex; align-items:flex-end; padding:0.6rem 0.85rem;">
+              <span style="color:#ffffff; font-size:0.75rem; font-weight:700;">Kubernetes Telemetry &bull; RBAC Audit Pipeline</span>
+            </div>
+          </div>
+          <p class="app-desc-text">
+            CRUD Tables, Data Grids & RBAC controls with high-density data visualization and audit logs.
+          </p>
+
+          <div class="screens-sublabel">SCREENS (CLICK TO JUMP):</div>
+          <div class="screen-pills-wrap">
+            <a href="./apps/adminpro/index.html" class="screen-item-pill" data-testid="link-adminpro-overview">Overview Dashboard ↗</a>
+            <a href="./apps/adminpro/users.html" class="screen-item-pill" data-testid="link-adminpro-users">User Directory Grid ↗</a>
+            <a href="./apps/adminpro/rbac.html" class="screen-item-pill" data-testid="link-adminpro-rbac">RBAC Access Matrix ↗</a>
+            <a href="./apps/adminpro/audit.html" class="screen-item-pill" data-testid="link-adminpro-audit">Audit Trail Logs ↗</a>
+            <a href="./apps/adminpro/settings.html" class="screen-item-pill" data-testid="link-adminpro-settings">System Settings ↗</a>
+          </div>
+
+          <div class="challenges-box">
+            <div class="challenges-title">SDET TEST CHALLENGES:</div>
+            <div class="challenges-grid">
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Pagination assertions & stateful URL syncing</div>
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Async search debouncing & race conditions</div>
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Export CSV headless download validation</div>
+            </div>
+          </div>
+
+          <div class="app-card-footer">
+            <div class="footer-left-buttons">
+              <a href="./apps/adminpro/index.html" class="btn-launch-dark" data-testid="launch-adminpro">
+                Launch adminpro &rarr;
+              </a>
+              <button class="btn-view-selectors" onclick="openSelectorsModal('adminpro')" data-testid="view-selectors-adminpro">
+                &lt; &gt; View Selectors
+              </button>
+            </div>
+            <span class="status-text-ready">E2E Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Row: demobank (Glowing Green Border & Code Block) -->
+      <div class="featured-bank-card" data-testid="card-demobank">
+        <div class="featured-left">
+          <div class="app-box-top">
+            <div class="app-title-group">
+              <div class="app-icon-wrap" style="background: #0f172a; color: #fff;">🏛️</div>
+              <h3 class="app-name">
+                <a href="./apps/demobank/index.html" class="app-name-link" data-testid="title-link-demobank">demobank ↗</a>
+              </h3>
+              <span class="complete-badge">Complete (6 Screens Ready)</span>
+            </div>
+          </div>
+          <div class="app-path">
+            <a href="./apps/demobank/index.html" class="app-path-link">apps/demobank/ &bull; Banking & FinTech Simulator ↗</a>
+          </div>
+          <p class="app-desc-text">
+            High-security transactional banking sandbox simulating state persistence, asynchronous FedNow settlement, dynamic debit card lock states, and multi-ledger reconciliations.
+          </p>
+
+          <!-- App Visual Showcase Banner -->
+          <div style="height:115px; border-radius:8px; overflow:hidden; margin-bottom:1.25rem; position:relative;">
+            <img src="assets/images/preview-demobank.jpg" alt="DemoBank FinTech Architecture" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.85);">
+            <div style="position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(6,78,59,0.85) 100%); display:flex; align-items:flex-end; padding:0.6rem 0.85rem;">
+              <span style="color:#ffffff; font-size:0.75rem; font-weight:700;">FedNow Instant Clearing &bull; Obsidian Metal Contactless Rails</span>
+            </div>
+          </div>
+
+          <!-- 6 Screens Grid (Direct Links) -->
+          <div class="bank-screens-grid">
+            <a href="./apps/demobank/login.html" class="bank-screen-tile" data-testid="tile-demobank-login" title="Open 256-Bit SSL Login Gateway">
+              <div class="screen-num-label">Screen 1 &bull; Auth</div>
+              <div class="screen-name-bold">256-Bit SSL Login ↗</div>
+            </a>
+            <a href="./apps/demobank/index.html" class="bank-screen-tile" data-testid="tile-demobank-dashboard" title="Open Account Dashboard">
+              <div class="screen-num-label">Screen 2 &bull; Core</div>
+              <div class="screen-name-bold">Account Dashboard ↗</div>
+            </a>
+            <a href="./apps/demobank/transfer.html" class="bank-screen-tile" data-testid="tile-demobank-transfer" title="Open Transfer & Pay Funds">
+              <div class="screen-num-label">Screen 3 &bull; Wires</div>
+              <div class="screen-name-bold">Transfer & Pay Funds ↗</div>
+            </a>
+            <a href="./apps/demobank/deposit.html" class="bank-screen-tile" data-testid="tile-demobank-deposit" title="Open Quick Mobile Deposit">
+              <div class="screen-num-label">Screen 4 &bull; Camera</div>
+              <div class="screen-name-bold">Quick Mobile Deposit ↗</div>
+            </a>
+            <a href="./apps/demobank/cards.html" class="bank-screen-tile" data-testid="tile-demobank-cards" title="Open Credit & Virtual Cards">
+              <div class="screen-num-label">Screen 5 &bull; Cards</div>
+              <div class="screen-name-bold">Credit & Virtual Cards ↗</div>
+            </a>
+            <a href="./apps/demobank/transactions.html" class="bank-screen-tile" data-testid="tile-demobank-history" title="Open Ledger & History">
+              <div class="screen-num-label">Screen 6 &bull; Audit</div>
+              <div class="screen-name-bold">Ledger & History ↗</div>
+            </a>
+          </div>
+
+          <div class="app-card-footer" style="border: none; padding-top: 0;">
+            <div class="footer-left-buttons">
+              <a href="./apps/demobank/index.html" class="btn-launch-green" data-testid="launch-demobank">
+                <span>↗</span> Launch demobank Dashboard
+              </a>
+              <a href="./apps/demobank/login.html" class="btn-launch-dark" style="background: #1e293b;" data-testid="launch-demobank-login">
+                Login Gateway &rarr;
+              </a>
+              <button class="btn-view-selectors" onclick="openSelectorsModal('demobank')" data-testid="view-selectors-demobank">
+                Inspect Selectors & Hooks
+              </button>
+            </div>
+            <span class="interactive-canvas-tag">
+              <span>⚡</span> Ready on Canvas with interactive test hooks!
+            </span>
+          </div>
+        </div>
+
+        <!-- Right Side: Dark Code Editor Block -->
+        <div class="featured-right-code">
+          <div class="code-top-strip">
+            <span>DEMOBANK.SPEC.TS</span>
+            <span>🔒</span>
+          </div>
+          <div class="code-body-inner">
+            <pre><code><span class="syn-keyword">await</span> page.<span class="syn-fn">goto</span>(<span class="syn-string">'/apps/demobank'</span>);
+<span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'account-transfer-amount'</span>).<span class="syn-fn">fill</span>(<span class="syn-string">'450.00'</span>);
+<span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'btn-authorize-wire'</span>).<span class="syn-fn">click</span>();
+<span class="syn-keyword">await</span> <span class="syn-fn">expect</span>(page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'wire-confirmed-banner'</span>)).<span class="syn-fn">toBeVisible</span>();</code></pre>
+          </div>
+          <div class="code-bottom-strip">
+            <span class="status-passing">● Status: Passing</span>
+            <span class="runtime-badge">142ms runtime</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: tripease (Full Width Showcase) -->
+      <div class="apps-row-full">
+        <!-- 4. tripease -->
+        <div class="app-box" data-testid="card-tripease">
+          <div class="app-box-top">
+            <div class="app-title-group">
+              <div class="app-icon-wrap">✈️</div>
+              <h3 class="app-name">
+                <a href="./apps/tripease/index.html" class="app-name-link" data-testid="title-link-tripease">tripease ↗</a>
+              </h3>
+              <span class="pill-tag travel">Travel & Mobility</span>
+            </div>
+            <span class="screens-spec-badge">5 Screens Spec'd</span>
+          </div>
+          <div class="app-path">
+            <a href="./apps/tripease/index.html" class="app-path-link">apps/tripease/ ↗</a>
+          </div>
+          <!-- App Visual Showcase Banner -->
+          <div style="height:130px; border-radius:8px; overflow:hidden; margin-bottom:1rem; position:relative;">
+            <img src="assets/images/preview-tripease.jpg" alt="TripEase Mobility Showcase" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.85);">
+            <div style="position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(15,23,42,0.75) 100%); display:flex; align-items:flex-end; padding:0.6rem 0.85rem;">
+              <span style="color:#ffffff; font-size:0.75rem; font-weight:700;">Global GDS Fare Engine &bull; Interactive SVG Aircraft Seat Map</span>
+            </div>
+          </div>
+          <p class="app-desc-text">
+            Date Pickers, Complex Dynamic Filtering & SVG Aircraft Seat Maps. Stress tests coordinate locator lookups.
+          </p>
+
+          <div class="screens-sublabel">SCREENS INCLUDED (CLICK TO JUMP):</div>
+          <div class="screen-pills-wrap">
+            <a href="./apps/tripease/index.html" class="screen-item-pill" data-testid="link-tripease-search">Flight & Hotel Search ↗</a>
+            <a href="./apps/tripease/results.html" class="screen-item-pill" data-testid="link-tripease-results">Faceted Results & Sliders ↗</a>
+            <a href="./apps/tripease/seat-selection.html" class="screen-item-pill" data-testid="link-tripease-seats">Interactive SVG Seat Picker ↗</a>
+            <a href="./apps/tripease/booking.html" class="screen-item-pill" data-testid="link-tripease-booking">Traveler Data Form ↗</a>
+            <a href="./apps/tripease/boarding-pass.html" class="screen-item-pill" data-testid="link-tripease-boarding">Digital Boarding Pass ↗</a>
+          </div>
+
+          <div class="challenges-box">
+            <div class="challenges-title">SDET TEST CHALLENGES:</div>
+            <div class="challenges-grid">
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Dual calendar range pickers & time-zone shifts</div>
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Inline SVG seat coordinate mapping & availability states</div>
+              <div class="challenge-item"><span class="challenge-bullet">&rsaquo;</span> Complex URL query parameter deep linking & reload sync</div>
+            </div>
+          </div>
+
+          <div class="app-card-footer">
+            <div class="footer-left-buttons">
+              <a href="./apps/tripease/index.html" class="btn-launch-dark" data-testid="launch-tripease">
+                Launch tripease &rarr;
+              </a>
+              <button class="btn-view-selectors" onclick="openSelectorsModal('tripease')" data-testid="view-selectors-tripease">
+                &lt; &gt; View Selectors
+              </button>
+            </div>
+            <span class="status-text-ready">E2E Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quality Assurance Roadmap & Automation Matrix -->
+    <section class="matrix-section" id="matrix">
+      <div class="matrix-header-row">
+        <div>
+          <div class="section-pretitle">QUALITY ASSURANCE ROADMAP</div>
+          <h3 class="section-title" style="font-size: 1.35rem;">Automation Matrix & Selector Standards</h3>
+        </div>
+        <div class="matrix-legend">
+          <span class="legend-item"><span class="legend-check">✓</span> Supported</span>
+          <span class="legend-item"><span class="legend-clock">◷</span> Planned</span>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <div class="mobile-scroll-hint">⇄ Swipe horizontally to inspect full matrix</div>
+        <table class="matrix-table" data-testid="matrix-table">
+          <thead>
+            <tr>
+              <th>Application</th>
+              <th>E2E Flow</th>
+              <th>Component Tests</th>
+              <th>Visual Regression</th>
+              <th>a11y (WCAG 2.1 AA)</th>
+              <th>API Mock Contract</th>
+              <th>Load / Stress</th>
+              <th>Direct Launch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="app-cell-title">
+                  <a href="./apps/shoptest/index.html" class="matrix-app-link" data-testid="matrix-link-shoptest">shoptest ↗</a>
+                </div>
+                <div class="app-cell-sub">E-Commerce Web &bull; 5 Screens</div>
+              </td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-planned">◷</span></td>
+              <td>
+                <a href="./apps/shoptest/index.html" class="table-launch-btn" data-testid="matrix-launch-shoptest">Launch &rarr;</a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="app-cell-title">
+                  <a href="./apps/adminpro/index.html" class="matrix-app-link" data-testid="matrix-link-adminpro">adminpro ↗</a>
+                </div>
+                <div class="app-cell-sub">Analytics & RBAC &bull; 5 Screens</div>
+              </td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td>
+                <a href="./apps/adminpro/index.html" class="table-launch-btn" data-testid="matrix-launch-adminpro">Launch &rarr;</a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="app-cell-title">
+                  <a href="./apps/demobank/index.html" class="matrix-app-link" data-testid="matrix-link-demobank">demobank ↗</a>
+                  <span style="color:#10b981; font-size: 0.7rem;">●</span>
+                </div>
+                <div class="app-cell-sub">FinTech Core &bull; 6 Screens</div>
+              </td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td>
+                <a href="./apps/demobank/index.html" class="table-launch-btn" style="background:#059669;" data-testid="matrix-launch-demobank">Launch &rarr;</a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="app-cell-title">
+                  <a href="./apps/tripease/index.html" class="matrix-app-link" data-testid="matrix-link-tripease">tripease ↗</a>
+                </div>
+                <div class="app-cell-sub">Travel & Booking &bull; 5 Screens</div>
+              </td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td><span class="icon-supported">✓</span></td>
+              <td>
+                <a href="./apps/tripease/index.html" class="table-launch-btn" data-testid="matrix-launch-tripease">Launch &rarr;</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Matrix Bottom Strip -->
+      <div class="matrix-sub-strip">
+        <div class="sub-strip-left">
+          <div class="strip-icon">⇄</div>
+          <div>
+            <div class="strip-title">Deterministic Selector Specification</div>
+            <div class="strip-desc">
+              Every interactive element adheres to strict kebab-cased semantics: <code>[data-testid="app-component-action"]</code>. Guaranteed zero collision with presentation utility CSS classes.
+            </div>
+          </div>
+        </div>
+        <div class="selector-pill-tag">
+          data-cy ➔ data-testid
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Quickstart: Execute Portfolio Test Harness -->
+    <section class="quickstart-section" id="quickstart">
+      <div class="section-pretitle">DEVELOPER QUICKSTART</div>
+      <h3 class="section-title" style="margin-bottom: 1.5rem;">Execute Portfolio Test Harness</h3>
+
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <div class="terminal-tabs">
+            <button class="term-tab active" onclick="switchTermTab('playwright')">Playwright (TypeScript)</button>
+            <button class="term-tab" onclick="switchTermTab('cypress')">Cypress (E2E)</button>
+            <button class="term-tab" onclick="switchTermTab('docker')">CLI / Docker Runner</button>
+          </div>
+          <div class="term-header-right">
+            <span>Suite Config: playwright.config.ts</span>
+            <button class="btn-copy-config" onclick="copyCodeBlock()" title="Copy Code">📋</button>
+          </div>
+        </div>
+
+        <div class="terminal-code">
+          <pre id="code-display"><code><span class="syn-keyword">import</span> { test, expect } <span class="syn-keyword">from</span> <span class="syn-string">'@playwright/test'</span>;
+
+test.<span class="syn-fn">describe</span>(<span class="syn-string">'Benchmark: demobank Transfer & Balance Assertion'</span>, () =&gt; {
+  test.<span class="syn-fn">beforeEach</span>(<span class="syn-keyword">async</span> ({ page }) =&gt; {
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">goto</span>(<span class="syn-string">'/apps/demobank'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'auth-pin-input'</span>).<span class="syn-fn">fill</span>(<span class="syn-string">'8842'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'auth-submit-btn'</span>).<span class="syn-fn">click</span>();
+  });
+
+  test(<span class="syn-string">'should atomically decrement ledger on instant transfer'</span>, <span class="syn-keyword">async</span> ({ page }) =&gt; {
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'nav-transfer-link'</span>).<span class="syn-fn">click</span>();
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'recipient-account-select'</span>).<span class="syn-fn">selectOption</span>(<span class="syn-string">'acct_savings_09'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'account-transfer-amount'</span>).<span class="syn-fn">fill</span>(<span class="syn-string">'1250.00'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'btn-authorize-wire'</span>).<span class="syn-fn">click</span>();
+
+    <span class="syn-keyword">await</span> <span class="syn-fn">expect</span>(page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'transfer-success-toast'</span>)).<span class="syn-fn">toBeVisible</span>();
+    <span class="syn-keyword">await</span> <span class="syn-fn">expect</span>(page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'balance-total-display'</span>)).<span class="syn-fn">toHaveText</span>(<span class="syn-string">'$24,190.50'</span>);
+  });
+});</code></pre>
+        </div>
+
+        <div class="terminal-bottom-bar">
+          <div class="term-cli-cmd">
+            <span class="term-prompt">$</span>
+            <span id="cli-cmd-text">npx playwright test --project=chromium</span>
+          </div>
+          <button class="btn-copy-cli" onclick="copyCliCommand()">
+            <span>📋</span> Copy CLI
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h4>QA Automation Benchmark Suite</h4>
+          <p>Standardized test environments and CI/CD pipelines across enterprise-grade automation frameworks.</p>
+        </div>
+        <div class="frameworks-group">
+          <h5>SUPPORTED FRAMEWORKS:</h5>
+          <div class="framework-pills">
+            <span class="fw-pill">Playwright</span>
+            <span class="fw-pill">Cypress</span>
+            <span class="fw-pill">Selenium Grid</span>
+            <span class="fw-pill">Robot Framework</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comprehensive Applications & Screens Directory -->
+      <div class="footer-apps-grid" data-testid="footer-apps-directory">
+        <!-- ShopTest -->
+        <div class="footer-col">
+          <div class="footer-app-head">
+            <span style="font-size: 1.1rem;">🛍️</span>
+            <a href="./apps/shoptest/index.html" class="footer-app-title" data-testid="footer-link-shoptest">shoptest</a>
+          </div>
+          <ul class="footer-screen-list">
+            <li><a href="./apps/shoptest/index.html">1. Catalog & Search ↗</a></li>
+            <li><a href="./apps/shoptest/product-detail.html">2. Product Details (PDP) ↗</a></li>
+            <li><a href="./apps/shoptest/cart.html">3. Cart Drawer & Promos ↗</a></li>
+            <li><a href="./apps/shoptest/checkout.html">4. 3-Step Checkout ↗</a></li>
+            <li><a href="./apps/shoptest/order-tracking.html">5. Order Tracking ↗</a></li>
+          </ul>
+        </div>
+
+        <!-- AdminPro -->
+        <div class="footer-col">
+          <div class="footer-app-head">
+            <span style="font-size: 1.1rem;">📊</span>
+            <a href="./apps/adminpro/index.html" class="footer-app-title" data-testid="footer-link-adminpro">adminpro</a>
+          </div>
+          <ul class="footer-screen-list">
+            <li><a href="./apps/adminpro/index.html">1. Overview Dashboard ↗</a></li>
+            <li><a href="./apps/adminpro/users.html">2. User Management Grid ↗</a></li>
+            <li><a href="./apps/adminpro/rbac.html">3. RBAC Access Matrix ↗</a></li>
+            <li><a href="./apps/adminpro/audit.html">4. Audit Trail Logs ↗</a></li>
+            <li><a href="./apps/adminpro/settings.html">5. System Settings ↗</a></li>
+          </ul>
+        </div>
+
+        <!-- DemoBank -->
+        <div class="footer-col">
+          <div class="footer-app-head">
+            <span style="font-size: 1.1rem;">🏛️</span>
+            <a href="./apps/demobank/index.html" class="footer-app-title" data-testid="footer-link-demobank">demobank</a>
+          </div>
+          <ul class="footer-screen-list">
+            <li><a href="./apps/demobank/login.html">1. 256-Bit SSL Login ↗</a></li>
+            <li><a href="./apps/demobank/index.html">2. Account Dashboard ↗</a></li>
+            <li><a href="./apps/demobank/transfer.html">3. Wire & Pay Funds ↗</a></li>
+            <li><a href="./apps/demobank/deposit.html">4. Quick Mobile Deposit ↗</a></li>
+            <li><a href="./apps/demobank/cards.html">5. Virtual Cards & Pin ↗</a></li>
+            <li><a href="./apps/demobank/transactions.html">6. Ledger & History ↗</a></li>
+          </ul>
+        </div>
+
+        <!-- TripEase -->
+        <div class="footer-col">
+          <div class="footer-app-head">
+            <span style="font-size: 1.1rem;">✈️</span>
+            <a href="./apps/tripease/index.html" class="footer-app-title" data-testid="footer-link-tripease">tripease</a>
+          </div>
+          <ul class="footer-screen-list">
+            <li><a href="./apps/tripease/index.html">1. Flight & Hotel Search ↗</a></li>
+            <li><a href="./apps/tripease/results.html">2. Faceted Results & Sliders ↗</a></li>
+            <li><a href="./apps/tripease/seat-selection.html">3. SVG Aircraft Seat Picker ↗</a></li>
+            <li><a href="./apps/tripease/booking.html">4. Traveler Data Form ↗</a></li>
+            <li><a href="./apps/tripease/boarding-pass.html">5. Digital Boarding Pass ↗</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2025 QA Automation Benchmark Suite. Architected for reliability and deterministic test pipelines.
+        </div>
+        <div class="footer-status-right">
+          <span class="passing-text">✔ All Suites Passing</span>
+          <span>&bull;</span>
+          <span>Release 2.4.0-stable</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- View Selectors Modal -->
+  <div id="selectors-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-card-header">
+        <h3 id="modal-app-title">Application Selectors</h3>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <a id="modal-launch-app-link" href="#" class="modal-launch-app-btn" target="_blank" data-testid="modal-launch-app">Launch App ↗</a>
+          <button class="modal-close-btn" onclick="closeSelectorsModal()">&times;</button>
+        </div>
+      </div>
+      <div class="modal-card-body">
+        <table class="selector-table">
+          <thead>
+            <tr>
+              <th>Target Element</th>
+              <th>Deterministic Selector</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody id="selectors-tbody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-popup">Copied to clipboard!</div>
+
+  <script>
+    // Selector dictionaries for the modal
+    const SELECTOR_REGISTRY = {
+      shoptest: [
+        { el: "Search Input", sel: "[data-testid='search-input']", type: "input" },
+        { el: "Category Filter", sel: "[data-testid='category-filter']", type: "select" },
+        { el: "Cart Trigger", sel: "[data-testid='cart-btn']", type: "button" },
+        { el: "Cart Badge Counter", sel: "[data-testid='cart-badge']", type: "badge" },
+        { el: "Add to Cart Button", sel: "[data-testid='add-to-cart-btn']", type: "button" },
+        { el: "Promo Input", sel: "[data-testid='promo-input']", type: "input" },
+        { el: "Apply Promo Button", sel: "[data-testid='promo-btn']", type: "button" },
+        { el: "Checkout Button", sel: "[data-testid='checkout-btn']", type: "button" },
+        { el: "Place Order Button", sel: "[data-testid='place-order-btn']", type: "button" },
+        { el: "Order Confirmation ID", sel: "[data-testid='order-id']", type: "text" }
+      ],
+      adminpro: [
+        { el: "User Search", sel: "[data-testid='user-search']", type: "input" },
+        { el: "Role Filter", sel: "[data-testid='role-filter']", type: "select" },
+        { el: "Add User Button", sel: "[data-testid='add-user-btn']", type: "button" },
+        { el: "User Table Row", sel: "[data-testid='user-row']", type: "row" },
+        { el: "Edit User Button", sel: "[data-testid='btn-edit-user']", type: "button" },
+        { el: "Delete User Button", sel: "[data-testid='btn-delete-user']", type: "button" },
+        { el: "User Form Modal", sel: "[data-testid='user-modal']", type: "modal" },
+        { el: "Save User Button", sel: "[data-testid='btn-save-user']", type: "button" },
+        { el: "KPI Stat Users", sel: "[data-testid='stat-users']", type: "stat" }
+      ],
+      demobank: [
+        { el: "Login Username", sel: "[data-testid='login-username']", type: "input" },
+        { el: "Login Password", sel: "[data-testid='login-password']", type: "input" },
+        { el: "Login Button", sel: "[data-testid='login-submit-btn']", type: "button" },
+        { el: "Checking Balance", sel: "[data-testid='checking-balance']", type: "metric" },
+        { el: "Savings Balance", sel: "[data-testid='savings-balance']", type: "metric" },
+        { el: "Transfer From Select", sel: "[data-testid='transfer-from']", type: "select" },
+        { el: "Transfer To Select", sel: "[data-testid='transfer-to']", type: "select" },
+        { el: "Transfer Amount Input", sel: "[data-testid='transfer-amount']", type: "input" },
+        { el: "Confirm Transfer Button", sel: "[data-testid='btn-submit-transfer']", type: "button" },
+        { el: "Transaction Row", sel: "[data-testid='txn-row']", type: "item" }
+      ],
+      tripease: [
+        { el: "Trip Origin Input", sel: "[data-testid='input-origin']", type: "input" },
+        { el: "Trip Destination Input", sel: "[data-testid='input-destination']", type: "input" },
+        { el: "Departure Date", sel: "[data-testid='input-departure-date']", type: "date" },
+        { el: "Passenger Counter", sel: "[data-testid='select-passengers']", type: "select" },
+        { el: "Flight Search Button", sel: "[data-testid='btn-search-flights']", type: "button" },
+        { el: "Seat Selection Button", sel: "[data-testid='btn-select-seat']", type: "button" },
+        { el: "Passenger Name Input", sel: "[data-testid='input-passenger-name']", type: "input" },
+        { el: "Booking Reference PNR", sel: "[data-testid='booking-pnr-code']", type: "text" }
+      ]
+    };
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+
+    function openSelectorsModal(appName) {
+      const modal = document.getElementById('selectors-modal');
+      const title = document.getElementById('modal-app-title');
+      const tbody = document.getElementById('selectors-tbody');
+      const launchLink = document.getElementById('modal-launch-app-link');
+
+      title.textContent = `Selectors Registry: ${appName}`;
+      if (launchLink) {
+        launchLink.href = `./apps/${appName}/index.html`;
+        launchLink.textContent = `Launch ${appName} ↗`;
+      }
+      tbody.innerHTML = '';
+
+      const items = SELECTOR_REGISTRY[appName] || [];
+      items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.el}</td>
+          <td><code class="selector-tag">${item.sel}</code></td>
+          <td><span style="font-size:0.75rem; color:#64748b;">${item.type}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      modal.style.display = 'flex';
+    }
+
+    function closeSelectorsModal() {
+      document.getElementById('selectors-modal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('selectors-modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+
+    function copyCliCommand() {
+      const cmd = document.getElementById('cli-cmd-text').textContent;
+      navigator.clipboard.writeText(cmd).then(() => {
+        showToast('CLI command copied: ' + cmd);
+      });
+    }
+
+    function copyCodeBlock() {
+      const code = document.getElementById('code-display').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('Playwright test spec copied!');
+      });
+    }
+
+    document.getElementById('btn-copy-boilerplate').addEventListener('click', () => {
+      copyCodeBlock();
+    });
+
+    function switchTermTab(tab) {
+      document.querySelectorAll('.term-tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const codeDisplay = document.getElementById('code-display');
+      const cliDisplay = document.getElementById('cli-cmd-text');
+
+      if (tab === 'playwright') {
+        cliDisplay.textContent = 'npx playwright test --project=chromium';
+        codeDisplay.innerHTML = `<code><span class="syn-keyword">import</span> { test, expect } <span class="syn-keyword">from</span> <span class="syn-string">'@playwright/test'</span>;
+
+test.<span class="syn-fn">describe</span>(<span class="syn-string">'Benchmark: demobank Transfer & Balance Assertion'</span>, () =&gt; {
+  test.<span class="syn-fn">beforeEach</span>(<span class="syn-keyword">async</span> ({ page }) =&gt; {
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">goto</span>(<span class="syn-string">'/apps/demobank'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'auth-pin-input'</span>).<span class="syn-fn">fill</span>(<span class="syn-string">'8842'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'auth-submit-btn'</span>).<span class="syn-fn">click</span>();
+  });
+
+  test(<span class="syn-string">'should atomically decrement ledger on instant transfer'</span>, <span class="syn-keyword">async</span> ({ page }) =&gt; {
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'nav-transfer-link'</span>).<span class="syn-fn">click</span>();
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'recipient-account-select'</span>).<span class="syn-fn">selectOption</span>(<span class="syn-string">'acct_savings_09'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'account-transfer-amount'</span>).<span class="syn-fn">fill</span>(<span class="syn-string">'1250.00'</span>);
+    <span class="syn-keyword">await</span> page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'btn-authorize-wire'</span>).<span class="syn-fn">click</span>();
+
+    <span class="syn-keyword">await</span> <span class="syn-fn">expect</span>(page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'transfer-success-toast'</span>)).<span class="syn-fn">toBeVisible</span>();
+    <span class="syn-keyword">await</span> <span class="syn-fn">expect</span>(page.<span class="syn-fn">getByTestId</span>(<span class="syn-string">'balance-total-display'</span>)).<span class="syn-fn">toHaveText</span>(<span class="syn-string">'$24,190.50'</span>);
+  });
+});</code>`;
+      } else if (tab === 'cypress') {
+        cliDisplay.textContent = 'npx cypress run --spec "cypress/e2e/demobank.cy.js"';
+        codeDisplay.innerHTML = `<code><span class="syn-fn">describe</span>(<span class="syn-string">'Benchmark: demobank Transfer & Balance Assertion'</span>, () =&gt; {
+  <span class="syn-fn">beforeEach</span>(() =&gt; {
+    cy.<span class="syn-fn">visit</span>(<span class="syn-string">'/apps/demobank'</span>);
+    cy.<span class="syn-fn">get</span>(<span class="syn-string">'[data-testid="auth-pin-input"]'</span>).<span class="syn-fn">type</span>(<span class="syn-string">'8842'</span>);
+    cy.<span class="syn-fn">get</span>(<span class="syn-string">'[data-testid="auth-submit-btn"]'</span>).<span class="syn-fn">click</span>();
+  });
+
+  <span class="syn-fn">it</span>(<span class="syn-string">'should atomically decrement ledger on instant transfer'</span>, () =&gt; {
+    cy.<span class="syn-fn">get</span>(<span class="syn-string">'[data-testid="nav-transfer-link"]'</span>).<span class="syn-fn">click</span>();
+    cy.<span class="syn-fn">get</span>(<span class="syn-string">'[data-testid="account-transfer-amount"]'</span>).<span class="syn-fn">type</span>(<span class="syn-string">'1250.00'</span>);
+    cy.<span class="syn-fn">get</span>(<span class="syn-string">'[data-testid="btn-authorize-wire"]'</span>).<span class="syn-fn">click</span>();
+    cy.<span class="syn-fn">get</span>(<span class="syn-string">'[data-testid="transfer-success-toast"]'</span>).<span class="syn-fn">should</span>(<span class="syn-string">'be.visible'</span>);
+  });
+});</code>`;
+      } else if (tab === 'docker') {
+        cliDisplay.textContent = 'docker run --rm -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.44.0-jammy npx playwright test';
+        codeDisplay.innerHTML = `<code><span class="syn-comment"># Run complete automation test harness inside headless Docker container</span>
+<span class="syn-keyword">docker</span> run --rm -it \\
+  -v <span class="syn-string">"$(pwd):/e2e"</span> \\
+  -w <span class="syn-string">/e2e</span> \\
+  mcr.microsoft.com/playwright:v1.44.0-jammy \\
+  npx playwright test --reporter=html,list
+
+<span class="syn-comment"># Artifact reports exported to ./playwright-report</span></code>`;
+      }
+    }
+  </script>
+</body>
+</html>

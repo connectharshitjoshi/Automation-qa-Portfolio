@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Studio Pro Wireless ANC Headphones - ShopTest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PDP Specific Styles */
+    .pdp-main {
+      max-width: 1380px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .pdp-top-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3.5rem;
+    }
+
+    /* Left Gallery */
+    .pdp-gallery-container {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .pdp-thumbs-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 75px;
+    }
+
+    .pdp-thumb-btn {
+      width: 75px;
+      height: 75px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f1f5f9;
+      cursor: pointer;
+      padding: 0;
+      transition: border-color 0.15s;
+    }
+
+    .pdp-thumb-btn.active, .pdp-thumb-btn:hover {
+      border-color: #0f172a;
+    }
+
+    .pdp-thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .pdp-main-preview-box {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preview-badges-strip {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 2;
+    }
+
+    .badge-editor {
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-transform: uppercase;
+    }
+
+    .badge-delivery {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      color: #334155;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .preview-image-wrap {
+      flex: 1;
+      min-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .preview-image-wrap img {
+      max-width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+    }
+
+    .preview-spec-chips {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .preview-spec-chips span {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Right Details */
+    .pdp-details-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pdp-brand-sku-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .pdp-title {
+      font-size: 2.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.65rem;
+    }
+
+    .pdp-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .pdp-price-box {
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .pdp-hero-price {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .pdp-original-price {
+      font-size: 1.15rem;
+      color: var(--text-light);
+      text-decoration: line-through;
+    }
+
+    .badge-save {
+      background: #fef3c7;
+      color: #b45309;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .tax-step-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    /* Options Sections */
+    .option-block {
+      margin-bottom: 1.25rem;
+    }
+
+    .option-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.825rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .option-title-label {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .swatches-row {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .color-swatch-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .color-swatch-btn.active {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 1px #0f172a;
+    }
+
+    .swatch-circle {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+    .swatch-black { background: #18181b; }
+    .swatch-cream { background: #e4d5b7; }
+    .swatch-emerald { background: #064e3b; }
+
+    /* Package Radios */
+    .package-radios-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .package-radio-card {
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+      cursor: pointer;
+      background: #ffffff;
+      display: flex;
+      gap: 0.65rem;
+    }
+
+    .package-radio-card.active {
+      border-color: #0f172a;
+      background: #f8fafc;
+    }
+
+    .package-card-title {
+      font-size: 0.825rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.2rem;
+    }
+
+    .package-card-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Stock Banner */
+    .stock-banner {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      border-radius: 6px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    /* Quantity and Action Buttons */
+    .actions-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 0 0.35rem;
+    }
+
+    .qty-btn {
+      background: none;
+      border: none;
+      width: 32px;
+      height: 38px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .qty-input {
+      width: 36px;
+      border: none;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .btn-add-pdp {
+      flex: 1;
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.15s;
+    }
+    .btn-add-pdp:hover { background: #1e293b; }
+
+    .btn-wishlist {
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .btn-buy-now {
+      width: 100%;
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      transition: background 0.15s;
+    }
+    .btn-buy-now:hover { background: #047857; }
+
+    /* Guarantee Icons Row */
+    .guarantees-row {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.25rem;
+      font-size: 0.775rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .guarantee-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .guarantee-item strong { display: block; font-size: 0.8rem; }
+    .guarantee-item span { font-size: 0.72rem; color: var(--text-muted); }
+
+    /* Tabs & Feature Cards */
+    .pdp-tabs-nav {
+      display: flex;
+      gap: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+    .pdp-tab-btn {
+      background: none;
+      border: none;
+      padding: 0.75rem 0;
+      border-bottom: 2px solid transparent;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .pdp-tab-btn.active {
+      color: var(--text-dark);
+      border-bottom-color: #0f172a;
+    }
+
+    .feature-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .feature-card-item {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .feature-icon-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #ecfdf5;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Acoustic Section */
+    .acoustic-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2.5rem;
+      align-items: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .acoustic-diagram img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    /* Frequently Bought Together */
+    .fbt-section {
+      margin-bottom: 3.5rem;
+    }
+    .fbt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .fbt-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .fbt-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .fbt-card-top {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .fbt-thumb {
+      width: 60px;
+      height: 60px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+    .btn-companion {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.45rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-companion:hover { background: #f1f5f9; }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .pdp-top-grid, .acoustic-box {
+        grid-template-columns: 1fr;
+      }
+      .feature-cards-grid, .fbt-grid {
+        grid-template-columns: 1fr;
+      }
+      .pdp-gallery-container {
+        flex-direction: column-reverse;
+      }
+      .pdp-thumbs-col {
+        flex-direction: row;
+        width: 100%;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav Bar -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand-wrap">
+        <a href="index.html" class="nav-brand-wrap">
+          <div class="brand-logo-icon">🛍️</div>
+          <span class="brand-text">ShopTest</span>
+        </a>
+        <span class="nav-spec-badge">
+          <span>✓</span> QA BENCHMARK SPEC V2.4 &bull; 100% DATA-TESTID
+        </span>
+      </div>
+
+      <div class="nav-search-bar">
+        <select class="nav-category-select" data-testid="nav-category-select">
+          <option value="all">All Categories</option>
+          <option value="audio" selected>Audio & Acoustics</option>
+          <option value="smarthome">Smart Home</option>
+        </select>
+        <button class="nav-search-btn">🔍</button>
+      </div>
+
+      <ul class="nav-tabs-menu">
+        <li><a href="index.html" data-testid="nav-tab-catalog">Catalog</a></li>
+        <li><a href="product-detail.html" class="active" data-testid="nav-tab-pdp">Product Detail</a></li>
+        <li><a href="cart.html" data-testid="nav-tab-cart">Shopping Cart</a></li>
+        <li><a href="checkout.html" data-testid="nav-tab-checkout">Checkout Flow</a></li>
+        <li><a href="order-tracking.html" data-testid="nav-tab-tracking">Order Tracking</a></li>
+        <li><a href="../../index.html" data-testid="nav-tab-hub">Portfolio Hub</a></li>
+      </ul>
+
+      <div class="nav-right-actions">
+        <a href="cart.html" class="btn-nav-cart" data-testid="btn-nav-cart">
+          <span>🛍️</span>
+          <span class="cart-qty-pill" data-testid="nav-cart-badge">3</span>
+          <span data-testid="nav-cart-total">$248.00</span>
+        </a>
+        <div class="user-nav-avatar">👤</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fixture Status Banner -->
+  <div class="fixture-banner">
+    <div class="fixture-inner">
+      <div class="fixture-left">
+        <span class="fixture-dot"></span>
+        <span>DETERMINISTIC E2E FIXTURE ACTIVE &bull; Fixture ID: <strong class="fixture-id-code">FIXTURE_PDP_AUD_8821</strong></span>
+      </div>
+      <div class="fixture-right">
+        <span>Warehouse: Node-US-East (Latency: &lt;12ms)</span> &bull; <span>DOM Mutation Spec 2.4 Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breadcrumbs -->
+  <div class="breadcrumbs-bar">
+    <a href="index.html">Home</a> &rsaquo;
+    <a href="index.html">Audio & Gear</a> &rsaquo;
+    <a href="index.html">Headphones</a> &rsaquo;
+    <span class="current">Aura Studio ANC Headphones</span>
+  </div>
+
+  <!-- Main PDP Content -->
+  <main class="pdp-main">
+    <div class="pdp-top-grid">
+      <!-- Left Gallery -->
+      <div class="pdp-gallery-container">
+        <div class="pdp-thumbs-col">
+          <button class="pdp-thumb-btn active" onclick="switchImage('images/prod-headphones.jpg')">
+            <img src="images/prod-headphones.jpg" alt="Thumbnail 1">
+          </button>
+          <button class="pdp-thumb-btn" onclick="switchImage('images/pdp-angle-1.jpg')">
+            <img src="images/pdp-angle-1.jpg" alt="Thumbnail 2">
+          </button>
+          <button class="pdp-thumb-btn" onclick="switchImage('images/pdp-angle-2.jpg')">
+            <img src="images/pdp-angle-2.jpg" alt="Thumbnail 3">
+          </button>
+          <button class="pdp-thumb-btn" onclick="switchImage('images/pdp-angle-4.jpg')">
+            <img src="images/pdp-angle-4.jpg" alt="Thumbnail 4">
+          </button>
+        </div>
+
+        <div class="pdp-main-preview-box">
+          <div class="preview-badges-strip">
+            <span class="badge-editor">★ EDITOR'S CHOICE</span>
+            <span class="badge-delivery">🚚 FREE 2-DAY DELIVERY</span>
+          </div>
+
+          <div class="preview-image-wrap">
+            <img id="main-product-img" src="images/prod-headphones.jpg" alt="Aura Studio Pro" data-testid="pdp-main-image">
+          </div>
+
+          <div class="preview-spec-chips">
+            <span><span>🎧</span> 40mm Titanium Dome Driver</span>
+            <span><span>🔋</span> 45h Ultra Runtime</span>
+            <span><span>📶</span> Spatial LDAC 96kHz</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Details & Buy Box -->
+      <div class="pdp-details-col">
+        <div class="pdp-brand-sku-row">
+          <span>SHOPTEST AUDIO LABS</span>
+          <span data-testid="pdp-sku">SKU: ST-AUD-8821</span>
+        </div>
+
+        <h1 class="pdp-title" data-testid="pdp-title">Aura Studio Pro Wireless Noise-Cancelling Headphones</h1>
+
+        <div class="pdp-rating-row">
+          <span style="color:#f59e0b;">★★★★★</span>
+          <strong>4.9</strong> &bull;
+          <a href="#reviews" style="color:var(--text-muted); text-decoration:underline;">218 verified buyer reviews</a>
+        </div>
+
+        <div class="pdp-price-box">
+          <span class="pdp-hero-price" data-testid="pdp-price">$189.00</span>
+          <span class="pdp-original-price">$229.00</span>
+          <span class="badge-save">SAVE $40 (17%)</span>
+          <span class="tax-step-note">Tax included in final step</span>
+        </div>
+
+        <!-- Finish / Color -->
+        <div class="option-block">
+          <div class="option-header">
+            <span class="option-title-label">FINISH: <span id="selected-finish-name">Matte Black</span></span>
+            <span style="color:var(--text-light); font-size:0.75rem;">Scratch-resistant anodized</span>
+          </div>
+          <div class="swatches-row">
+            <button class="color-swatch-btn active" onclick="selectFinish('Matte Black', this)" data-testid="finish-black">
+              <span class="swatch-circle swatch-black"></span>
+              <div>
+                <strong>Matte Black</strong>
+                <div style="font-size:0.68rem; color:var(--text-muted);">Default</div>
+              </div>
+            </button>
+            <button class="color-swatch-btn" onclick="selectFinish('Oatmeal Cream', this)" data-testid="finish-cream">
+              <span class="swatch-circle swatch-cream"></span>
+              <div>
+                <strong>Oatmeal Cream</strong>
+                <div style="font-size:0.68rem; color:var(--text-muted);">Warm hue</div>
+              </div>
+            </button>
+            <button class="color-swatch-btn" onclick="selectFinish('Emerald Forest', this)" data-testid="finish-emerald">
+              <span class="swatch-circle swatch-emerald"></span>
+              <div>
+                <strong>Emerald Forest</strong>
+                <div style="font-size:0.68rem; color:var(--text-muted);">Special Edition</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Select Audio Package -->
+        <div class="option-block">
+          <div class="option-header">
+            <span class="option-title-label">SELECT AUDIO PACKAGE</span>
+          </div>
+          <div class="package-radios-grid">
+            <div class="package-radio-card active" onclick="selectPackage(189.00, 'Standard Edition', this)" data-testid="pkg-standard">
+              <input type="radio" name="audio-pkg" checked>
+              <div>
+                <div class="package-card-title">
+                  <span>Standard Edition</span>
+                  <strong>$189.00</strong>
+                </div>
+                <div class="package-card-desc">Headphones, standard audio cable, soft pouch</div>
+              </div>
+            </div>
+            <div class="package-radio-card" onclick="selectPackage(238.00, 'Studio Pro Bundle', this)" data-testid="pkg-bundle">
+              <input type="radio" name="audio-pkg">
+              <div>
+                <div class="package-card-title">
+                  <span>Studio Pro Bundle</span>
+                  <span style="color:#059669; font-weight:700;">+$49.00</span>
+                </div>
+                <div class="package-card-desc">Hard travel shell, desktop stand, braided USB-C DAC</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stock Status -->
+        <div class="stock-banner" data-testid="pdp-stock-status">
+          <span>●</span> In Stock &bull; Ships in 24 hours (Only 7 units remaining in warehouse)
+        </div>
+
+        <!-- Action Row -->
+        <div class="actions-row">
+          <div class="qty-stepper">
+            <button class="qty-btn" onclick="changeQty(-1)" data-testid="btn-qty-minus">-</button>
+            <input type="text" id="pdp-qty-input" class="qty-input" value="1" readonly data-testid="pdp-qty-input">
+            <button class="qty-btn" onclick="changeQty(1)" data-testid="btn-qty-plus">+</button>
+          </div>
+          <button class="btn-add-pdp" id="btn-add-pdp" data-testid="btn-add-to-cart" onclick="addPdpToCart()">
+            <span>🛒</span> Add to Cart &bull; <span id="btn-price-display">$189.00</span>
+          </button>
+          <button class="btn-wishlist" title="Wishlist" onclick="alert('Added to wishlist!')">♡</button>
+        </div>
+
+        <button class="btn-buy-now" data-testid="btn-buy-now" onclick="buyNowOneClick()">
+          <span>⚡</span> Instant Buy Now with One-Click
+        </button>
+
+        <!-- Guarantee badges -->
+        <div class="guarantees-row">
+          <div class="guarantee-item">
+            <span>🔄</span>
+            <div>
+              <strong>30-Day Returns</strong>
+              <span>Zero hassle</span>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <span>🛡️</span>
+            <div>
+              <strong>2-Yr Warranty</strong>
+              <span>Official cover</span>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <span>📦</span>
+            <div>
+              <strong>Free US Shipping</strong>
+              <span>Over $50 order</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features & Technical Specifications -->
+    <div class="pdp-tabs-nav">
+      <button class="pdp-tab-btn active">Overview & Features</button>
+      <button class="pdp-tab-btn">Technical Specifications</button>
+      <button class="pdp-tab-btn">Customer Reviews <span style="background:#f1f5f9; padding:0.1rem 0.4rem; border-radius:9999px; font-size:0.75rem;">218</span></button>
+      <button class="pdp-tab-btn">Shipping & Returns</button>
+    </div>
+
+    <div class="feature-cards-grid">
+      <div class="feature-card-item">
+        <div class="feature-icon-badge">🎯</div>
+        <h4 class="feature-card-title">Hybrid ANC 42dB</h4>
+        <p class="feature-card-desc">
+          Six high-precision beamforming microphones sample ambient noise 48,000 times per second, rendering office chatter and cabin roar silent.
+        </p>
+      </div>
+      <div class="feature-card-item">
+        <div class="feature-icon-badge">🔋</div>
+        <h4 class="feature-card-title">45-Hour Longevity</h4>
+        <p class="feature-card-desc">
+          Full workweek playback on a single charge. Rapid Charge delivers 5 hours of lossless acoustic playback from an 8-minute USB-C top-up.
+        </p>
+      </div>
+      <div class="feature-card-item">
+        <div class="feature-icon-badge">🔗</div>
+        <h4 class="feature-card-title">Multipoint Sync 5.3</h4>
+        <p class="feature-card-desc">
+          Seamless handoff between MacBook Pro and smartphone. Zero dropout audio streaming with Sony LDAC 990kbps high-definition support.
+        </p>
+      </div>
+    </div>
+
+    <!-- Acoustic Engineering Spotlight -->
+    <div class="acoustic-box">
+      <div>
+        <div style="font-size:0.72rem; font-weight:700; color:#059669; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">
+          ACOUSTIC ENGINEERING
+        </div>
+        <h3 style="font-size: 1.75rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.85rem;">
+          Tuned in Gothenburg for Sound Engineers & Travelers
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+          Designed to satisfy rigorous laboratory benchmarks and everyday commuting. The 40mm custom titanium dome reproduces ultra-low sub-bass below 15Hz while keeping vocal frequencies crystalline and free of harmonic distortion.
+        </p>
+        <div style="display:flex; gap:1.5rem; font-size:0.85rem; font-weight:600;">
+          <span>✓ Hi-Res Certified</span>
+          <span>✓ Low Latency (32ms)</span>
+        </div>
+      </div>
+      <div class="acoustic-diagram">
+        <img src="images/pdp-angle-2.jpg" alt="Titanium Driver Unit Diagram" style="width:100%; border-radius:10px; object-fit:cover;">
+      </div>
+    </div>
+
+    <!-- Frequently Bought Together -->
+    <div class="fbt-section">
+      <div class="fbt-header">
+        <div>
+          <div style="font-size:0.72rem; font-weight:700; color:#059669; text-transform:uppercase;">RECOMMENDED ADD-ONS</div>
+          <h3 style="font-size:1.35rem; font-weight:700;">Frequently Bought Together</h3>
+        </div>
+        <button class="btn-action-outline" style="background:#ffffff; border:1px solid #cbd5e1; padding:0.45rem 0.85rem; border-radius:6px; cursor:pointer;" onclick="addAllCompanion()">
+          <span>➕</span> Add 3 Accessories ($99.00)
+        </button>
+      </div>
+
+      <div class="fbt-grid">
+        <div class="fbt-card">
+          <div class="fbt-card-top">
+            <img src="images/pdp-angle-3.jpg" alt="Case" class="fbt-thumb">
+            <div>
+              <span style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">TRAVEL GEAR</span>
+              <div style="font-weight:700; font-size:0.875rem;">Ballistic EVA Travel Case</div>
+              <strong style="color:#059669;">$35.00</strong>
+            </div>
+          </div>
+          <button class="btn-companion" onclick="alert('Added Ballistic EVA Travel Case!')">+ Add Companion</button>
+        </div>
+
+        <div class="fbt-card">
+          <div class="fbt-card-top">
+            <img src="images/prod-cable.jpg" alt="Cable" class="fbt-thumb">
+            <div>
+              <span style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">CONNECTIVITY</span>
+              <div style="font-weight:700; font-size:0.875rem;">Braided USB-C DAC Cable (2m)</div>
+              <strong style="color:#059669;">$19.00</strong>
+            </div>
+          </div>
+          <button class="btn-companion" onclick="alert('Added Braided USB-C DAC Cable!')">+ Add Companion</button>
+        </div>
+
+        <div class="fbt-card">
+          <div class="fbt-card-top">
+            <img src="images/prod-stand.jpg" alt="Stand" class="fbt-thumb">
+            <div>
+              <span style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">DESK WORKSPACE</span>
+              <div style="font-weight:700; font-size:0.875rem;">Machined Solid Desk Stand</div>
+              <strong style="color:#059669;">$45.00</strong>
+            </div>
+          </div>
+          <button class="btn-companion" onclick="alert('Added Machined Solid Desk Stand!')">+ Add Companion</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="shop-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand-title">
+            <span style="background:#0f172a; color:#10b981; padding:0.2rem 0.5rem; border-radius:6px;">🛍️</span>
+            <span>ShopTest</span>
+          </div>
+          <p class="footer-brand-desc">
+            The definitive reference e-commerce testing sandbox. Purpose-built for resilient UI automation, Playwright, Cypress, and Selenium end-to-end benchmarks.
+          </p>
+          <div class="btn-dom-fixture">
+            <span>⊞</span> Deterministic DOM Fixture
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>ARCHITECTURE & DOCS</h5>
+          <ul class="footer-links-list">
+            <li><a href="index.html">Product Discovery Matrix</a></li>
+            <li><a href="cart.html">Cart State Machine</a></li>
+            <li><a href="checkout.html">Multi-step Checkout Validation</a></li>
+            <li><a href="order-tracking.html">Fulfillment Mock Engine</a></li>
+            <li><a href="../../index.html">Portfolio Hub Index</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>QA SUPPORT & TESTING</h5>
+          <ul class="footer-links-list" style="font-family: 'JetBrains Mono', monospace; font-size: 0.775rem;">
+            <li><strong>Spec Version:</strong> v2.4-STABLE</li>
+            <li><strong>Locator Policy:</strong> Strict data-testid</li>
+            <li><strong>Latency Injection:</strong> Configurable 0-800ms</li>
+            <li>✉ qa-support@shoptest.dev</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>RELEASE BULLETIN</h5>
+          <p style="font-size: 0.8rem; color:#64748b; line-height:1.45;">
+            Subscribe for test suite releases, schema updates, and synthetic payload announcements.
+          </p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed to synthetic test alerts!');">
+            <input type="email" placeholder="tester@organization.com" class="newsletter-input" required>
+            <button type="submit" class="newsletter-btn">➔</button>
+          </form>
+          <span class="newsletter-sub">Zero marketing spam. Only deterministic updates.</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <div>
+          &copy; 2025 ShopTest Testbed Inc. Engineered for deterministic visual regression & test automation benchmarks.
+        </div>
+        <div class="payment-badges">
+          <span>PAYMENT MOCKS:</span>
+          <span class="payment-pill">VISA</span>
+          <span class="payment-pill">MC</span>
+          <span class="payment-pill">AMEX</span>
+          <span class="stripe-sandbox-pill">STRIPE SANDBOX</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shop.js"></script>
+  <script>
+    let currentFinish = "Matte Black";
+    let currentPackage = "Standard Edition";
+    let currentUnitPrice = 189.00;
+    let currentQty = 1;
+
+    function switchImage(src) {
+      document.getElementById('main-product-img').src = src;
+      document.querySelectorAll('.pdp-thumb-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+
+    function selectFinish(finish, el) {
+      currentFinish = finish;
+      document.getElementById('selected-finish-name').textContent = finish;
+      document.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function selectPackage(price, name, el) {
+      currentUnitPrice = price;
+      currentPackage = name;
+      document.querySelectorAll('.package-radio-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      el.querySelector('input').checked = true;
+      updatePriceDisplay();
+    }
+
+    function changeQty(delta) {
+      currentQty = Math.max(1, currentQty + delta);
+      document.getElementById('pdp-qty-input').value = currentQty;
+      updatePriceDisplay();
+    }
+
+    function updatePriceDisplay() {
+      const total = currentUnitPrice * currentQty;
+      document.getElementById('btn-price-display').textContent = `$${total.toFixed(2)}`;
+    }
+
+    function addPdpToCart() {
+      const cart = getStoredCart();
+      const existing = cart.find(i => i.sku === "ST-AUD-8821" && i.color === currentFinish && i.package === currentPackage);
+
+      if (existing) {
+        existing.quantity += currentQty;
+      } else {
+        cart.push({
+          id: `item-${Date.now()}`,
+          sku: "ST-AUD-8821",
+          title: "Aura Studio Pro Wireless Noise-Cancelling Headphones",
+          color: currentFinish,
+          package: currentPackage,
+          unitPrice: currentUnitPrice,
+          quantity: currentQty,
+          inStock: true,
+          icon: "🎧",
+          img: document.getElementById('main-product-img').src
+        });
+      }
+
+      saveCart(cart);
+      alert(`Added ${currentQty}x Aura Studio Pro (${currentFinish}) to your cart!`);
+    }
+
+    function buyNowOneClick() {
+      addPdpToCart();
+      window.location.href = "checkout.html";
+    }
+
+    function addAllCompanion() {
+      const cart = getStoredCart();
+      cart.push(
+        { id: `comp-1-${Date.now()}`, sku: "ST-ACC-EVA", title: "Ballistic EVA Travel Case", color: "Black", package: "Standard", unitPrice: 35.00, quantity: 1, inStock: true, icon: "🧳", img: "images/pdp-angle-3.jpg" },
+        { id: `comp-2-${Date.now()}`, sku: "ST-CBL-DAC", title: "Braided USB-C DAC Cable (2m)", color: "Silver", package: "Standard", unitPrice: 19.00, quantity: 1, inStock: true, icon: "🔌", img: "images/prod-cable.jpg" },
+        { id: `comp-3-${Date.now()}`, sku: "ST-ACC-STD", title: "Machined Solid Desk Stand", color: "Space Gray", package: "Standard", unitPrice: 45.00, quantity: 1, inStock: true, icon: "🖥️", img: "images/prod-stand.jpg" }
+      );
+      saveCart(cart);
+      alert("Added 3 companion accessories ($99.00) to your shopping bag!");
+    }
+  </script>
+</body>
+</html>

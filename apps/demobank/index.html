@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Dashboard & Net Assets - DemoBank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .dashboard-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Quick Operations Banner */
+    .quick-ops-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .quick-ops-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-quick-op {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-quick-op:hover {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    /* 2-Column Dashboard Grid */
+    .dashboard-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    .dash-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .dash-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .dash-card-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Transfer Form */
+    .form-group-bank {
+      margin-bottom: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .form-group-bank label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .bank-input, .bank-select {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.875rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: all 0.15s;
+    }
+    .bank-input:focus, .bank-select:focus {
+      border-color: #059669;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+    }
+
+    .feedback-banner {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .feedback-banner.success {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* Transactions List */
+    .txn-search-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .txn-search-input {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.825rem;
+      outline: none;
+    }
+
+    .txn-row-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.85rem;
+    }
+    .txn-row-item:last-child {
+      border-bottom: none;
+    }
+
+    .txn-left-details {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .txn-icon-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .txn-credit { background: #d1fae5; color: #065f46; }
+    .txn-debit { background: #fee2e2; color: #991b1b; }
+
+    .txn-desc-title {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .txn-meta-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .txn-amount-display {
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+    .amount-plus { color: #059669; }
+    .amount-minus { color: var(--text-dark); }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .dashboard-two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="bank-header">
+    <div class="header-top-row">
+      <a href="index.html" class="brand-section">
+        <div class="brand-icon">💳</div>
+        <span class="brand-title">DemoBank</span>
+        <span class="bank-tag">SIMULATOR</span>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="bank-nav-list">
+        <li><a href="index.html" class="active" data-testid="nav-dashboard">Dashboard</a></li>
+        <li><a href="transfer.html" data-testid="nav-transfer">Transfer & Pay</a></li>
+        <li><a href="deposit.html" data-testid="nav-deposit">Quick Deposit</a></li>
+        <li><a href="cards.html" data-testid="nav-cards">Credit Cards</a></li>
+        <li><a href="transactions.html" data-testid="nav-transactions">Transactions</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </nav>
+
+      <!-- User & Security Meta -->
+      <div class="header-right-meta">
+        <span class="security-badge-pill">🔒 256-Bit SSL</span>
+        <div class="user-client-widget" title="Private Client Account">
+          <img src="images/customer-sophia.jpg" alt="Sophia Martinez" class="user-avatar-circle" style="object-fit:cover; border:2px solid #10b981;">
+          <div class="user-text-info">
+            <span class="user-name-title" data-testid="logged-in-user">Sophia Martinez</span>
+            <span class="user-tier-label">Tier 1 Premier #4910-88</span>
+          </div>
+        </div>
+        <a href="login.html" class="btn-signout" data-testid="btn-logout" onclick="signOut()">Log Out</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="fednow-strip">
+    <div class="fednow-inner">
+      <div>
+        <span class="dot-green-live"></span>
+        <span>FedNow Real-Time Rail Online &bull; Daily ACH Limit: $25,000.00 remaining</span>
+      </div>
+      <div>
+        <span style="color:#10b981; font-weight:700;">PORTAL TREASURY SERVICES</span> &bull; <span>Automated Settlement Hub</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="dashboard-container">
+
+    <!-- Top 3 Account Summary Cards -->
+    <section class="account-cards-grid">
+      <!-- Card 1: Checking -->
+      <div class="bank-acc-card" data-testid="card-checking">
+        <div class="acc-card-top">
+          <span class="acc-type-label">Checking Account</span>
+          <span class="acc-num-code" data-testid="checking-acc-num">**** 4829</span>
+        </div>
+        <div class="acc-balance-num" id="checkingBalance" data-testid="checking-balance">$5,420.50</div>
+        <div class="acc-card-foot">
+          <span>Routing: 12200049</span>
+          <button class="btn-outline-bank" style="font-size:0.72rem; padding:0.25rem 0.55rem;" data-testid="quick-deposit-btn" onclick="quickFifty()">
+            + Quick $50
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 2: Savings -->
+      <div class="bank-acc-card" data-testid="card-savings">
+        <div class="acc-card-top">
+          <span class="acc-type-label">High-Yield Savings</span>
+          <span class="acc-num-code" data-testid="savings-acc-num">**** 9104</span>
+        </div>
+        <div class="acc-balance-num" id="savingsBalance" data-testid="savings-balance">$18,250.00</div>
+        <div class="acc-card-foot">
+          <span style="color:#059669; font-weight:700;">4.50% APY Guaranteed</span>
+          <span style="font-size:0.7rem; font-family:var(--font-mono);">YTD: $412.30</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Combined Net Worth -->
+      <div class="bank-acc-card" data-testid="card-networth">
+        <div class="acc-card-top">
+          <span class="acc-type-label">Combined Net Assets</span>
+          <span class="acc-num-code">Tier 1 Private</span>
+        </div>
+        <div class="acc-balance-num" id="totalNetWorth" data-testid="total-net-worth balance-total-display">$23,670.50</div>
+        <div class="acc-card-foot">
+          <span>Checking + Savings Portfolio</span>
+          <span style="color:#059669; font-weight:700;">FDIC Insured</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Operations Bar -->
+    <section class="quick-ops-bar">
+      <div style="font-size:0.85rem; font-weight:700; color:var(--text-dark);">
+        ⚡ Quick Treasury Operations
+      </div>
+
+      <div class="quick-ops-buttons">
+        <a href="transfer.html" class="btn-quick-op" id="nav-transfer-link" data-testid="nav-transfer-link">
+          <span>💸</span> Transfer & Wire Funds
+        </a>
+        <a href="deposit.html" class="btn-quick-op" data-testid="nav-quick-deposit">
+          <span>📥</span> Mobile Check Deposit
+        </a>
+        <a href="cards.html" class="btn-quick-op" data-testid="nav-manage-cards">
+          <span>💳</span> Debit & Credit Cards
+        </a>
+        <a href="transactions.html" class="btn-quick-op" data-testid="nav-view-ledger">
+          <span>📊</span> Full Audit Ledger
+        </a>
+      </div>
+    </section>
+
+    <!-- 2-Column Layout -->
+    <div class="dashboard-two-col">
+
+      <!-- Left: Interactive Wire / Transfer Widget -->
+      <section class="dash-card">
+        <div class="dash-card-header">
+          <h3>💸 Instant Transfer & Wire</h3>
+          <span style="font-size:0.72rem; color:#059669; font-family:var(--font-mono); font-weight:700;">FEDNOW ZERO-FEE</span>
+        </div>
+
+        <!-- Wire Confirmed Banner for E2E Assertion -->
+        <div id="wire-confirmed-banner" class="feedback-banner success" data-testid="wire-confirmed-banner" style="display: none;">
+          ✔ Wire Confirmed & Settled via FedNow.
+        </div>
+        <div id="transfer-success-toast" class="feedback-banner success" data-testid="transfer-success-toast" style="display: none;">
+          Transfer executed successfully.
+        </div>
+
+        <form id="dashboardTransferForm" onsubmit="executeDashboardTransfer(event)" data-testid="transfer-form">
+          <div class="form-group-bank">
+            <label for="transferFrom">From Account</label>
+            <select id="transferFrom" class="bank-select" data-testid="transfer-from">
+              <option value="checking" selected>Checking Account (**** 4829) - $5,420.50</option>
+              <option value="savings">High-Yield Savings (**** 9104) - $18,250.00</option>
+            </select>
+          </div>
+
+          <div class="form-group-bank">
+            <label for="transferTo">Recipient / Payee</label>
+            <select id="transferTo" class="bank-select" data-testid="transfer-to recipient-account-select">
+              <option value="savings">Transfer to my Savings (**** 9104)</option>
+              <option value="Alice Cooper">Alice Cooper (Chase - **** 1122)</option>
+              <option value="Marcus Sterling">Marcus Sterling (FedNow Wire - **** 8839)</option>
+              <option value="Electric Utility Co">Electric Utility Co (Bill Pay #9021-X)</option>
+            </select>
+          </div>
+
+          <div class="form-group-bank">
+            <label for="transferAmount">Amount ($ USD) *</label>
+            <input type="number" step="0.01" min="1" id="transferAmount" class="bank-input" value="450.00" required data-testid="account-transfer-amount transfer-amount">
+          </div>
+
+          <div class="form-group-bank">
+            <label for="transferMemo">Description / Note</label>
+            <input type="text" id="transferMemo" class="bank-input" placeholder="e.g. Rent, Dinner split" value="Monthly Rent Allocation" data-testid="transfer-memo">
+          </div>
+
+          <button type="submit" class="btn-primary-green" style="width:100%; justify-content:center;" id="btnAuthorizeWire" data-testid="btn-authorize-wire btn-submit-transfer">
+            Execute Transfer &rarr;
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: Recent Activity Ledger -->
+      <section class="dash-card">
+        <div class="dash-card-header">
+          <h3>📋 Recent Activity & Transactions</h3>
+          <a href="transactions.html" style="font-size:0.75rem; color:#059669; font-weight:700; text-decoration:none;">View All &rarr;</a>
+        </div>
+
+        <div class="txn-search-bar">
+          <input type="text" id="searchTxn" class="txn-search-input" placeholder="Search description, recipient or ID..." data-testid="search-txn" oninput="filterTxns()">
+          <select id="filterType" class="bank-select" style="padding:0.4rem 0.65rem; font-size:0.8rem;" data-testid="filter-txn-type" onchange="filterTxns()">
+            <option value="all">All Types</option>
+            <option value="credit">Income / Deposits</option>
+            <option value="debit">Expenses / Transfers</option>
+          </select>
+        </div>
+
+        <div id="txnsFeedList" data-testid="transactions-list">
+          <!-- Dynamically Rendered -->
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="bank-footer">
+    <div class="footer-top-row">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span style="font-size:1.1rem;">🏛️</span>
+        <strong style="color:#ffffff;">DemoBank National Association</strong>
+      </div>
+      <div class="footer-compliance-badges">
+        <span>✔ Member FDIC</span>
+        <span>&bull;</span>
+        <span>Equal Housing Lender</span>
+        <span>&bull;</span>
+        <span>SIPC Protected</span>
+      </div>
+    </div>
+    <div class="footer-disclaimer-strip">
+      Banking products and services are provided by DemoBank, N.A., Member FDIC and a wholly owned subsidiary of DemoBank Financial Group, Inc. Deposit balances are insured up to $250,000 per depositor. Investment and insurance products are not deposits, are not FDIC insured, are not guaranteed by the Bank, and may lose value.
+    </div>
+    <div class="footer-bottom-row">
+      <div>&copy; 2026 DemoBank Financial Technologies, N.A. All rights reserved. Deterministic Automation Ready.</div>
+      <div style="display:flex; gap:1.25rem;">
+        <a href="../../index.html" style="color:#94a3b8; text-decoration:none;">&larr; Return to Portfolio Portal</a>
+        <a href="transfer.html" style="color:#94a3b8; text-decoration:none;">Transfer & Pay</a>
+        <a href="deposit.html" style="color:#94a3b8; text-decoration:none;">Quick Deposit</a>
+        <a href="cards.html" style="color:#94a3b8; text-decoration:none;">Cards</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="demobank.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      refreshBalancesUI();
+      renderTransactions();
+    });
+
+    function refreshBalancesUI() {
+      const state = getBankState();
+      document.getElementById("checkingBalance").textContent = formatUSD(state.accounts.checking.balance);
+      document.getElementById("savingsBalance").textContent = formatUSD(state.accounts.savings.balance);
+      const total = state.accounts.checking.balance + state.accounts.savings.balance;
+      document.getElementById("totalNetWorth").textContent = formatUSD(total);
+    }
+
+    function renderTransactions() {
+      const state = getBankState();
+      const feed = document.getElementById("txnsFeedList");
+      const query = (document.getElementById("searchTxn").value || "").toLowerCase().trim();
+      const filter = document.getElementById("filterType").value;
+
+      feed.innerHTML = "";
+
+      const filtered = state.transactions.filter(t => {
+        const matchesQuery = t.desc.toLowerCase().includes(query) || t.id.toLowerCase().includes(query);
+        const matchesFilter = filter === "all" || t.type === filter;
+        return matchesQuery && matchesFilter;
+      });
+
+      if (filtered.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; padding:1.5rem; color:#94a3b8;">No matching transactions found.</div>`;
+        return;
+      }
+
+      filtered.forEach(t => {
+        const isCredit = t.type === "credit";
+        const row = document.createElement("div");
+        row.className = "txn-row-item";
+        row.setAttribute("data-testid", "txn-row");
+        row.setAttribute("data-txn-id", t.id);
+
+        row.innerHTML = `
+          <div class="txn-left-details">
+            <div class="txn-icon-circle ${isCredit ? 'txn-credit' : 'txn-debit'}">
+              ${isCredit ? '↓' : '↑'}
+            </div>
+            <div>
+              <div class="txn-desc-title" data-testid="txn-desc">${t.desc}</div>
+              <div class="txn-meta-sub">${t.date} &bull; ${t.status} &bull; ${t.account}</div>
+            </div>
+          </div>
+          <div class="txn-amount-display ${isCredit ? 'amount-plus' : 'amount-minus'}" data-testid="txn-amount">
+            ${isCredit ? '+' : '-'}${formatUSD(t.amount)}
+          </div>
+        `;
+        feed.appendChild(row);
+      });
+    }
+
+    function filterTxns() {
+      renderTransactions();
+    }
+
+    function quickFifty() {
+      const state = getBankState();
+      state.accounts.checking.balance += 50.00;
+      state.transactions.unshift({
+        id: "TXN-" + Math.floor(1000 + Math.random() * 9000),
+        date: "Just Now",
+        desc: "ATM Quick Cash Deposit",
+        type: "credit",
+        amount: 50.00,
+        account: "Checking",
+        status: "Cleared / Immediate"
+      });
+      saveBankState(state);
+      refreshBalancesUI();
+      renderTransactions();
+      showBankToast("Quick $50 deposit credited to Checking.");
+    }
+
+    function executeDashboardTransfer(e) {
+      e.preventDefault();
+      const state = getBankState();
+      const amount = parseFloat(document.getElementById("transferAmount").value);
+      const recipient = document.getElementById("transferTo").value;
+      const memo = document.getElementById("transferMemo").value || "Instant Transfer";
+
+      if (isNaN(amount) || amount <= 0) {
+        showBankToast("Please enter a valid transfer amount.", "error");
+        return;
+      }
+
+      if (state.accounts.checking.balance < amount) {
+        showBankToast("Insufficient checking funds for transfer.", "error");
+        return;
+      }
+
+      state.accounts.checking.balance -= amount;
+      if (recipient === "savings") {
+        state.accounts.savings.balance += amount;
+      }
+
+      const txId = "TX-" + Math.floor(10000 + Math.random() * 90000) + "-FED";
+      state.transactions.unshift({
+        id: txId,
+        date: "Just Now",
+        desc: `Transfer to ${recipient}: ${memo}`,
+        type: "debit",
+        amount: amount,
+        account: "Checking",
+        status: "Cleared / FedNow"
+      });
+
+      saveBankState(state);
+      refreshBalancesUI();
+      renderTransactions();
+
+      document.getElementById("wire-confirmed-banner").style.display = "flex";
+      document.getElementById("transfer-success-toast").style.display = "flex";
+
+      showBankToast(`Transfer of $${amount.toFixed(2)} settled via FedNow.`);
+    }
+
+    function signOut() {
+      const state = getBankState();
+      state.isLoggedIn = false;
+      saveBankState(state);
+    }
+  </script>
+</body>
+</html>

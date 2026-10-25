@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Overview & Operational Analytics - AdminPro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .overview-container {
+      max-width: 1440px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .overview-hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .hero-title-group h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .version-tag {
+      font-size: 0.72rem;
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hero-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .hero-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .date-dropdown {
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.825rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      cursor: pointer;
+    }
+
+    /* 4 Top KPI Cards */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.35rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.85rem;
+    }
+
+    .kpi-title-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .kpi-trend-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+    }
+    .kpi-trend-pill.positive { background: #d1fae5; color: #065f46; }
+    .kpi-trend-pill.cyan { background: #ecfeff; color: #0e7490; }
+
+    .kpi-hero-num {
+      font-size: 2.15rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dark);
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+
+    .kpi-live-sub {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .kpi-footer-stats {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Row 2: Analytics Chart + Cluster Telemetry */
+    .row2-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .analytics-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .card-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .card-top-title h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .card-top-title p {
+      font-size: 0.785rem;
+      color: var(--text-muted);
+    }
+
+    .segmented-control {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.2rem;
+      border-radius: 6px;
+    }
+    .segment-btn {
+      border: none;
+      background: none;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .segment-btn.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    /* Chart SVG Area */
+    .chart-container-box {
+      width: 100%;
+      height: 220px;
+      position: relative;
+      margin: 1.5rem 0 1rem;
+    }
+
+    .chart-stats-trio {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f1f5f9;
+    }
+    .chart-stat-tile {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+    .stat-tile-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+    .stat-tile-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dark);
+    }
+
+    /* Cluster Telemetry Card */
+    .cluster-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .telemetry-node-row {
+      margin-bottom: 1.25rem;
+    }
+    .node-metric-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.825rem;
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+    }
+    .meter-bar-track {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 0.35rem;
+    }
+    .meter-bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+    }
+    .node-sub-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Row 3: Recent Alerts + Administrative Controls */
+    .row3-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .alerts-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .alerts-feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .alert-item-box {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      background: #ffffff;
+    }
+    .alert-tag-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .alert-tag-badge.info { background: #e0f2fe; color: #0284c7; }
+    .alert-tag-badge.warn { background: #fef3c7; color: #b45309; }
+    .alert-tag-badge.success { background: #d1fae5; color: #065f46; }
+
+    .alert-body-content {
+      flex: 1;
+    }
+    .alert-title-text {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.15rem;
+    }
+    .alert-sub-detail {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+    .alert-time-text {
+      font-size: 0.72rem;
+      color: var(--text-light);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Admin Controls Card */
+    .controls-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .control-tiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .action-tile-btn {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .action-tile-btn:hover {
+      background: #ffffff;
+      border-color: #0f172a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .action-tile-icon {
+      width: 32px;
+      height: 32px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .action-tile-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.2rem;
+    }
+    .action-tile-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .kpi-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .row2-grid, .row3-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .kpi-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .control-tiles-grid {
+        grid-template-columns: 1fr;
+      }
+      .chart-stats-trio {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Enterprise Header -->
+  <header class="top-header">
+    <div class="header-top-row">
+      <div class="brand-section">
+        <a href="index.html" class="brand-section">
+          <div class="brand-logo-icon">📊</div>
+          <span class="brand-name">AdminPro</span>
+        </a>
+        <span class="env-pill">● PROD-US-EAST</span>
+        <span class="status-live-pill"><span class="dot-green"></span> All Systems Operational</span>
+      </div>
+
+      <div class="header-search-bar">
+        <span>🔍</span>
+        <input type="text" class="header-search-input" placeholder="Global resource, tenant or telemetry search... Ctrl + K" data-testid="global-search-input">
+        <span class="kbd-shortcut">Ctrl + K</span>
+      </div>
+
+      <div class="header-right-meta">
+        <button class="bell-btn" title="System Notifications">
+          <span>🔔</span>
+          <span class="bell-badge"></span>
+        </button>
+        <div class="user-profile-widget" title="Super Admin Profile">
+          <img src="images/avatar-alex.jpg" alt="Alex Rivera" class="user-avatar-img" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid #10b981;">
+          <div class="user-info-text">
+            <span class="user-info-name">Alex Rivera</span>
+            <span class="user-info-role">Super Admin</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Strip -->
+    <nav class="header-nav-tabs">
+      <ul class="nav-tabs-inner">
+        <li><a href="index.html" class="active" data-testid="nav-tab-overview">Overview & Metrics</a></li>
+        <li><a href="users.html" data-testid="nav-tab-users">User Management</a></li>
+        <li><a href="rbac.html" data-testid="nav-tab-rbac">RBAC & Permissions</a></li>
+        <li><a href="audit.html" data-testid="nav-tab-audit">Audit Trail & Logs</a></li>
+        <li><a href="settings.html" data-testid="nav-tab-settings">System & API Settings</a></li>
+        <li><a href="../../index.html" style="color:var(--text-light);">&larr; Portfolio Hub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Live Telemetry Status Bar -->
+  <div class="telemetry-bar">
+    <div class="telemetry-inner">
+      <div>
+        <span style="color:#059669; font-weight:bold;">● Live Metrics Stream:</span> 120ms polling interval &bull; Cluster: <code>us-east-prod-k8s</code> &bull; Telemetry Trace ID: <code>0x8a92f-b44c</code>
+      </div>
+      <div>
+        <span style="color:#0284c7; font-weight:bold;">✔ DETERMINISTIC QA MODE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Overview Dashboard -->
+  <main class="overview-container">
+    <div class="overview-hero-header">
+      <div class="hero-title-group">
+        <h1>
+          <span>System Overview & Operational Analytics</span>
+          <span class="version-tag">v3.12-prod</span>
+        </h1>
+        <p class="hero-sub">Live telemetry across multi-tenant clusters, active workloads, and subscription billing.</p>
+      </div>
+
+      <div class="hero-right-actions">
+        <select class="date-dropdown" data-testid="select-date-range">
+          <option>Last 7 Days</option>
+          <option>Last 24 Hours</option>
+          <option>Last 30 Days</option>
+          <option>Quarter to Date</option>
+        </select>
+        <button class="btn-outline-white" onclick="showAdminToast('Telemetry synced with live cluster.');" title="Refresh Telemetry">🔄</button>
+        <button class="btn-primary-dark" onclick="showAdminToast('Exporting operational analytics summary CSV...');" data-testid="btn-export-summary">
+          <span>📥</span> Export Summary
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 KPI Metrics Strip -->
+    <div class="kpi-cards-grid">
+      <!-- KPI 1 -->
+      <div class="kpi-card" data-testid="kpi-total-users">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title-label">TOTAL ACTIVE USERS</span>
+            <span class="kpi-trend-pill positive">&nearr; +14.2% MoM</span>
+          </div>
+          <div class="kpi-hero-num">124,892</div>
+          <div class="kpi-live-sub"><span class="dot-green"></span> 8,920 concurrent now</div>
+        </div>
+        <div class="kpi-footer-stats">
+          <span>Enterprise: <strong>38.4k</strong></span>
+          <span>Team: <strong>62.1k</strong></span>
+          <span>Starter: <strong>24.3k</strong></span>
+        </div>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="kpi-card" data-testid="kpi-mrr">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title-label">MONTHLY RECURRING REVENUE</span>
+            <span class="kpi-trend-pill positive">&nearr; +8.4%</span>
+          </div>
+          <div class="kpi-hero-num">$482,150</div>
+          <div class="kpi-live-sub">ARR Run-rate: <strong>$5.78M</strong></div>
+        </div>
+        <div class="kpi-footer-stats">
+          <span>Target: <strong>$460k</strong></span>
+          <span style="color:#059669; font-weight:700;">104.8% of plan</span>
+        </div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="kpi-card" data-testid="kpi-throughput">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title-label">API GATEWAY THROUGHPUT</span>
+            <span class="kpi-trend-pill cyan">p99: 38ms</span>
+          </div>
+          <div class="kpi-hero-num">42.8M</div>
+          <div class="kpi-live-sub">Success Rate: <strong style="color:#059669;">99.98%</strong></div>
+        </div>
+        <div class="kpi-footer-stats">
+          <span>Failed Req: <strong>8,560 (0.02%)</strong></span>
+          <span>Avg: <strong>14ms</strong></span>
+        </div>
+      </div>
+
+      <!-- KPI 4 -->
+      <div class="kpi-card" data-testid="kpi-security">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-title-label">SECURITY INCIDENTS & ALERTS</span>
+            <span class="kpi-trend-pill positive">● Secured</span>
+          </div>
+          <div class="kpi-hero-num" style="color:#059669;">0 Critical</div>
+          <div class="kpi-live-sub">2 Low warnings mitigated</div>
+        </div>
+        <div class="kpi-footer-stats">
+          <span>Zero breach attempts</span>
+          <span style="color:#059669; font-weight:700;">WAF Filter: Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Analytics Chart + Cluster Telemetry -->
+    <div class="row2-grid">
+      <!-- User Growth & Plan Distribution -->
+      <div class="analytics-card">
+        <div class="card-top-bar">
+          <div class="card-top-title">
+            <h3>User Growth & Plan Distribution</h3>
+            <p>Active subscription trajectories across tenant segments (Jan - Jun)</p>
+          </div>
+          <div class="segmented-control">
+            <button class="segment-btn active">Tenant Count</button>
+            <button class="segment-btn">Gross MRR ($)</button>
+          </div>
+        </div>
+
+        <!-- SVG Trend Chart -->
+        <div class="chart-container-box">
+          <svg viewBox="0 0 700 200" width="100%" height="100%">
+            <!-- Grid Lines -->
+            <line x1="0" y1="40" x2="700" y2="40" stroke="#f1f5f9" stroke-width="1" />
+            <line x1="0" y1="90" x2="700" y2="90" stroke="#f1f5f9" stroke-width="1" />
+            <line x1="0" y1="140" x2="700" y2="140" stroke="#f1f5f9" stroke-width="1" />
+            <line x1="0" y1="190" x2="700" y2="190" stroke="#e2e8f0" stroke-width="1" />
+
+            <!-- Area fill -->
+            <path d="M 30,160 Q 200,140 350,110 T 670,60 L 670,190 L 30,190 Z" fill="rgba(16, 185, 129, 0.08)" />
+
+            <!-- Curve 1 (Enterprise - Black) -->
+            <path d="M 30,110 Q 200,95 350,85 T 670,65" fill="none" stroke="#0f172a" stroke-width="3" />
+            <!-- Curve 2 (Team - Teal) -->
+            <path d="M 30,140 Q 200,120 350,95 T 670,55" fill="none" stroke="#059669" stroke-width="3" />
+            <!-- Curve 3 (Starter - Gray) -->
+            <path d="M 30,170 Q 200,165 350,150 T 670,130" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4" />
+
+            <!-- Data Marker Node -->
+            <circle cx="670" cy="55" r="6" fill="#059669" stroke="#ffffff" stroke-width="2" />
+          </svg>
+        </div>
+
+        <div class="chart-stats-trio">
+          <div class="chart-stat-tile">
+            <div class="stat-tile-label">MoM Retention</div>
+            <div class="stat-tile-value" style="color:#059669;">98.2%</div>
+          </div>
+          <div class="chart-stat-tile">
+            <div class="stat-tile-label">Avg ACV / Tenant</div>
+            <div class="stat-tile-value">$4,280</div>
+          </div>
+          <div class="chart-stat-tile">
+            <div class="stat-tile-label">Trial Conversion</div>
+            <div class="stat-tile-value" style="color:#0284c7;">22.8%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cluster Telemetry -->
+      <div class="cluster-card">
+        <div>
+          <div class="card-top-bar" style="margin-bottom:1rem;">
+            <div class="card-top-title">
+              <h3>Cluster Telemetry</h3>
+              <p>Kubernetes Control Plane & Worker Nodes</p>
+            </div>
+            <span class="status-live-pill"><span class="dot-green"></span> 32 Nodes Active</span>
+          </div>
+
+          <div style="height: 70px; border-radius: 8px; overflow: hidden; margin-bottom: 1rem; position: relative;">
+            <img src="images/cloud-servers.jpg" alt="Cloud Infrastructure" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.75);">
+            <div style="position:absolute; inset:0; display:flex; align-items:center; padding:0 1rem; font-size:0.75rem; font-weight:700; color:#ffffff; text-shadow:0 1px 4px rgba(0,0,0,0.9); gap:0.5rem; background:rgba(15,23,42,0.35);">
+              <span class="dot-green"></span>
+              <span>AWS us-east-1 // Direct Optical Interconnect 100 Gbps</span>
+            </div>
+          </div>
+
+          <!-- Metric 1: CPU -->
+          <div class="telemetry-node-row">
+            <div class="node-metric-header">
+              <span>⚙ Cluster CPU Overhead</span>
+              <strong style="color:#059669;">64.2% Optimal</strong>
+            </div>
+            <div class="meter-bar-track">
+              <div class="meter-bar-fill" style="width: 64.2%; background:#059669;"></div>
+            </div>
+            <div class="node-sub-info">
+              <span>Allocated: 256.8 / 400 vCPU</span>
+              <span>Throttling: 0.00%</span>
+            </div>
+          </div>
+
+          <!-- Metric 2: RAM -->
+          <div class="telemetry-node-row">
+            <div class="node-metric-header">
+              <span>▦ Memory (RAM) Pool</span>
+              <strong style="color:#d97706;">78.0% Elevated</strong>
+            </div>
+            <div class="meter-bar-track">
+              <div class="meter-bar-fill" style="width: 78%; background:#d97706;"></div>
+            </div>
+            <div class="node-sub-info">
+              <span>Usage: 798 GB / 1,024 GB</span>
+              <span>Buffer: 226 GB</span>
+            </div>
+          </div>
+
+          <!-- Metric 3: SSD -->
+          <div class="telemetry-node-row">
+            <div class="node-metric-header">
+              <span>💽 Persistent SSD Volume</span>
+              <strong style="color:#0284c7;">42.5% Healthy</strong>
+            </div>
+            <div class="meter-bar-track">
+              <div class="meter-bar-fill" style="width: 42.5%; background:#0284c7;"></div>
+            </div>
+            <div class="node-sub-info">
+              <span>Usage: 17.0 TB / 40.0 TB</span>
+              <span>IOPS: 18.4k sustained</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid #f1f5f9; padding-top:0.85rem; display:flex; justify-content:space-between; align-items:center; font-size:0.775rem;">
+          <span style="color:#059669; font-weight:600;">✓ All 32 Pod Replicas In-Sync</span>
+          <a href="#" onclick="showAdminToast('Opening Kubernetes topology viewer...'); return false;" style="color:var(--text-dark); text-decoration:none; font-weight:600;">Inspect Topology &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Recent Alerts + Administrative Controls -->
+    <div class="row3-grid">
+      <!-- Recent Alerts -->
+      <div class="alerts-card">
+        <div class="card-top-bar">
+          <div class="card-top-title">
+            <h3>Recent System Alerts & Incidents</h3>
+            <p>Real-time audit trigger events and telemetry notifications</p>
+          </div>
+          <button class="btn-outline-white" style="font-size:0.75rem; padding:0.35rem 0.65rem;" onclick="showAdminToast('All active alert threads cleared.');">
+            Clear Resolved
+          </button>
+        </div>
+
+        <div class="alerts-feed-list">
+          <div class="alert-item-box">
+            <span class="alert-tag-badge info">INFO</span>
+            <div class="alert-body-content">
+              <div class="alert-title-text">Automatic DB Index Re-alignment Complete</div>
+              <div class="alert-sub-detail">Cluster primary-pgsql shard #03 finished vacuum in 14.2s without downtime.</div>
+            </div>
+            <span class="alert-time-text">2m ago</span>
+          </div>
+
+          <div class="alert-item-box">
+            <span class="alert-tag-badge warn">WARN</span>
+            <div class="alert-body-content">
+              <div class="alert-title-text">Webhook Delivery Latency Spurt detected</div>
+              <div class="alert-sub-detail">Target endpoint <code>api.partner-hub.io/v2</code> experiencing p95 of 4.2s.</div>
+            </div>
+            <span class="alert-time-text">14m ago</span>
+          </div>
+
+          <div class="alert-item-box">
+            <span class="alert-tag-badge success">SUCCESS</span>
+            <div class="alert-body-content">
+              <div class="alert-title-text">Weekly Automated Zero-Loss Backup Finalized</div>
+              <div class="alert-sub-detail">Archive bundle <code>arch-s3-2026-04.tar.zst</code> (420 GB) replicated to AWS us-west-2.</div>
+            </div>
+            <span class="alert-time-text">1h ago</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Administrative Controls -->
+      <div class="controls-card">
+        <div>
+          <div class="card-top-bar">
+            <div class="card-top-title">
+              <h3>Quick Administrative Controls</h3>
+              <p>Deterministic maintenance & automation actions</p>
+            </div>
+            <span class="env-pill">ROOT-PRIV</span>
+          </div>
+
+          <div class="control-tiles-grid">
+            <!-- Action 1 -->
+            <button class="action-tile-btn" onclick="adminAction('purge-redis')" data-testid="btn-action-redis">
+              <div class="action-tile-icon">🔄</div>
+              <div class="action-tile-title">Purge Redis Cache</div>
+              <div class="action-tile-desc">Invalidate edge session tags & warm DNS</div>
+            </button>
+
+            <!-- Action 2 -->
+            <button class="action-tile-btn" onclick="adminAction('sync-billing')" data-testid="btn-action-billing">
+              <div class="action-tile-icon">💳</div>
+              <div class="action-tile-title">Sync Stripe Billing</div>
+              <div class="action-tile-desc">Poll invoice statuses & update tenant tiers</div>
+            </button>
+
+            <!-- Action 3 -->
+            <button class="action-tile-btn" onclick="adminAction('s3-snapshot')" data-testid="btn-action-snapshot">
+              <div class="action-tile-icon">☁️</div>
+              <div class="action-tile-title">Trigger S3 Snapshot</div>
+              <div class="action-tile-desc">Hot snapshot stateful volumes in region</div>
+            </button>
+
+            <!-- Action 4 -->
+            <button class="action-tile-btn" onclick="adminAction('rolling-reboot')" data-testid="btn-action-reboot">
+              <div class="action-tile-icon">🔁</div>
+              <div class="action-tile-title">Rolling Worker Reboot</div>
+              <div class="action-tile-desc">Zero-downtime rolling restart across pods</div>
+            </button>
+          </div>
+        </div>
+
+        <div style="font-size:0.75rem; color:var(--text-muted); padding:0.65rem 0.85rem; background:#f8fafc; border-radius:6px; display:flex; align-items:center; gap:0.45rem;">
+          <span>🔒</span> All operational actions emit immutably signed audit records to the compliance ledger.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Enterprise Footer -->
+  <footer class="admin-footer">
+    <div class="footer-inner-row">
+      <div class="footer-left-info">
+        <strong>v3.12-enterprise</strong> &bull;
+        <code>spec::deterministic-loc-v4</code> &bull;
+        <span>&copy; 2025 AdminPro Cloud Services LLC</span>
+      </div>
+      <div class="footer-nav-links">
+        <a href="#">API Documentation</a>
+        <a href="#">Compliance & SLA</a>
+        <a href="#">Enterprise Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="admin.js"></script>
+</body>
+</html>

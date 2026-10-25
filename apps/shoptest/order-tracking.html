@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation & Tracking - ShopTest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Tracking Specific Styles */
+    .tracking-main {
+      max-width: 1380px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Milestone Selector in Sub-header */
+    .milestone-pills-row {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .btn-stage-pill {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-stage-pill.active {
+      background: #10b981;
+      color: #ffffff;
+      border-color: #10b981;
+    }
+
+    /* Confirmation Top Banner */
+    .confirmation-hero-banner {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .conf-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .conf-check-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #d1fae5;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .conf-badge-confirmed {
+      background: #10b981;
+      color: #ffffff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .conf-hero-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+      margin: 0.35rem 0 0.2rem;
+    }
+
+    .conf-hero-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .conf-order-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      text-align: right;
+    }
+    .conf-order-num-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .conf-order-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .delivery-eta-date {
+      color: #059669;
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    /* 2-Column Body */
+    .tracking-grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    /* Fulfillment Status Card */
+    .consignment-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .consignment-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+    .consignment-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .consignment-sub {
+      font-size: 0.785rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+    .status-in-transit-pill {
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Visual Timeline Track */
+    .timeline-track-container {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 2.5rem;
+      padding: 0 1rem;
+    }
+
+    .timeline-line-bg {
+      position: absolute;
+      top: 14px;
+      left: 3rem;
+      right: 3rem;
+      height: 4px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+
+    .timeline-line-active {
+      position: absolute;
+      top: 14px;
+      left: 3rem;
+      width: 66%;
+      height: 4px;
+      background: #059669;
+      z-index: 2;
+    }
+
+    .timeline-step-node {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      width: 100px;
+    }
+
+    .step-node-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #059669;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin: 0 auto 0.5rem;
+    }
+
+    .step-node-icon.active {
+      background: #059669;
+      color: #ffffff;
+    }
+
+    .step-node-icon.pending {
+      border-color: #cbd5e1;
+      color: #94a3b8;
+    }
+
+    .node-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .node-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Telemetry Feed Box */
+    .telemetry-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .telemetry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .live-sensor-tag {
+      color: #059669;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .telemetry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .telemetry-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 0.825rem;
+    }
+    .telemetry-action {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .telemetry-location {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .telemetry-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Package Contents Card */
+    .package-contents-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.75rem;
+    }
+
+    .package-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .package-manifest-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      background: #f1f5f9;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .package-item-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .package-item-row:last-child {
+      border-bottom: none;
+    }
+
+    .package-thumb {
+      width: 58px;
+      height: 58px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      object-fit: cover;
+    }
+    .package-item-info {
+      flex: 1;
+    }
+    .package-item-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.2rem;
+    }
+    .package-item-details {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .package-item-right {
+      text-align: right;
+    }
+    .package-price-bold {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .package-pack-type {
+      font-size: 0.7rem;
+      color: var(--text-light);
+    }
+
+    /* Right Sidebar (Receipt & Operations) */
+    .receipt-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .receipt-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .receipt-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.65rem;
+      color: var(--text-secondary);
+    }
+    .receipt-line.coupon {
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .total-paid-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.25rem 0;
+    }
+    .total-paid-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .total-paid-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .total-paid-note {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .receipt-meta-box {
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-size: 0.775rem;
+      margin-bottom: 0.75rem;
+    }
+    .receipt-meta-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Order Operations Buttons */
+    .operations-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .operations-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .btn-op-action {
+      width: 100%;
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 0.7rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      margin-bottom: 0.65rem;
+    }
+    .btn-op-action:hover { background: #e2e8f0; }
+
+    .btn-op-danger {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #dc2626;
+    }
+    .btn-op-danger:hover { background: #fee2e2; }
+
+    .btn-return-catalog {
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      text-decoration: none;
+      margin-top: 0.5rem;
+    }
+    .btn-return-catalog:hover { background: #1e293b; }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .tracking-grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .confirmation-hero-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .conf-order-box {
+        text-align: left;
+        width: 100%;
+      }
+    }
+    @media (max-width: 640px) {
+      .timeline-track-container {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .timeline-line-bg, .timeline-line-active {
+        display: none;
+      }
+      .timeline-step-node {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-align: left;
+      }
+      .step-node-icon {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav Bar -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand-wrap">
+        <a href="index.html" class="nav-brand-wrap">
+          <div class="brand-logo-icon">🛍️</div>
+          <span class="brand-text">ShopTest</span>
+        </a>
+        <span class="nav-spec-badge">
+          <span>✓</span> QA BENCHMARK SPEC V2.4 &bull; 100% DATA-TESTID
+        </span>
+      </div>
+
+      <div class="nav-search-bar">
+        <select class="nav-category-select" data-testid="nav-category-select">
+          <option value="all">All Categories</option>
+        </select>
+        <button class="nav-search-btn">🔍</button>
+      </div>
+
+      <ul class="nav-tabs-menu">
+        <li><a href="index.html" data-testid="nav-tab-catalog">Catalog</a></li>
+        <li><a href="product-detail.html" data-testid="nav-tab-pdp">Product Detail</a></li>
+        <li><a href="cart.html" data-testid="nav-tab-cart">Shopping Cart</a></li>
+        <li><a href="checkout.html" data-testid="nav-tab-checkout">Checkout Flow</a></li>
+        <li><a href="order-tracking.html" class="active" data-testid="nav-tab-tracking">Order Tracking</a></li>
+        <li><a href="../../index.html" data-testid="nav-tab-hub">Portfolio Hub</a></li>
+      </ul>
+
+      <div class="nav-right-actions">
+        <a href="cart.html" class="btn-nav-cart" data-testid="btn-nav-cart">
+          <span>🛍️</span>
+          <span class="cart-qty-pill" data-testid="nav-cart-badge">0</span>
+          <span data-testid="nav-cart-total">$0.00</span>
+        </a>
+        <div class="user-nav-avatar">👤</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fixture Status Banner with Milestone Switcher -->
+  <div class="fixture-banner">
+    <div class="fixture-inner">
+      <div class="fixture-left">
+        <span>⚙ SDET LIVE MILESTONE DRIVER (E2E FIXTURE MOCK)</span>
+      </div>
+      <div class="milestone-pills-row">
+        <button class="btn-stage-pill" onclick="setMilestone(2, this)">Stage 2: Processing</button>
+        <button class="btn-stage-pill active" onclick="setMilestone(3, this)">Stage 3: In Transit</button>
+        <button class="btn-stage-pill" onclick="setMilestone(4, this)">Stage 4: Delivered</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Tracking Content -->
+  <main class="tracking-main">
+    <!-- Top Confirmation Banner -->
+    <div class="confirmation-hero-banner">
+      <div class="conf-hero-left">
+        <div class="conf-check-circle">✓</div>
+        <div>
+          <div>
+            <span class="conf-badge-confirmed" data-testid="badge-order-confirmed">ORDER CONFIRMED</span>
+            <span style="font-size:0.75rem; color:var(--text-muted); margin-left:0.4rem;">&bull; Instant Automated Verification</span>
+          </div>
+          <h1 class="conf-hero-title" id="conf-title" data-testid="conf-title">Thank You for Your Order, Alex!</h1>
+          <p class="conf-hero-sub" id="conf-email-sub">A confirmation email with your digital invoice has been sent to <strong>alex.taylor@example.com</strong>.</p>
+        </div>
+      </div>
+
+      <div class="conf-order-box">
+        <div class="conf-order-num-label">ORDER NO:</div>
+        <div class="conf-order-id">
+          <span id="order-id-code" data-testid="order-id-code">#ST-98402-ORD</span>
+          <button style="background:none; border:none; cursor:pointer;" onclick="alert('Copied Order ID to clipboard!')">📋</button>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem;">Estimated Delivery Window:</div>
+        <div class="delivery-eta-date" id="order-eta-text" data-testid="order-eta-text">Thursday, Nov 20, 2026 by 7:00 PM</div>
+      </div>
+    </div>
+
+    <!-- 2 Column Layout -->
+    <div class="tracking-grid-layout">
+      <div>
+        <!-- Consignment Fulfillment Status Card -->
+        <div class="consignment-card">
+          <div class="consignment-top">
+            <div>
+              <h3 class="consignment-title"><span>🚚</span> Consignment Fulfillment Status</h3>
+              <div class="consignment-sub">FedEx Express Priority &bull; Tracking #<code id="tracking-num-code" data-testid="tracking-num-code">9400 1118 9922 4102</code></div>
+            </div>
+            <span class="status-in-transit-pill" id="live-status-pill" data-testid="live-status-pill">IN TRANSIT</span>
+          </div>
+
+          <!-- Timeline Track -->
+          <div class="timeline-track-container">
+            <div class="timeline-line-bg"></div>
+            <div class="timeline-line-active" id="timeline-fill-bar"></div>
+
+            <div class="timeline-step-node">
+              <div class="step-node-icon active">✓</div>
+              <div class="node-title">Placed</div>
+              <div class="node-sub">Nov 16, 2:45 PM</div>
+            </div>
+
+            <div class="timeline-step-node">
+              <div class="step-node-icon active">✓</div>
+              <div class="node-title">Verified</div>
+              <div class="node-sub">Nov 16, 2:46 PM</div>
+            </div>
+
+            <div class="timeline-step-node">
+              <div class="step-node-icon active" id="node-transit-icon">🚚</div>
+              <div class="node-title" id="node-transit-title">In Transit</div>
+              <div class="node-sub">Portland Hub</div>
+            </div>
+
+            <div class="timeline-step-node">
+              <div class="step-node-icon pending" id="node-delivered-icon">🏠</div>
+              <div class="node-title">Delivered</div>
+              <div class="node-sub" id="node-delivered-sub">Pending ETA</div>
+            </div>
+          </div>
+
+          <!-- Telemetry Feed Box -->
+          <div class="telemetry-box">
+            <div class="telemetry-header">
+              <span>TELEMETRY TELEPORT & CHECKPOINTS</span>
+              <span class="live-sensor-tag">● Live Sensor Feed</span>
+            </div>
+
+            <div class="telemetry-list">
+              <div class="telemetry-row">
+                <div>
+                  <div class="telemetry-action">Departed Sort Facility</div>
+                  <div class="telemetry-location">Portland Sorting Facility, OR (Hub #9821)</div>
+                </div>
+                <div class="telemetry-time">Nov 17, 04:12 AM</div>
+              </div>
+
+              <div class="telemetry-row">
+                <div>
+                  <div class="telemetry-action">Package Processed at Carrier Location</div>
+                  <div class="telemetry-location">Northwest Regional Logistics Terminal, OR</div>
+                </div>
+                <div class="telemetry-time">Nov 16, 11:30 PM</div>
+              </div>
+
+              <div class="telemetry-row">
+                <div>
+                  <div class="telemetry-action">Shipment Information Sent to FedEx</div>
+                  <div class="telemetry-location">ShopTest Automated Fulfillment Automation Center</div>
+                </div>
+                <div class="telemetry-time">Nov 16, 02:46 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Package Contents Card -->
+        <div class="package-contents-card">
+          <div class="package-card-header">
+            <h3 style="font-size:1.15rem; font-weight:800;">Package Contents (<span id="pkg-item-count">3</span> Items)</h3>
+            <span class="package-manifest-badge">Manifest ID: #MN-77402</span>
+          </div>
+
+          <div id="package-items-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Receipt Breakdown & Operations -->
+      <aside>
+        <!-- Receipt Breakdown -->
+        <div class="receipt-card">
+          <h3><span>🧾</span> Receipt Breakdown</h3>
+
+          <div class="receipt-line">
+            <span>Items Subtotal</span>
+            <strong id="rec-subtotal">$248.00</strong>
+          </div>
+
+          <div class="receipt-line coupon" id="rec-coupon-row">
+            <span>Coupon (SAVE20)</span>
+            <strong id="rec-discount">-$49.60</strong>
+          </div>
+
+          <div class="receipt-line">
+            <span>Shipping (Standard Ground)</span>
+            <strong style="color:#059669;" id="rec-shipping">FREE</strong>
+          </div>
+
+          <div class="receipt-line">
+            <span>Estimated Sales Tax (8.25%)</span>
+            <strong id="rec-tax">$20.46</strong>
+          </div>
+
+          <div class="total-paid-card">
+            <div class="total-paid-header">
+              <span style="font-size:0.85rem; font-weight:700;">Total Paid</span>
+              <span class="total-paid-num" id="rec-total-paid" data-testid="receipt-total-paid">$218.86</span>
+            </div>
+            <div class="total-paid-note">Includes all applied synthetic vouchers & state surcharges.</div>
+          </div>
+
+          <div class="receipt-meta-box">
+            <div class="receipt-meta-label">PAYMENT METHOD</div>
+            <div style="font-weight:600;"><span class="payment-pill">VISA</span> Ending in &bull;&bull;&bull;&bull; <span id="rec-card-last4">4444</span></div>
+          </div>
+
+          <div class="receipt-meta-box">
+            <div class="receipt-meta-label">DESTINATION ADDRESS</div>
+            <div style="font-weight:700;" id="rec-dest-name">Alex Taylor</div>
+            <div style="color:var(--text-muted); font-size:0.75rem;" id="rec-dest-address">742 Evergreen Terrace, Springfield, OR 97477</div>
+          </div>
+        </div>
+
+        <!-- Order Operations -->
+        <div class="operations-card">
+          <h3>Order Operations</h3>
+          <button class="btn-op-action" onclick="alert('Downloading synthetic PDF invoice ST-98402.pdf...')">
+            <span>📄</span> Download Tax Invoice (PDF)
+          </button>
+          <button class="btn-op-action" onclick="alert('Opening FedEx API mock payload viewer...')">
+            <span>🌐</span> Track with FedEx Directly
+          </button>
+          <button class="btn-op-action btn-op-danger" onclick="alert('Cancel / Modification requested within test window.')">
+            <span>✕</span> Cancel / Modify Order
+          </button>
+          <a href="index.html" class="btn-return-catalog">
+            <span>🛍️</span> Return to Shop Catalog
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="shop-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand-title">
+            <span style="background:#0f172a; color:#10b981; padding:0.2rem 0.5rem; border-radius:6px;">🛍️</span>
+            <span>ShopTest</span>
+          </div>
+          <p class="footer-brand-desc">
+            The definitive reference e-commerce testing sandbox. Purpose-built for resilient UI automation, Playwright, Cypress, and Selenium end-to-end benchmarks.
+          </p>
+          <div class="btn-dom-fixture">
+            <span>⊞</span> Deterministic DOM Fixture
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>ARCHITECTURE & DOCS</h5>
+          <ul class="footer-links-list">
+            <li><a href="index.html">Product Discovery Matrix</a></li>
+            <li><a href="cart.html">Cart State Machine</a></li>
+            <li><a href="checkout.html">Multi-step Checkout Validation</a></li>
+            <li><a href="order-tracking.html">Fulfillment Mock Engine</a></li>
+            <li><a href="../../index.html">Portfolio Hub Index</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>QA SUPPORT & TESTING</h5>
+          <ul class="footer-links-list" style="font-family: 'JetBrains Mono', monospace; font-size: 0.775rem;">
+            <li><strong>Spec Version:</strong> v2.4-STABLE</li>
+            <li><strong>Locator Policy:</strong> Strict data-testid</li>
+            <li><strong>Latency Injection:</strong> Configurable 0-800ms</li>
+            <li>✉ qa-support@shoptest.dev</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>RELEASE BULLETIN</h5>
+          <p style="font-size: 0.8rem; color:#64748b; line-height:1.45;">
+            Subscribe for test suite releases, schema updates, and synthetic payload announcements.
+          </p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed to synthetic test alerts!');">
+            <input type="email" placeholder="tester@organization.com" class="newsletter-input" required>
+            <button type="submit" class="newsletter-btn">➔</button>
+          </form>
+          <span class="newsletter-sub">Zero marketing spam. Only deterministic updates.</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <div>
+          &copy; 2025 ShopTest Testbed Inc. Engineered for deterministic visual regression & test automation benchmarks.
+        </div>
+        <div class="payment-badges">
+          <span>PAYMENT MOCKS:</span>
+          <span class="payment-pill">VISA</span>
+          <span class="payment-pill">MC</span>
+          <span class="payment-pill">AMEX</span>
+          <span class="stripe-sandbox-pill">STRIPE SANDBOX</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shop.js"></script>
+  <script>
+    // Fallback default snapshot if user lands directly on tracking
+    const FALLBACK_ORDER = {
+      orderId: "#ST-98402-ORD",
+      date: "Nov 16, 2026, 2:45 PM",
+      deliveryEta: "Thursday, Nov 20, 2026 by 7:00 PM",
+      trackingNo: "9400 1118 9922 4102",
+      status: "In Transit",
+      customer: {
+        name: "Alex Taylor",
+        email: "alex.taylor@example.com",
+        address: "742 Evergreen Terrace, Springfield, OR 97477"
+      },
+      items: [
+        {
+          title: "ApexPro ANC Wireless Headphones",
+          sku: "APX-900-BLK",
+          color: "Matte Graphite",
+          packType: "Standard Box Pack",
+          quantity: 1,
+          unitPrice: 160.00,
+          img: "images/prod-headphones.jpg"
+        },
+        {
+          title: "Merino Core Lightweight Tee",
+          sku: "MRN-220-GRY",
+          color: "Size: L",
+          packType: "Poly Recycled Pouch",
+          quantity: 1,
+          unitPrice: 58.00,
+          img: "images/prod-crewneck.jpg"
+        },
+        {
+          title: "Braided Thunderbolt 4 Cable (2m)",
+          sku: "CBL-TB4-200",
+          color: "Silver Ash",
+          packType: "Accessory Pouch",
+          quantity: 1,
+          unitPrice: 30.00,
+          img: "images/prod-cable.jpg"
+        }
+      ],
+      subtotal: 248.00,
+      discount: 49.60,
+      shipping: 0.00,
+      tax: 20.46,
+      totalPaid: 218.86,
+      cardLast4: "4444"
+    };
+
+    function loadOrderTracking() {
+      const raw = localStorage.getItem("shoptest_latest_order");
+      const order = raw ? JSON.parse(raw) : FALLBACK_ORDER;
+
+      document.getElementById("conf-title").textContent = `Thank You for Your Order, ${order.customer.name.split(' ')[0]}!`;
+      document.getElementById("conf-email-sub").innerHTML = `A confirmation email with your digital invoice has been sent to <strong>${order.customer.email}</strong>.`;
+      document.getElementById("order-id-code").textContent = order.orderId;
+      document.getElementById("order-eta-text").textContent = order.deliveryEta;
+      document.getElementById("tracking-num-code").textContent = order.trackingNo;
+
+      // Render items
+      const container = document.getElementById("package-items-container");
+      container.innerHTML = "";
+      document.getElementById("pkg-item-count").textContent = order.items.length;
+
+      order.items.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "package-item-row";
+        row.innerHTML = `
+          <img src="${item.img}" alt="${item.title}" class="package-thumb">
+          <div class="package-item-info">
+            <div class="package-item-name">${item.title}</div>
+            <div class="package-item-details">SKU: ${item.sku} &bull; Color: ${item.color} &bull; Qty: ${item.quantity}</div>
+          </div>
+          <div class="package-item-right">
+            <div class="package-price-bold">$${(item.unitPrice * item.quantity).toFixed(2)}</div>
+            <div class="package-pack-type">${item.packType || 'Standard Box Pack'}</div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      // Receipt details
+      document.getElementById("rec-subtotal").textContent = `$${order.subtotal.toFixed(2)}`;
+      document.getElementById("rec-discount").textContent = `-$${order.discount.toFixed(2)}`;
+      document.getElementById("rec-shipping").textContent = order.shipping === 0 ? "FREE" : `$${order.shipping.toFixed(2)}`;
+      document.getElementById("rec-tax").textContent = `$${order.tax.toFixed(2)}`;
+      document.getElementById("rec-total-paid").textContent = `$${order.totalPaid.toFixed(2)}`;
+      document.getElementById("rec-card-last4").textContent = order.cardLast4;
+      document.getElementById("rec-dest-name").textContent = order.customer.name;
+      document.getElementById("rec-dest-address").textContent = order.customer.address;
+    }
+
+    function setMilestone(stage, btn) {
+      document.querySelectorAll(".btn-stage-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const fill = document.getElementById("timeline-fill-bar");
+      const transitIcon = document.getElementById("node-transit-icon");
+      const delIcon = document.getElementById("node-delivered-icon");
+      const delSub = document.getElementById("node-delivered-sub");
+      const pill = document.getElementById("live-status-pill");
+
+      if (stage === 2) {
+        fill.style.width = "33%";
+        transitIcon.className = "step-node-icon pending";
+        delIcon.className = "step-node-icon pending";
+        pill.textContent = "PROCESSING";
+        pill.style.background = "#fef3c7";
+        pill.style.color = "#b45309";
+      } else if (stage === 3) {
+        fill.style.width = "66%";
+        transitIcon.className = "step-node-icon active";
+        delIcon.className = "step-node-icon pending";
+        pill.textContent = "IN TRANSIT";
+        pill.style.background = "#d1fae5";
+        pill.style.color = "#065f46";
+      } else if (stage === 4) {
+        fill.style.width = "100%";
+        transitIcon.className = "step-node-icon active";
+        delIcon.className = "step-node-icon active";
+        delIcon.textContent = "✓";
+        delSub.textContent = "Delivered Today";
+        pill.textContent = "DELIVERED";
+        pill.style.background = "#dbeafe";
+        pill.style.color = "#1e40af";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadOrderTracking();
+    });
+  </script>
+</body>
+</html>
